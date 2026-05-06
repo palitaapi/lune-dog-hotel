@@ -4,7 +4,8 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans','IBM Plex Sans Thai','Arial',sans-serif;}
   :root{--black:#1a1a1a;--white:#ffffff;--red:#8B1A1A;--red-light:#a82020;--bg:#f7f6f3;--bg2:#efefec;--gray-line:#d8d6d0;--gray-dark:#6b6b68;--text:#1a1a1a;}
-  body{color:var(--text);background:var(--white);scroll-behavior:smooth;}
+  body{color:var(--text);background:var(--white);scroll-behavior:smooth;font-size:1.05rem;}
+  :lang(th), [lang="th"] * { font-size: 1.08em; }
 
   nav{position:fixed;top:0;left:0;right:0;background:rgba(247,246,243,0.95);backdrop-filter:blur(6px);z-index:999;display:flex;justify-content:space-between;align-items:center;padding:1rem 2.5rem;border-bottom:0.5px solid var(--gray-line);}
   .logo{color:var(--black);font-size:1.2rem;letter-spacing:0.1em;font-weight:500;}
@@ -422,4 +423,7 @@ function setLang(lang) {
 }
 
 window.addEventListener('load', initCalendar);
+// ตั้งภาษาไทย default
+document.documentElement.lang = 'th';
+setLang('th');
 </script>
