@@ -1,0 +1,425 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500&family=IBM+Plex+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans','IBM Plex Sans Thai','Arial',sans-serif;}
+  :root{--black:#1a1a1a;--white:#ffffff;--red:#8B1A1A;--red-light:#a82020;--bg:#f7f6f3;--bg2:#efefec;--gray-line:#d8d6d0;--gray-dark:#6b6b68;--text:#1a1a1a;}
+  body{color:var(--text);background:var(--white);scroll-behavior:smooth;}
+
+  nav{position:fixed;top:0;left:0;right:0;background:rgba(247,246,243,0.95);backdrop-filter:blur(6px);z-index:999;display:flex;justify-content:space-between;align-items:center;padding:1rem 2.5rem;border-bottom:0.5px solid var(--gray-line);}
+  .logo{color:var(--black);font-size:1.2rem;letter-spacing:0.1em;font-weight:500;}
+  .logo span{color:var(--red);}
+  .nav-links{display:flex;gap:1.8rem;list-style:none;align-items:center;}
+  .nav-links a{color:var(--gray-dark);text-decoration:none;font-size:0.82rem;letter-spacing:0.04em;transition:color 0.2s;}
+  .nav-links a:hover{color:var(--red);}
+  .btn-book-nav{background:var(--red);color:var(--white)!important;padding:0.45rem 1.1rem;border-radius:2px;}
+  .btn-book-nav:hover{background:var(--red-light)!important;}
+  .lang-toggle{display:flex;border:0.5px solid var(--gray-line);border-radius:2px;overflow:hidden;font-size:0.72rem;}
+  .lang-btn{padding:0.35rem 0.7rem;cursor:pointer;background:transparent;border:none;color:var(--gray-dark);transition:all 0.15s;}
+  .lang-btn.active{background:var(--red);color:var(--white);}
+  .lang-btn:not(.active):hover{background:var(--bg2);}
+
+  .hero{min-height:100vh;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 2rem 4rem;}
+  .hero-img-wrap{width:240px;height:240px;border-radius:50%;overflow:hidden;border:2px solid var(--gray-line);margin-bottom:2rem;background:var(--white);display:flex;align-items:center;justify-content:center;}
+  .hero-img-wrap img{width:110%;height:110%;object-fit:cover;object-position:center;}
+  .hero-tag{font-size:0.72rem;letter-spacing:0.18em;color:var(--red);text-transform:uppercase;margin-bottom:1rem;}
+  .hero h1{font-size:clamp(2.4rem,6vw,4.5rem);color:var(--black);font-weight:500;line-height:1.15;letter-spacing:0.02em;margin-bottom:1.2rem;}
+  .hero h1 span{color:var(--red);}
+  .hero p{color:var(--gray-dark);font-size:0.96rem;max-width:460px;line-height:1.9;margin-bottom:2.2rem;font-weight:300;}
+  .btn{display:inline-block;padding:0.8rem 2rem;font-size:0.82rem;letter-spacing:0.08em;cursor:pointer;border:none;text-decoration:none;transition:all 0.2s;border-radius:2px;}
+  .btn-primary{background:var(--red);color:var(--white);}
+  .btn-primary:hover{background:var(--red-light);}
+  .btn-outline{background:transparent;color:var(--black);border:1px solid var(--gray-line);margin-left:0.8rem;}
+  .btn-outline:hover{border-color:var(--black);}
+
+  section{padding:5rem 2.5rem;}
+  .section-label{font-size:0.7rem;letter-spacing:0.22em;color:var(--red);text-transform:uppercase;margin-bottom:0.7rem;}
+  .section-title{font-size:clamp(1.7rem,3vw,2.4rem);color:var(--black);font-weight:500;margin-bottom:0.8rem;line-height:1.2;}
+  .section-sub{color:var(--gray-dark);font-size:0.9rem;line-height:1.85;max-width:520px;font-weight:300;}
+  .divider{width:36px;height:2px;background:var(--red);margin:1.2rem 0;}
+
+  #services{background:var(--bg);}
+  .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.2rem;margin-top:2.8rem;}
+  .service-card{background:var(--white);padding:1.8rem 1.4rem;border:0.5px solid var(--gray-line);border-top:2.5px solid var(--red);}
+  .service-icon{font-size:1.5rem;margin-bottom:0.9rem;}
+  .service-card h3{font-size:0.96rem;font-weight:500;margin-bottom:0.5rem;}
+  .service-card p{font-size:0.82rem;color:var(--gray-dark);line-height:1.75;font-weight:300;}
+
+  #pricing{background:var(--bg2);}
+  .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.2rem;margin-top:2.8rem;}
+  .price-card{background:var(--white);border:0.5px solid var(--gray-line);padding:2rem 1.5rem;position:relative;transition:border-color 0.2s;text-align:center;}
+  .price-card:hover{border-color:var(--red);}
+  .price-tier{font-size:0.66rem;letter-spacing:0.2em;color:var(--red);margin-bottom:0.4rem;text-transform:uppercase;}
+  .price-name{font-size:1.15rem;color:var(--black);font-weight:500;margin-bottom:1.4rem;}
+  .price-row{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);}
+  .price-row:last-of-type{border-bottom:none;}
+  .price-row-label{font-size:0.75rem;color:var(--gray-dark);font-weight:400;text-align:left;}
+  .price-row-amount{font-size:1.3rem;color:var(--black);font-weight:500;}
+  .price-row-amount span{font-size:0.75rem;color:var(--gray-dark);font-weight:300;}
+  .price-sub{font-size:0.76rem;color:var(--gray-dark);margin-bottom:1.2rem;font-weight:300;}
+  .price-btn{display:block;text-align:center;padding:0.7rem;font-size:0.78rem;letter-spacing:0.08em;cursor:pointer;border:0.5px solid var(--gray-line);color:var(--black);background:transparent;transition:all 0.2s;text-decoration:none;margin-top:1.4rem;}
+  .price-btn:hover{background:var(--red);border-color:var(--red);color:var(--white);}
+  .price-features-shared{margin-top:2.5rem;border-top:0.5px solid var(--gray-line);padding-top:2rem;}
+  .price-features-shared h4{font-size:0.7rem;letter-spacing:0.2em;color:var(--red);text-transform:uppercase;margin-bottom:1.2rem;text-align:center;}
+  .shared-features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.5rem;}
+  .shared-feature{display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:var(--gray-dark);padding:0.4rem 0;font-weight:300;}
+  .shared-feature::before{content:'';width:4px;height:4px;background:var(--red);border-radius:50%;flex-shrink:0;}
+
+  #availability{background:var(--bg);}
+  .calendar-wrap{margin-top:2.5rem;}
+  .cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+  .cal-nav{background:none;border:0.5px solid var(--gray-line);padding:0.4rem 0.9rem;cursor:pointer;font-size:0.9rem;color:var(--black);transition:all 0.2s;}
+  .cal-nav:hover{background:var(--red);color:var(--white);border-color:var(--red);}
+  .cal-month{font-size:1rem;font-weight:500;letter-spacing:0.05em;}
+  .cal-day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+  .cal-day-label{text-align:center;font-size:0.7rem;color:var(--gray-dark);padding:0.4rem 0;}
+  .cal-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.8rem;border-radius:2px;}
+  .cal-cell.empty{background:transparent;}
+  .cal-cell.past{color:#ccc;}
+  .cal-cell.available{background:var(--white);border:0.5px solid var(--gray-line);}
+  .cal-cell.occupied{background:#f5eded;color:#a04040;}
+  .cal-cell.full{background:#8B1A1A;color:#fff;}
+  .cal-cell.today{outline:2px solid var(--red);}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1rem;font-size:0.76rem;color:var(--gray-dark);}
+  .legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:0.4rem;vertical-align:middle;}
+
+  #whattobring{background:var(--white);}
+  #promotion{background:var(--bg2);}
+
+  #reviews{background:var(--white);}
+  .photo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.6rem;margin-top:1.8rem;margin-bottom:0.5rem;}
+  .photo-slot{aspect-ratio:1;background:var(--bg2);border:0.5px solid var(--gray-line);display:flex;align-items:center;justify-content:center;color:#c8c8c4;font-size:1.3rem;}
+  .photo-hint{font-size:0.7rem;color:#b0b0aa;margin-bottom:2.5rem;}
+  .reviews-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-top:2rem;}
+  .review-card{border:0.5px solid var(--gray-line);padding:1.6rem;}
+  .stars{color:var(--red);font-size:0.85rem;margin-bottom:0.7rem;}
+  .review-text{font-size:0.87rem;color:var(--gray-dark);line-height:1.75;margin-bottom:0.9rem;font-weight:300;}
+  .reviewer{font-size:0.76rem;color:var(--black);font-weight:500;}
+  .reviewer span{color:var(--gray-dark);font-weight:300;}
+
+  #location{background:var(--bg);}
+  .location-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;margin-top:2.2rem;}
+  .map-frame{width:100%;height:300px;border:0.5px solid var(--gray-line);filter:grayscale(100%) contrast(0.9);}
+  .info-row{display:flex;gap:0.8rem;margin-bottom:0.6rem;align-items:flex-start;}
+  .info-label{font-size:0.68rem;letter-spacing:0.15em;color:var(--red);min-width:70px;padding-top:2px;text-transform:uppercase;font-weight:500;}
+  .info-val{font-size:0.84rem;color:var(--text);line-height:1.6;font-weight:300;}
+
+  #booking{background:var(--white);}
+  .booking-wrap{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+  .note-item{display:flex;gap:0.8rem;margin-bottom:0.85rem;align-items:flex-start;}
+  .note-dot{width:6px;height:6px;background:var(--red);border-radius:50%;flex-shrink:0;margin-top:6px;}
+  .note-text{font-size:0.83rem;color:var(--gray-dark);line-height:1.6;font-weight:300;}
+
+  footer{background:var(--bg2);padding:2.5rem;text-align:center;border-top:0.5px solid var(--gray-line);}
+  .footer-logo{color:var(--black);font-size:1rem;letter-spacing:0.12em;margin-bottom:0.4rem;font-weight:500;}
+  .footer-logo span{color:var(--red);}
+  footer p{font-size:0.75rem;color:var(--gray-dark);font-weight:300;}
+
+  @media(max-width:700px){
+    nav{padding:1rem 1.2rem;}
+    .nav-links{gap:0.8rem;}
+    .nav-links li:not(:last-child):not(:nth-last-child(2)){display:none;}
+    section{padding:3rem 1.2rem;}
+    .location-wrap,.booking-wrap{grid-template-columns:1fr;}
+    .photo-grid{grid-template-columns:repeat(3,1fr);}
+  }
+</style>
+
+<nav>
+  <div class="logo">LUNE <span>●</span> DOG HOTEL</div>
+  <ul class="nav-links">
+    <li><a href="#services" data-en="Services" data-th="บริการ">Services</a></li>
+    <li><a href="#pricing" data-en="Pricing" data-th="ราคา">Pricing</a></li>
+    <li><a href="#availability" data-en="Availability" data-th="วันว่าง">Availability</a></li>
+    <li><a href="#reviews" data-en="Reviews" data-th="รีวิว">Reviews</a></li>
+    <li><a href="booking.html" class="btn-book-nav" data-en="Book a Stay" data-th="จองเลย">Book a Stay</a></li>
+    <li>
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('th')">TH</button>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-img-wrap">
+    <img src="https://res.cloudinary.com/df8wiidyc/image/upload/v1778037484/BFEBAF59-DB9A-4974-B055-A3AC9A6F8295_sdqtjc.jpg" id="heroImg" alt="Lune Dog Hotel"/>
+  </div>
+  <div class="hero-tag" data-en="Premium Cage-Free Dog Hotel · Bang Yai, Nonthaburi" data-th="โรงแรมสุนัขระดับพรีเมียม · บางใหญ่ นนทบุรี">Premium Cage-Free Dog Hotel · Bang Yai, Nonthaburi</div>
+  <h1 data-en="A Home Away<br>From <span>Home.</span>" data-th="บ้านหลังที่สอง<br>ของ<span>น้องหมา</span>">A Home Away<br>From <span>Home.</span></h1>
+  <p data-en="Where your dog is not just a guest — they're family. Personalized care, flexible routines, and daily updates in a warm, cage-free environment." data-th="ที่นี่น้องหมาของคุณไม่ใช่แค่แขก — แต่คือครอบครัว ดูแลแบบส่วนตัว ตารางยืดหยุ่น และอัปเดตรายวันในบรรยากาศอบอุ่นแบบไม่มีกรง">Where your dog is not just a guest — they're family. Personalized care, flexible routines, and daily updates in a warm, cage-free environment.</p>
+  <div>
+    <a href="booking.html" class="btn btn-primary" data-en="Book a Stay" data-th="จองเลย">Book a Stay</a>
+    <a href="#services" class="btn btn-outline" data-en="Explore" data-th="ดูเพิ่มเติม">Explore</a>
+  </div>
+</section>
+
+<section id="services">
+  <div class="section-label" data-en="What we offer" data-th="สิ่งที่เราให้">What we offer</div>
+  <h2 class="section-title" data-en="Care tailored to every dog" data-th="การดูแลที่ออกแบบเพื่อน้องหมาทุกตัว">Care tailored to every dog</h2>
+  <div class="divider"></div>
+  <p class="section-sub" data-en="Every stay is designed around your dog's personality, not a rigid schedule. We treat them like our own." data-th="ทุกการพักถูกออกแบบตามบุคลิกของน้องหมาของคุณ ไม่ใช่ตารางตายตัว เราดูแลเขาเหมือนสัตว์เลี้ยงของเราเอง">Every stay is designed around your dog's personality, not a rigid schedule. We treat them like our own.</p>
+  <div class="services-grid">
+    <div class="service-card"><div class="service-icon">🏠</div><h3 data-en="Cage-Free Boarding" data-th="พักแบบไม่มีกรง">Cage-Free Boarding</h3><p data-en="Free-roam spaces designed to feel like home. No cages — just comfort and freedom." data-th="พื้นที่เดินเล่นอิสระออกแบบให้รู้สึกเหมือนบ้าน ไม่ขังกรง">Free-roam spaces designed to feel like home. No cages — just comfort and freedom.</p></div>
+    <div class="service-card"><div class="service-icon">📓</div><h3 data-en="Doggy Diary" data-th="ไดอารี่น้องหมา">Doggy Diary</h3><p data-en="Daily photo and video updates sent directly to you, so you never miss a moment of their stay." data-th="อัปเดตรูปและวิดีโอรายวันส่งตรงถึงคุณ เพื่อให้คุณไม่พลาดทุกช่วงเวลาของน้อง">Daily photo and video updates sent directly to you, so you never miss a moment of their stay.</p></div>
+    <div class="service-card"><div class="service-icon">🌿</div><h3 data-en="Outdoor Playtime" data-th="เล่นนอกบ้าน">Outdoor Playtime</h3><p data-en="Supervised sessions in our secure garden. Fresh air and exercise, every day." data-th="ช่วงเวลาเล่นในสวนที่ปลอดภัยภายใต้การดูแล อากาศบริสุทธิ์และออกกำลังกายทุกวัน">Supervised sessions in our secure garden. Fresh air and exercise, every day.</p></div>
+    <div class="service-card"><div class="service-icon">💬</div><h3 data-en="24hr Owner Updates" data-th="อัปเดตเจ้าของตลอด 24 ชม.">24hr Owner Updates</h3><p data-en="We're always reachable via LINE. Ask us anything, anytime during your dog's stay." data-th="ติดต่อเราได้ตลอดเวลาทาง LINE ถามได้ทุกเรื่องระหว่างที่น้องพักอยู่กับเรา">We're always reachable via LINE. Ask us anything, anytime during your dog's stay.</p></div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-label" data-en="Pricing" data-th="ราคา">Pricing</div>
+  <h2 class="section-title" data-en="Transparent pricing with premium services" data-th="ราคาชัดเจน ด้วยมาตรฐานการดูแลแบบพรีเมียม">Transparent pricing with premium services</h2>
+  <div class="divider"></div>
+  <p class="section-sub" data-en="Simple, all-inclusive rates. No hidden fees." data-th="ราคาเดียวครอบคลุมทุกอย่าง">Simple, all-inclusive rates. No hidden fees.</p>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-tier" data-en="Small" data-th="เล็ก">Small</div>
+      <div class="price-name">Small Paws</div>
+      <div class="price-sub" data-en="Under 10 kg" data-th="ต่ำกว่า 10 กก.">Under 10 kg</div>
+      <div class="price-row"><div class="price-row-label" data-en="Overnight Care" data-th="ค้างคืน">Overnight Care</div><div class="price-row-amount">฿400 <span data-en="/ night" data-th="/ คืน">/ night</span></div></div>
+      <div class="price-row"><div class="price-row-label" data-en="Daycare" data-th="ฝากรายวัน">Daycare</div><div class="price-row-amount">฿200 <span data-en="/ day" data-th="/ วัน">/ day</span></div></div>
+      <a href="booking.html" class="price-btn" data-en="Reserve Now" data-th="จองเลย">Reserve Now</a>
+    </div>
+    <div class="price-card">
+      <div class="price-tier" data-en="Medium" data-th="กลาง">Medium</div>
+      <div class="price-name">Medium Paws</div>
+      <div class="price-sub" data-en="10–20 kg" data-th="10–20 กก.">10–20 kg</div>
+      <div class="price-row"><div class="price-row-label" data-en="Overnight Care" data-th="ค้างคืน">Overnight Care</div><div class="price-row-amount">฿550 <span data-en="/ night" data-th="/ คืน">/ night</span></div></div>
+      <div class="price-row"><div class="price-row-label" data-en="Daycare" data-th="ฝากรายวัน">Daycare</div><div class="price-row-amount">฿275 <span data-en="/ day" data-th="/ วัน">/ day</span></div></div>
+      <a href="booking.html" class="price-btn" data-en="Reserve Now" data-th="จองเลย">Reserve Now</a>
+    </div>
+    <div class="price-card">
+      <div class="price-tier" data-en="Large" data-th="ใหญ่">Large</div>
+      <div class="price-name">Large Paws</div>
+      <div class="price-sub" data-en="Over 20 kg" data-th="มากกว่า 20 กก.">Over 20 kg</div>
+      <div class="price-row"><div class="price-row-label" data-en="Overnight Care" data-th="ค้างคืน">Overnight Care</div><div class="price-row-amount">฿700 <span data-en="/ night" data-th="/ คืน">/ night</span></div></div>
+      <div class="price-row"><div class="price-row-label" data-en="Daycare" data-th="ฝากรายวัน">Daycare</div><div class="price-row-amount">฿350 <span data-en="/ day" data-th="/ วัน">/ day</span></div></div>
+      <a href="booking.html" class="price-btn" data-en="Reserve Now" data-th="จองเลย">Reserve Now</a>
+    </div>
+  </div>
+  <div class="price-features-shared">
+    <h4 data-en="All stays include" data-th="มาตรฐานการดูแลของเรา">All stays include</h4>
+    <div class="shared-features-grid">
+      <div class="shared-feature" data-en="Free-roam environment — no cages" data-th="เดินเล่นและพักผ่อนได้อย่างอิสระ ไม่ขังกรง">Free-roam environment — no cages</div>
+      <div class="shared-feature" data-en="Regular photo & video updates sent to owners" data-th="อัปเดตรูปและวิดีโอให้พ่อแม่น้องอย่างสม่ำเสมอ">Regular photo & video updates sent to owners</div>
+      <div class="shared-feature" data-en="Daily outdoor play sessions under close supervision" data-th="พาน้องออกวิ่งเล่นนอกบ้านทุกวัน ภายใต้การดูแลอย่างใกล้ชิด">Daily outdoor play sessions under close supervision</div>
+      <div class="shared-feature" data-en="Wiped down and cleaned before bedtime every night" data-th="เช็ดทำความสะอาดร่างกายน้องก่อนนอนทุกคืน">Wiped down and cleaned before bedtime every night</div>
+      <div class="shared-feature" data-en="Drinking-grade clean water available at all times" data-th="น้ำดื่มสะอาดเกรดเดียวกับคน">Drinking-grade clean water available at all times</div>
+      <div class="shared-feature" data-en="Air-conditioned room with air purifier" data-th="ห้องพักติดแอร์ พร้อมเครื่องฟอกอากาศ">Air-conditioned room with air purifier</div>
+      <div class="shared-feature" data-en="Comfortable bed provided throughout the stay" data-th="ที่นอนนุ่มสบายพร้อมให้ตลอดการพัก">Comfortable bed provided throughout the stay</div>
+      <div class="shared-feature" data-en="Variety of toys available to keep them entertained" data-th="ของเล่นหลากหลายพร้อมให้น้องได้สนุก">Variety of toys available to keep them entertained</div>
+    </div>
+  </div>
+</section>
+
+<section id="availability">
+  <div class="section-label" data-en="Availability" data-th="ตรวจสอบวันว่าง">Availability</div>
+  <h2 class="section-title" data-en="Check available dates" data-th="เช็ควันที่ว่าง">Check available dates</h2>
+  <div class="divider"></div>
+  <p class="section-sub" data-en="Check our calendar before booking. We accept a limited number of dogs per day." data-th="ตรวจสอบปฏิทินก่อนจอง รับน้องหมาจำนวนจำกัดต่อวัน">Check our calendar before booking. We accept a limited number of dogs per day.</p>
+  <div class="calendar-wrap">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(-1)">&#8592;</button>
+      <div class="cal-month" id="calMonthLabel"></div>
+      <button class="cal-nav" onclick="changeMonth(1)">&#8594;</button>
+    </div>
+    <div class="cal-day-grid" id="calDayLabels"></div>
+    <div class="cal-day-grid" id="calCells" style="margin-top:2px;min-height:200px;">
+      <div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--gray-dark);font-size:0.85rem;">Loading calendar...</div>
+    </div>
+    <div class="cal-legend" style="margin-top:1rem;">
+      <div><span class="legend-dot" style="background:var(--white);border:0.5px solid var(--gray-line);"></span><span data-en="Available" data-th="ว่าง">Available</span></div>
+      <div><span class="legend-dot" style="background:#f5eded;"></span><span data-en="Occupied" data-th="มีการจองบางส่วน">Occupied</span></div>
+      <div><span class="legend-dot" style="background:#8B1A1A;"></span><span data-en="Fully Booked" data-th="จองเต็ม">Fully Booked</span></div>
+      <div><span class="legend-dot" style="outline:2px solid var(--red);background:var(--white);"></span><span data-en="Today" data-th="วันนี้">Today</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="whattobring">
+  <div class="section-label" data-en="Before You Arrive" data-th="ก่อนมาพัก">Before You Arrive</div>
+  <h2 class="section-title" data-en="What to prepare" data-th="สิ่งที่ต้องเตรียมก่อนมาพัก">What to prepare</h2>
+  <div class="divider"></div>
+  <p class="section-sub" data-en="To make sure your dog's stay is as comfortable as possible, please bring the following." data-th="เพื่อให้น้องหมาของคุณพักได้อย่างสบายที่สุด กรุณาเตรียมสิ่งต่อไปนี้มาด้วย">To make sure your dog's stay is as comfortable as possible, please bring the following.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.2rem;margin-top:2.8rem;">
+    <div style="background:var(--bg);padding:1.8rem 1.6rem;border:0.5px solid var(--gray-line);border-top:2.5px solid var(--red);"><div style="font-size:1.6rem;margin-bottom:0.9rem;">🍚</div><h3 style="font-size:0.96rem;font-weight:500;margin-bottom:0.5rem;" data-en="Food" data-th="อาหาร">Food</h3><p style="font-size:0.82rem;color:var(--gray-dark);line-height:1.75;font-weight:300;" data-en="Please bring enough of your dog's own food for the duration of the stay." data-th="กรุณานำอาหารของน้องหมามาในปริมาณที่เพียงพอตลอดช่วงเข้าพัก">Please bring enough of your dog's own food for the duration of the stay.</p></div>
+    <div style="background:var(--bg);padding:1.8rem 1.6rem;border:0.5px solid var(--gray-line);border-top:2.5px solid var(--red);"><div style="font-size:1.6rem;margin-bottom:0.9rem;">💊</div><h3 style="font-size:0.96rem;font-weight:500;margin-bottom:0.5rem;" data-en="Medication (if any)" data-th="ยาประจำตัว (ถ้ามี)">Medication (if any)</h3><p style="font-size:0.82rem;color:var(--gray-dark);line-height:1.75;font-weight:300;" data-en="If your dog is on any medication, please bring the full course with clear dosage instructions." data-th="หากน้องหมามียาประจำตัว กรุณานำมาพร้อมระบุวิธีการให้ยาให้ชัดเจน">If your dog is on any medication, please bring the full course with clear dosage instructions.</p></div>
+    <div style="background:var(--bg);padding:1.8rem 1.6rem;border:0.5px solid var(--gray-line);border-top:2.5px solid var(--red);"><div style="font-size:1.6rem;margin-bottom:0.9rem;">🩲</div><h3 style="font-size:0.96rem;font-weight:500;margin-bottom:0.5rem;" data-en="Dog Diaper (male dogs)" data-th="โอบิ (สำหรับน้องตัวผู้)">Dog Diaper (male dogs)</h3><p style="font-size:0.82rem;color:var(--gray-dark);line-height:1.75;font-weight:300;" data-en="For male dogs, please bring enough dog diapers to cover the full length of the stay." data-th="สำหรับน้องตัวผู้ กรุณานำโอบิมาในจำนวนที่เพียงพอตลอดการเข้าพัก">For male dogs, please bring enough dog diapers to cover the full length of the stay.</p></div>
+    <div style="background:var(--bg);padding:1.8rem 1.6rem;border:0.5px solid var(--gray-line);border-top:2.5px solid var(--red);"><div style="font-size:1.6rem;margin-bottom:0.9rem;">🦮</div><h3 style="font-size:0.96rem;font-weight:500;margin-bottom:0.5rem;" data-en="Collar & Leash" data-th="ปลอกคอ และสายจูง">Collar & Leash</h3><p style="font-size:0.82rem;color:var(--gray-dark);line-height:1.75;font-weight:300;" data-en="Please ensure your dog arrives with a properly fitted collar and leash." data-th="กรุณานำปลอกคอและสายจูงมาด้วยทุกครั้ง">Please ensure your dog arrives with a properly fitted collar and leash.</p></div>
+  </div>
+</section>
+
+<section id="promotion">
+  <div class="section-label" data-en="Special Offers" data-th="โปรโมชั่น">Special Offers</div>
+  <h2 class="section-title" data-en="Promotions" data-th="โปรโมชั่นพิเศษ">Promotions</h2>
+  <div class="divider"></div>
+  <p class="section-sub" data-en="Limited-time offers for new and returning guests." data-th="โปรโมชั่นพิเศษสำหรับลูกค้าใหม่และลูกค้าประจำ">Limited-time offers for new and returning guests.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-top:2.8rem;">
+    <div style="background:var(--white);border:0.5px solid var(--gray-line);border-top:2.5px solid var(--red);padding:2.2rem 1.8rem;"><div style="font-size:2rem;margin-bottom:1rem;">🎉</div><div style="font-size:0.66rem;letter-spacing:0.2em;color:var(--red);margin-bottom:0.4rem;text-transform:uppercase;" data-en="New Guest" data-th="ลูกค้าใหม่">New Guest</div><div style="font-size:1.2rem;color:var(--black);font-weight:500;margin-bottom:0.8rem;" data-en="First Night 50% OFF" data-th="คืนแรกลด 50%">First Night 50% OFF</div><div style="width:36px;height:1px;background:var(--red);margin-bottom:1rem;"></div><p style="font-size:0.84rem;color:var(--gray-dark);line-height:1.75;font-weight:300;" data-en="First time boarding with us? Get 50% off your first night." data-th="ฝากน้องกับเราครั้งแรก รับส่วนลด 50% ในคืนแรกทันที">First time boarding with us? Get 50% off your first night.</p></div>
+    <div style="background:var(--white);border:0.5px solid var(--gray-line);border-top:2.5px solid var(--red);padding:2.2rem 1.8rem;"><div style="font-size:2rem;margin-bottom:1rem;">🐾</div><div style="font-size:0.66rem;letter-spacing:0.2em;color:var(--red);margin-bottom:0.4rem;text-transform:uppercase;" data-en="Multi-Dog" data-th="หลายตัว">Multi-Dog</div><div style="font-size:1.2rem;color:var(--black);font-weight:500;margin-bottom:0.8rem;" data-en="2nd Dog onwards 10% OFF" data-th="ตัวที่ 2 ขึ้นไปลด 10%">2nd Dog onwards 10% OFF</div><div style="width:36px;height:1px;background:var(--red);margin-bottom:1rem;"></div><p style="font-size:0.84rem;color:var(--gray-dark);line-height:1.75;font-weight:300;" data-en="Bringing more than one dog? Every additional dog gets 10% off their stay." data-th="พาน้องมาหลายตัว? ตัวที่ 2 เป็นต้นไปลด 10% ทันที">Bringing more than one dog? Every additional dog gets 10% off their stay.</p></div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="section-label" data-en="Stories & moments" data-th="ความประทับใจ">Stories & moments</div>
+  <h2 class="section-title" data-en="Loved by dogs & their humans" data-th="ความรักจากน้องหมาและเจ้าของ">Loved by dogs & their humans</h2>
+  <div class="divider"></div>
+  <div class="photo-grid"><div class="photo-slot">📷</div><div class="photo-slot">📷</div><div class="photo-slot">📷</div><div class="photo-slot">📷</div><div class="photo-slot">📷</div></div>
+  <p class="photo-hint" data-en="Replace placeholders with real guest photos" data-th="แทนที่รูปตัวอย่างด้วยภาพน้องหมาจริงๆ">Replace placeholders with real guest photos</p>
+  <div class="reviews-list">
+    <div class="review-card"><div class="stars">★★★★★</div><p class="review-text" data-en='"Mochi came home so relaxed and happy. The Doggy Diary updates kept me at ease the whole trip."' data-th='"โมจิกลับบ้านมาผ่อนคลายและมีความสุขมาก อัปเดตจาก Doggy Diary ทำให้หายเป็นห่วงตลอดทริป"'>"Mochi came home so relaxed and happy. The Doggy Diary updates kept me at ease the whole trip."</p><div class="reviewer">Ploy K. <span data-en="— Shih Tzu mom" data-th="— คุณแม่ชิสุ">— Shih Tzu mom</span></div></div>
+    <div class="review-card"><div class="stars">★★★★★</div><p class="review-text" data-en='"Finally a place that actually feels like a home. Max is usually anxious but he thrived here."' data-th='"ในที่สุดก็เจอที่พักที่รู้สึกเหมือนบ้านจริงๆ แม็กซ์ปกติขี้กังวลมาก แต่ที่นี่เขาสนุกมาก"'>"Finally a place that actually feels like a home. Max is usually anxious but he thrived here."</p><div class="reviewer">Arm S. <span data-en="— Golden Retriever dad" data-th="— คุณพ่อโกลเด้น">— Golden Retriever dad</span></div></div>
+    <div class="review-card"><div class="stars">★★★★★</div><p class="review-text" data-en='"The attention to detail is incredible. They followed Noodle\'s feeding schedule perfectly."' data-th='"ใส่ใจในรายละเอียดมากจริงๆ ทำตามตารางให้อาหารของนูเดิ้ลได้แม่นยำโดยไม่ต้องเตือนเลย"'>"The attention to detail is incredible. They followed Noodle's feeding schedule perfectly."</p><div class="reviewer">Mint T. <span data-en="— Beagle mom" data-th="— คุณแม่บีเกิ้ล">— Beagle mom</span></div></div>
+  </div>
+</section>
+
+<section id="location">
+  <div class="section-label" data-en="Find us" data-th="ที่ตั้ง">Find us</div>
+  <h2 class="section-title" data-en="Located in Bang Yai" data-th="ตั้งอยู่ที่บางใหญ่">Located in Bang Yai</h2>
+  <div class="divider"></div>
+  <div class="location-wrap">
+    <div>
+      <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3872.4!2d100.4!3d13.9!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDU0JzAwLjAiTiAxMDDCsDI0JzAwLjAiRQ!5e0!3m2!1sen!2sth!4v1234567890" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <p style="font-size:0.7rem;color:#b0b0aa;margin-top:0.5rem;font-weight:300;" data-en="Update map embed with your exact address" data-th="อัปเดต embed แผนที่ด้วยที่อยู่จริงของคุณ">Update map embed with your exact address</p>
+    </div>
+    <div>
+      <h3 style="font-size:1rem;font-weight:500;margin-bottom:0.5rem;" data-en="Near Anasiri Village, Bang Yai" data-th="ใกล้หมู่บ้านอนาสิริ บางใหญ่">Near Anasiri Village, Bang Yai</h3>
+      <p style="font-size:0.85rem;color:var(--gray-dark);line-height:1.8;margin-bottom:1.2rem;font-weight:300;" data-en="Quietly nestled in a residential neighbourhood in Nonthaburi — peaceful for your dog, accessible for you." data-th="ตั้งอยู่ในย่านที่พักอาศัยเงียบสงบในนนทบุรี — สงบสำหรับน้องหมา เดินทางสะดวกสำหรับคุณ">Quietly nestled in a residential neighbourhood in Nonthaburi — peaceful for your dog, accessible for you.</p>
+      <div class="info-row"><div class="info-label" data-en="Address" data-th="ที่อยู่">Address</div><div class="info-val" data-en="Near Anasiri Village, Bang Yai, Nonthaburi" data-th="ใกล้หมู่บ้านอนาสิริ บางใหญ่ นนทบุรี">Near Anasiri Village, Bang Yai, Nonthaburi</div></div>
+      <div class="info-row"><div class="info-label" data-en="Hours" data-th="เวลาทำการ">Hours</div><div class="info-val" data-en="Check-in: 8:00 – 11:00<br>Check-out: 8:00 – 11:00" data-th="เช็คอิน: 8:00 – 11:00<br>เช็คเอาท์: 8:00 – 11:00">Check-in: 8:00 – 11:00<br>Check-out: 8:00 – 11:00</div></div>
+      <div class="info-row"><div class="info-label" data-en="Contact" data-th="ติดต่อ">Contact</div><div class="info-val">LINE: @lunedoghotel<br>Tel: 08X-XXX-XXXX</div></div>
+      <div class="info-row"><div class="info-label" data-en="Transport" data-th="การเดินทาง">Transport</div><div class="info-val" data-en="Easy access from Bang Yai City, MRT Purple Line area. Free parking available." data-th="เดินทางสะดวกจากบางใหญ่ซิตี้ และแนวรถไฟฟ้า MRT สายสีม่วง มีที่จอดรถฟรี">Easy access from Bang Yai City, MRT Purple Line area. Free parking available.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="booking">
+  <div class="booking-wrap">
+    <div>
+      <div class="section-label" data-en="Reservations" data-th="การจอง">Reservations</div>
+      <h2 class="section-title" data-en="Ready to book a stay?" data-th="พร้อมจองแล้วหรือยัง?">Ready to book a stay?</h2>
+      <div class="divider"></div>
+      <p style="font-size:0.87rem;color:var(--gray-dark);line-height:1.85;margin-bottom:1.4rem;font-weight:300;" data-en="We keep our capacity intentionally small to ensure every dog receives the personal attention they deserve. Spots are limited — secure yours early." data-th="เรารับจำนวนน้องหมาจำกัดเพื่อให้ทุกตัวได้รับการดูแลอย่างใกล้ชิด ที่ว่างมีจำนวนจำกัด — จองล่วงหน้าไว้เลย">We keep our capacity intentionally small to ensure every dog receives the personal attention they deserve.</p>
+      <div class="note-item"><div class="note-dot"></div><div class="note-text" data-en="We welcome all friendly breeds — dogs must be comfortable around other dogs" data-th="รับน้องหมาทุกสายพันธุ์ที่ friendly กับเพื่อนๆ">We welcome all friendly breeds — dogs must be comfortable around other dogs</div></div>
+      <div class="note-item"><div class="note-dot"></div><div class="note-text" data-en="Dogs must be fully vaccinated, free from contagious diseases, and in good health" data-th="น้องหมาต้องได้รับวัคซีนครบ และไม่มีโรคติดต่อ หรือป่วย">Dogs must be fully vaccinated, free from contagious diseases, and in good health</div></div>
+      <div class="note-item"><div class="note-dot"></div><div class="note-text" data-en="First-timers are welcome to try a Daycare session first!" data-th="ถ้าพ่อๆแม่ๆกังวล แนะนำให้ทดลองฝากแบบ Daycare สำหรับน้องที่มาครั้งแรก">First-timers are welcome to try a Daycare session first!</div></div>
+      <div class="note-item"><div class="note-dot"></div><div class="note-text" data-en="We'll confirm availability within 24 hours" data-th="เราจะยืนยันการจองภายใน 24 ชั่วโมง">We'll confirm availability within 24 hours</div></div>
+      <div class="note-item"><div class="note-dot"></div><div class="note-text" data-en="50% deposit required to secure your booking" data-th="ต้องชำระมัดจำ 50% เพื่อยืนยันการจอง">50% deposit required to secure your booking</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1rem;">
+      <p style="font-size:0.88rem;color:var(--gray-dark);font-weight:300;line-height:1.8;" data-en="Book directly through our system — quick, easy, and confirmed within 24 hours." data-th="จองผ่านระบบของเราได้เลย ง่าย รวดเร็ว และยืนยันภายใน 24 ชั่วโมง">Book directly through our system — quick, easy, and confirmed within 24 hours.</p>
+      <a href="booking.html" style="display:inline-block;padding:0.9rem 2.2rem;background:var(--red);color:var(--white);text-decoration:none;font-size:0.85rem;letter-spacing:0.08em;border-radius:2px;font-weight:500;" data-en="Book a Stay →" data-th="จองเลย →">Book a Stay →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">LUNE <span>●</span> DOG HOTEL</div>
+  <p style="margin-top:0.4rem;" data-en="Bang Yai, Nonthaburi · Premium Cage-Free Boarding" data-th="บางใหญ่ นนทบุรี · โรงแรมสุนัขพรีเมียมแบบไม่มีกรง">Bang Yai, Nonthaburi · Premium Cage-Free Boarding</p>
+  <p style="margin-top:0.6rem;" data-en="© 2025 Lune Dog Hotel. All rights reserved." data-th="© 2568 Lune Dog Hotel. สงวนลิขสิทธิ์">© 2025 Lune Dog Hotel. All rights reserved.</p>
+</footer>
+
+<script>
+const SHEET_ID = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
+const MAX_CAP = 8;
+let currentLang = 'en';
+let calYear, calMonth;
+let bookingData = {};
+
+function initCalendar() {
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
+  renderDayLabels();
+  fetchAndRender();
+}
+
+function renderDayLabels() {
+  const days = currentLang === 'th' ? ['อา','จ','อ','พ','พฤ','ศ','ส'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  document.getElementById('calDayLabels').innerHTML = days.map(d => `<div class="cal-day-label">${d}</div>`).join('');
+}
+
+async function fetchAndRender() {
+  document.getElementById('calCells').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--gray-dark);font-size:0.85rem;">Loading...</div>';
+  bookingData = {};
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
+    const res = await fetch(url);
+    const raw = await res.text();
+    const json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
+    (json.table.rows || []).forEach(row => {
+      const raw = row.c?.[0]?.v;
+      const count = parseInt(row.c?.[1]?.v) || 0;
+      if (!raw) return;
+      let dateStr;
+      if (typeof raw === 'string' && raw.startsWith('Date(')) {
+        const p = raw.match(/Date\((\d+),(\d+),(\d+)\)/);
+        if (p) dateStr = `${p[1]}-${String(parseInt(p[2])+1).padStart(2,'0')}-${String(p[3]).padStart(2,'0')}`;
+      } else { dateStr = String(raw).trim(); }
+      if (dateStr) bookingData[dateStr] = count;
+    });
+  } catch(e) {
+    document.getElementById('calCells').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--red);font-size:0.85rem;">ไม่สามารถโหลดปฏิทินได้</div>';
+    return;
+  }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const EN_M = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const TH_M = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const months = currentLang === 'th' ? TH_M : EN_M;
+  const yr = currentLang === 'th' ? calYear + 543 : calYear;
+  document.getElementById('calMonthLabel').textContent = `${months[calMonth]} ${yr}`;
+  const todayStr = new Date().toISOString().slice(0,10);
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  let html = '';
+  for (let i = 0; i < firstDay; i++) html += `<div class="cal-cell empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isPast = ds < todayStr;
+    const isToday = ds === todayStr;
+    const count = bookingData[ds] || 0;
+    let cls = 'cal-cell';
+    if (isPast) cls += ' past';
+    else if (count >= MAX_CAP) cls += ' full';
+    else if (count > 0) cls += ' occupied';
+    else cls += ' available';
+    if (isToday) cls += ' today';
+    html += `<div class="${cls}"><span>${d}</span></div>`;
+  }
+  document.getElementById('calCells').innerHTML = html;
+}
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  fetchAndRender();
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b => { if(b.textContent.toLowerCase()===lang) b.classList.add('active'); });
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = el.getAttribute('data-'+lang);
+    if (!val) return;
+    if (el.tagName==='INPUT'||el.tagName==='TEXTAREA') return;
+    if (el.tagName==='OPTION') { el.textContent=val; return; }
+    el.innerHTML = val;
+  });
+  document.querySelector('html').lang = lang==='th'?'th':'en';
+  const styleId = 'lang-font-style';
+  let styleEl = document.getElementById(styleId);
+  if (!styleEl) { styleEl=document.createElement('style'); styleEl.id=styleId; document.head.appendChild(styleEl); }
+  styleEl.textContent = `* { font-family: 'Plus Jakarta Sans','IBM Plex Sans Thai',sans-serif !important; }`;
+  renderDayLabels();
+  renderCalendar();
+}
+
+window.addEventListener('load', initCalendar);
+</script>
