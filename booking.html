@@ -240,7 +240,7 @@
 
 </div>
 <script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhD7gn_-haupHyDKrHQ3qhVwJBNVGYTh6tQn90hn3jn_SJKkBrglbDLKns_1d5fFjU/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyIZxuPbh93U4SpIi5bRibpEeM6Z_NvNuFCI4cu_2ih0u9sCBa_Qh-ahVW7YDJRPLhN/exec';
 const SHEET_ID        = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
 const OWNER_SHEET_ID  = '1j2VYUu_yCOiU4i4kggP-Qyy-I65leGEK1qZfHrDVchA';
 const LINE_CHANNEL_ID = '2009980301';
@@ -480,7 +480,7 @@ async function registerAndBook() {
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
   var data={action:'addOwner',name,phone,province:finalProv,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+finalProv,timestamp:new Date().toLocaleString('th-TH')};
   try {
-    var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
+    var res=var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
     currentOwner=Object.assign({},currentOwner,{ownerId:result.ownerId,name,phone});
   } catch(e) { currentOwner=Object.assign({},currentOwner,{name,phone}); }
