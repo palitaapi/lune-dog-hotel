@@ -244,7 +244,7 @@
 
 <script>
 // ── CONSTANTS ─────────────────────────────────────────
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyGGKFshcKwVRkDgwMCfnJn1QoVhP7Vy8aNPCz1WaomcFHyJhOSrTddRRjlUCFOaU0/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMBn3CzMN3HNxQ1HEPrg8pkOQKM2KC6VnqjzEwgQP6B9Cp_LbUkBz9pZa43esg2-yQ/exec';
 const SHEET_ID        = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
 const OWNER_SHEET_ID  = '1j2VYUu_yCOiU4i4kggP-Qyy-I65leGEK1qZfHrDVchA';
 const LINE_CHANNEL_ID = '2009980301';
@@ -511,12 +511,28 @@ function renderDogEntries() {
       + '<div class="dog-entry-title">น้องหมาตัวที่ ' + (i+1) + '</div>'
       + '<div class="form-row">'
       + '<div class="form-group"><label>ชื่อน้องหมา *</label><input type="text" id="dog_name_' + i + '" placeholder=""/></div>'
+      + '<div class="form-group"><label>สายพันธุ์</label><input type="text" id="dog_breed_' + i + '" placeholder="เช่น Shih Tzu"/></div>'
+      + '</div>'
+      + '<div class="form-row">'
+      + '<div class="form-group"><label>เพศ</label>'
+      + '<select id="dog_gender_' + i + '">'
+      + '<option value="">เลือก</option>'
+      + '<option value="ตัวผู้">ตัวผู้</option>'
+      + '<option value="ตัวเมีย">ตัวเมีย</option>'
+      + '</select></div>'
+      + '<div class="form-group"><label>ทำหมันแล้วหรือยัง?</label>'
+      + '<select id="dog_neutered_' + i + '">'
+      + '<option value="">เลือก</option>'
+      + '<option value="ทำหมันแล้ว">ทำหมันแล้ว</option>'
+      + '<option value="ยังไม่ได้ทำหมัน">ยังไม่ได้ทำหมัน</option>'
+      + '</select></div>'
+      + '</div>'
       + '<div class="form-group"><label>ไซส์</label>'
       + '<select id="dog_size_' + i + '" onchange="updateDogPrice(' + i + ')">'
       + '<option value="small">Small Paws (< 10 กก.)</option>'
       + '<option value="medium">Medium Paws (10–20 กก.)</option>'
       + '<option value="large">Large Paws (> 20 กก.)</option>'
-      + '</select></div></div>'
+      + '</select></div>'
       + '<div style="font-size:0.8rem;color:var(--gray-dark);text-align:right;" id="dog_price_' + i + '"></div>'
       + '</div>';
   }
@@ -546,13 +562,16 @@ function goStep3() {
   document.getElementById('dog_msg').innerHTML = '';
   var dogs = [], totalPrice = 0;
   for (var j = 0; j < dogCount; j++) {
-    var name  = document.getElementById('dog_name_' + j).value.trim();
-    var size  = document.getElementById('dog_size_' + j).value;
+    var name     = document.getElementById('dog_name_' + j).value.trim();
+    var breed    = document.getElementById('dog_breed_' + j) ? document.getElementById('dog_breed_' + j).value.trim() : '';
+    var gender   = document.getElementById('dog_gender_' + j) ? document.getElementById('dog_gender_' + j).value : '';
+    var neutered = document.getElementById('dog_neutered_' + j) ? document.getElementById('dog_neutered_' + j).value : '';
+    var size     = document.getElementById('dog_size_' + j).value;
     var price = PRICES[bookingType][size] * (bookingType === 'overnight' ? nights : 1);
     var discount = j > 0 ? 0.1 : 0;
     var finalPrice = Math.round(price * (1 - discount));
     totalPrice += finalPrice;
-    dogs.push({name:name, size:size, price:finalPrice, discount:discount>0});
+    dogs.push({name:name, breed:breed, gender:gender, neutered:neutered, size:size, price:finalPrice, discount:discount>0});
   }
   var sizeLabel = {small:'Small Paws', medium:'Medium Paws', large:'Large Paws'};
   var typeLabel = bookingType === 'overnight' ? 'Overnight Care' : 'Daycare';
@@ -578,13 +597,20 @@ async function confirmBooking() {
   showMsg('confirm_msg','⏳ กำลังบันทึก...','success');
   var dogs = [], totalPrice = 0;
   for (var i = 0; i < dogCount; i++) {
-    var name  = document.getElementById('dog_name_' + i).value.trim();
-    var size  = document.getElementById('dog_size_' + i).value;
-    var price = PRICES[bookingType][size] * (bookingType === 'overnight' ? nights : 1);
+    var name     = document.getElementById('dog_name_' + i).value.trim();
+    var breed    = document.getElementById('dog_breed_' + i) ? document.getElementById('dog_breed_' + i).value.trim() : '';
+    var gender   = document.getElementById('dog_gender_' + i) ? document.getElementById('dog_gender_' + i).value : '';
+    var neutered = document.getElementById('dog_neutered_' + i) ? document.getElementById('dog_neutered_' + i).value : '';
+    var size     = document.getElementById('dog_size_' + i).value;
+    var price    = PRICES[bookingType][size] * (bookingType === 'overnight' ? nights : 1);
     var finalPrice = Math.round(price * (i > 0 ? 0.9 : 1));
     totalPrice += finalPrice;
-    dogs.push(name + '(' + size + ')');
+    dogs.push({name:name, breed:breed, gender:gender, neutered:neutered, size:size});
   }
+  var dogNames    = dogs.map(function(d) { return d.name + '(' + d.size + ')'; }).join(', ');
+  var dogBreeds   = dogs.map(function(d) { return d.breed || '-'; }).join(', ');
+  var dogGenders  = dogs.map(function(d) { return d.gender || '-'; }).join(', ');
+  var dogNeutered = dogs.map(function(d) { return d.neutered || '-'; }).join(', ');
   var allDates = getDatesInRange(checkIn, checkOut, bookingType);
   var data = {
     action:      'addBooking',
@@ -592,7 +618,10 @@ async function confirmBooking() {
     ownerName:   currentOwner.name || currentOwner.lineName,
     phone:       currentOwner.phone || '',
     lineName:    currentOwner.lineName,
-    dogName:     dogs.join(', '),
+    dogName:     dogNames,
+    breed:       dogBreeds,
+    gender:      dogGenders,
+    neutered:    dogNeutered,
     size:        dogs.length + ' ตัว',
     type:        bookingType === 'overnight' ? 'Overnight Care' : 'Daycare',
     checkIn:     checkIn,
