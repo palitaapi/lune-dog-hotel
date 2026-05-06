@@ -23,7 +23,7 @@
   .divider{width:36px;height:2px;background:var(--red);margin:0.8rem 0 1.5rem;}
   .subtitle{font-size:0.85rem;color:var(--gray-dark);font-weight:300;line-height:1.7;margin-bottom:1.8rem;}
   .steps{display:flex;gap:0;margin-bottom:2rem;border:0.5px solid var(--gray-line);overflow:hidden;border-radius:2px;}
-  .step{flex:1;padding:0.6rem 0.4rem;text-align:center;font-size:0.7rem;color:var(--gray-dark);border-right:0.5px solid var(--gray-line);background:var(--bg2);transition:all 0.2s;}
+  .step{flex:1;padding:0.6rem 0.4rem;text-align:center;font-size:0.7rem;color:var(--gray-dark);border-right:0.5px solid var(--gray-line);background:var(--bg2);}
   .step:last-child{border-right:none;}
   .step.active{background:var(--red);color:var(--white);font-weight:500;}
   .step.done{background:var(--bg);color:var(--gray-dark);}
@@ -77,10 +77,7 @@
 
   <!-- LOADING -->
   <div id="screen-loading" class="card" style="display:none;">
-    <div class="loading-screen">
-      <div style="font-size:2.5rem;">⏳</div>
-      <p>กำลังดำเนินการ...</p>
-    </div>
+    <div class="loading-screen"><div style="font-size:2.5rem;">⏳</div><p>กำลังดำเนินการ...</p></div>
   </div>
 
   <!-- LOGIN -->
@@ -104,7 +101,7 @@
     <div class="divider"></div>
     <p class="subtitle">กรอกข้อมูลให้ครบเพื่อเริ่มจองได้เลยค่ะ</p>
     <div class="form-group">
-      <label>ชื่อ-นามสกุล *</label>
+      <label>ชื่อของคุณพ่อคุณแม่ *</label>
       <input type="text" id="own_name" placeholder=""/>
     </div>
     <div class="form-group">
@@ -132,9 +129,7 @@
     </div>
     <div class="form-group">
       <label>เขต / อำเภอ *</label>
-      <select id="own_district">
-        <option value="">— เลือกจังหวัดก่อน —</option>
-      </select>
+      <select id="own_district"><option value="">— เลือกจังหวัดก่อน —</option></select>
     </div>
     <div class="form-group" id="other_district_group" style="display:none;">
       <label>ระบุเขต / อำเภอ *</label>
@@ -144,7 +139,7 @@
     <div id="newuser_msg"></div>
   </div>
 
-  <!-- STEP 1: DATE -->
+  <!-- STEP 1 -->
   <div id="screen-step1" style="display:none;">
     <div class="steps">
       <div class="step active">1. วันที่</div>
@@ -172,13 +167,13 @@
           <input type="date" id="bk_checkout" onchange="updateDates()"/>
         </div>
       </div>
-      <div id="date_summary" style="display:none;background:var(--bg2);padding:0.9rem 1rem;font-size:0.85rem;color:var(--text);margin-bottom:1rem;border:0.5px solid var(--gray-line);"></div>
+      <div id="date_summary" style="display:none;background:var(--bg2);padding:0.9rem 1rem;font-size:0.85rem;margin-bottom:1rem;border:0.5px solid var(--gray-line);"></div>
       <div id="date_msg"></div>
       <button class="btn-primary" onclick="goStep2()">ถัดไป →</button>
     </div>
   </div>
 
-  <!-- STEP 2: DOGS -->
+  <!-- STEP 2 -->
   <div id="screen-step2" style="display:none;">
     <div class="steps">
       <div class="step done">1. วันที่</div>
@@ -206,7 +201,7 @@
     </div>
   </div>
 
-  <!-- STEP 3: SUMMARY -->
+  <!-- STEP 3 -->
   <div id="screen-step3" style="display:none;">
     <div class="steps">
       <div class="step done">1. วันที่</div>
@@ -243,52 +238,49 @@
 </div>
 
 <script>
-// ── CONSTANTS ─────────────────────────────────────────
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMBn3CzMN3HNxQ1HEPrg8pkOQKM2KC6VnqjzEwgQP6B9Cp_LbUkBz9pZa43esg2-yQ/exec';
-const SHEET_ID        = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
-const OWNER_SHEET_ID  = '1j2VYUu_yCOiU4i4kggP-Qyy-I65leGEK1qZfHrDVchA';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwpS2JXqkeyBBXBGJ03pNAAuRyKQX2PWaEqdW8MlSz_CMetWOoPYgfCFA19D4uINcn8/exec';
+const SHEET_ID       = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
+const OWNER_SHEET_ID = '1j2VYUu_yCOiU4i4kggP-Qyy-I65leGEK1qZfHrDVchA';
 const LINE_CHANNEL_ID = '2009980301';
 const LINE_REDIRECT   = 'https://palitaapi.github.io/lune-dog-hotel/booking.html';
 const LINE_STATE      = Math.random().toString(36).substring(7);
-const MAX_CAP         = 8;
+const MAX_CAP = 8;
 const PRICES = {
   overnight: {small:400, medium:550, large:700},
   daycare:   {small:200, medium:275, large:350}
 };
 const DISTRICTS = {
   'กรุงเทพมหานคร': ['บางรัก','บางเขน','ดอนเมือง','ราษฎร์บูรณะ','หลักสี่','ลาดกระบัง','ยานนาวา','สัมพันธวงศ์','พระโขนง','มีนบุรี','ลาดพร้าว','วังทองหลาง','คลองสาน','ตลิ่งชัน','บางกอกน้อย','บางกอกใหญ่','ห้วยขวาง','คลองเตย','วัฒนา','บางแค','ภาษีเจริญ','หนองแขม','จตุจักร','บึงกุ่ม','สาทร','บางซื่อ','จอมทอง','ดินแดง','ทวีวัฒนา','ทุ่งครุ','บางบอน','ประเวศ','พระนคร','บางนา','บางพลัด','ปทุมวัน','ป้อมปราบศัตรูพ่าย','พญาไท','สายไหม','สวนหลวง','หนองจอก','อื่นๆ'],
-  'นนทบุรี':       ['เมืองนนทบุรี','บางกรวย','บางใหญ่','บางบัวทอง','ไทรน้อย','ปากเกร็ด'],
-  'นครปฐม':        ['เมืองนครปฐม','กำแพงแสน','นครชัยศรี','ดอนตูม','บางเลน','สามพราน','พุทธมณฑล'],
-  'ปทุมธานี':      ['เมืองปทุมธานี','คลองหลวง','ธัญบุรี','หนองเสือ','ลาดหลุมแก้ว','ลำลูกกา','สามโคก'],
+  'นนทบุรี':['เมืองนนทบุรี','บางกรวย','บางใหญ่','บางบัวทอง','ไทรน้อย','ปากเกร็ด'],
+  'นครปฐม':['เมืองนครปฐม','กำแพงแสน','นครชัยศรี','ดอนตูม','บางเลน','สามพราน','พุทธมณฑล'],
+  'ปทุมธานี':['เมืองปทุมธานี','คลองหลวง','ธัญบุรี','หนองเสือ','ลาดหลุมแก้ว','ลำลูกกา','สามโคก'],
 };
 
-// ── STATE ─────────────────────────────────────────────
 let currentOwner = null;
-let bookingType  = 'overnight';
+let bookingType = 'overnight';
 let checkIn = '', checkOut = '';
-let nights  = 0;
+let nights = 0;
 let dogCount = 1;
 let availData = {};
 
-// ── UTILS ─────────────────────────────────────────────
 function showScreen(name) {
-  ['loading','login','newuser','step1','step2','step3','success'].forEach(s => {
-    const el = document.getElementById('screen-' + s);
+  ['loading','login','newuser','step1','step2','step3','success'].forEach(function(s) {
+    var el = document.getElementById('screen-' + s);
     if (el) el.style.display = 'none';
   });
-  const el = document.getElementById('screen-' + name);
+  var el = document.getElementById('screen-' + name);
   if (el) el.style.display = 'block';
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function showMsg(id, msg, type) {
-  const el = document.getElementById(id);
+  var el = document.getElementById(id);
   if (el) el.innerHTML = '<div class="msg-box msg-' + type + '">' + msg + '</div>';
 }
 
 // ── LINE LOGIN ────────────────────────────────────────
 function lineLogin() {
-  const url = 'https://access.line.me/oauth2/v2.1/authorize?response_type=code'
+  var url = 'https://access.line.me/oauth2/v2.1/authorize?response_type=code'
     + '&client_id=' + LINE_CHANNEL_ID
     + '&redirect_uri=' + encodeURIComponent(LINE_REDIRECT)
     + '&state=' + LINE_STATE
@@ -297,30 +289,25 @@ function lineLogin() {
 }
 
 async function handleLineCallback() {
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get('code');
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get('code');
   console.log('code from URL:', code);
   if (!code) return false;
   showScreen('loading');
   window.history.replaceState({}, document.title, window.location.pathname);
-  const url = APPS_SCRIPT_URL + '?action=lineLogin&code=' + encodeURIComponent(code) + '&redirectUri=' + encodeURIComponent(LINE_REDIRECT);
-  console.log('fetching:', url);
+  var url = APPS_SCRIPT_URL + '?action=lineLogin&code=' + encodeURIComponent(code) + '&redirectUri=' + encodeURIComponent(LINE_REDIRECT);
   try {
-    const res = await fetch(url);
-    console.log('response status:', res.status);
-    const text = await res.text();
-    console.log('response text:', text);
-    const result = JSON.parse(text);
+    var res = await fetch(url);
+    var text = await res.text();
+    var result = JSON.parse(text);
     if (result.profile) {
       await checkOwner(result.profile);
       return true;
     }
-    console.log('no profile in result:', result);
     showScreen('login');
-    showMsg('login_msg', 'เกิดข้อผิดพลาด: ' + JSON.stringify(result), 'error');
+    showMsg('login_msg', 'เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
     return true;
   } catch(e) {
-    console.log('catch error:', e.message);
     showScreen('login');
     showMsg('login_msg', 'เกิดข้อผิดพลาด: ' + e.message, 'error');
     return true;
@@ -330,11 +317,11 @@ async function handleLineCallback() {
 async function checkOwner(profile) {
   currentOwner = {lineId: profile.userId, lineName: profile.displayName, lineAvatar: profile.pictureUrl};
   try {
-    const url = 'https://docs.google.com/spreadsheets/d/' + OWNER_SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Owners';
-    const res = await fetch(url);
-    const raw = await res.text();
-    const json = JSON.parse(raw.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
-    const rows = json.table ? json.table.rows || [] : [];
+    var url = 'https://docs.google.com/spreadsheets/d/' + OWNER_SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Owners';
+    var res = await fetch(url);
+    var raw = await res.text();
+    var json = JSON.parse(raw.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
+    var rows = json.table ? json.table.rows || [] : [];
     rows.forEach(function(row) {
       if (String(row.c && row.c[3] ? row.c[3].v || '' : '').trim() === profile.userId) {
         currentOwner = Object.assign({}, currentOwner, {
@@ -350,12 +337,13 @@ async function checkOwner(profile) {
     showScreen('step1');
     renderDogEntries();
   } else {
-    document.getElementById('own_name').value = profile.displayName || '';
+    // ไม่ autofill ชื่อจาก LINE
+    document.getElementById('own_name').value = '';
     showScreen('newuser');
   }
 }
 
-// ── REGISTRATION ──────────────────────────────────────
+// ── DISTRICTS ─────────────────────────────────────────
 function updateDistricts() {
   var province = document.getElementById('own_province').value;
   var sel = document.getElementById('own_district');
@@ -376,6 +364,7 @@ function updateDistricts() {
   list.forEach(function(d) { sel.innerHTML += '<option>' + d + '</option>'; });
 }
 
+// ── REGISTER ──────────────────────────────────────────
 async function registerAndBook() {
   var name          = document.getElementById('own_name').value.trim();
   var phone         = document.getElementById('own_phone').value.trim();
@@ -385,7 +374,7 @@ async function registerAndBook() {
   var finalProvince = isOther ? document.getElementById('own_province_other').value.trim() : province;
   var district      = isOther ? document.getElementById('own_district_other').value.trim() : document.getElementById('own_district').value;
 
-  if (!name)          { showMsg('newuser_msg','กรุณากรอกชื่อ-นามสกุล','error'); return; }
+  if (!name)          { showMsg('newuser_msg','กรุณากรอกชื่อของคุณพ่อคุณแม่','error'); return; }
   if (!phone || phone.length !== 10) { showMsg('newuser_msg','กรุณากรอกเบอร์โทรให้ครบ 10 หลัก','error'); return; }
   if (!addressDetail) { showMsg('newuser_msg','กรุณากรอกบ้านเลขที่/ถนน','error'); return; }
   if (!province)      { showMsg('newuser_msg','กรุณาเลือกจังหวัด','error'); return; }
@@ -409,11 +398,14 @@ async function registerAndBook() {
   };
 
   try {
-    var res = await fetch(APPS_SCRIPT_URL, {method:'POST', mode:'cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+    var res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify(data)
+    });
     var result = await res.json();
     currentOwner = Object.assign({}, currentOwner, {ownerId: result.ownerId, name: name, phone: phone});
   } catch(e) {
-    await fetch(APPS_SCRIPT_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
     currentOwner = Object.assign({}, currentOwner, {name: name, phone: phone});
   }
   showScreen('step1');
@@ -442,7 +434,7 @@ async function loadAvailability() {
   } catch(e) {}
 }
 
-// ── DATE STEP ─────────────────────────────────────────
+// ── DATE ──────────────────────────────────────────────
 function updateType() {
   bookingType = document.getElementById('bk_type').value;
   var cog = document.getElementById('checkout_group');
@@ -473,29 +465,28 @@ function updateDates() {
   var remaining = MAX_CAP - maxBooked;
   var sumEl = document.getElementById('date_summary');
   if (remaining <= 0) {
-    sumEl.innerHTML = '<span style="color:var(--red);">⚠️ วันที่เลือกเต็มแล้วค่ะ กรุณาเลือกวันอื่น</span>';
+    sumEl.innerHTML = '<span style="color:var(--red);">⚠️ วันที่เลือกเต็มแล้วค่ะ</span>';
   } else {
-    var label = bookingType === 'overnight' ? nights + ' คืน' : '1 วัน';
-    sumEl.innerHTML = '✓ ' + label + ' &nbsp;·&nbsp; ว่างอีก <strong>' + remaining + '</strong> ที่';
+    sumEl.innerHTML = '✓ ' + (bookingType==='overnight'? nights+' คืน':'1 วัน') + ' &nbsp;·&nbsp; ว่างอีก <strong>' + remaining + '</strong> ที่';
   }
   sumEl.style.display = 'block';
 }
 
 function getDatesInRange(start, end, type) {
-  var dates = [], cur = new Date(start), last = new Date(type === 'overnight' ? end : start);
-  while (cur < last || (type === 'daycare' && cur <= last)) {
+  var dates = [], cur = new Date(start), last = new Date(type==='overnight'?end:start);
+  while (cur < last || (type==='daycare' && cur<=last)) {
     dates.push(cur.toISOString().slice(0,10));
     cur.setDate(cur.getDate()+1);
-    if (type === 'daycare') break;
+    if (type==='daycare') break;
   }
   return dates;
 }
 
 function goStep2() {
   checkIn  = document.getElementById('bk_checkin').value;
-  checkOut = bookingType === 'daycare' ? checkIn : document.getElementById('bk_checkout').value;
+  checkOut = bookingType==='daycare' ? checkIn : document.getElementById('bk_checkout').value;
   if (!checkIn) { showMsg('date_msg','กรุณาเลือกวันที่','error'); return; }
-  if (bookingType === 'overnight' && (!checkOut || new Date(checkOut) <= new Date(checkIn))) {
+  if (bookingType==='overnight' && (!checkOut || new Date(checkOut)<=new Date(checkIn))) {
     showMsg('date_msg','กรุณาเลือกวันเช็คเอาท์ให้ถูกต้อง','error'); return;
   }
   document.getElementById('date_msg').innerHTML = '';
@@ -507,110 +498,108 @@ function renderDogEntries() {
   var container = document.getElementById('dog_entries');
   container.innerHTML = '';
   for (var i = 0; i < dogCount; i++) {
-    container.innerHTML += '<div class="dog-entry">'
+    container.innerHTML +=
+      '<div class="dog-entry">'
       + '<div class="dog-entry-title">น้องหมาตัวที่ ' + (i+1) + '</div>'
       + '<div class="form-row">'
-      + '<div class="form-group"><label>ชื่อน้องหมา *</label><input type="text" id="dog_name_' + i + '" placeholder=""/></div>'
-      + '<div class="form-group"><label>สายพันธุ์</label><input type="text" id="dog_breed_' + i + '" placeholder="เช่น Shih Tzu"/></div>'
+      + '<div class="form-group"><label>ชื่อน้องหมา *</label><input type="text" id="dog_name_'+i+'" placeholder=""/></div>'
+      + '<div class="form-group"><label>สายพันธุ์</label><input type="text" id="dog_breed_'+i+'" placeholder="เช่น Shih Tzu"/></div>'
       + '</div>'
       + '<div class="form-row">'
-      + '<div class="form-group"><label>เพศ</label>'
-      + '<select id="dog_gender_' + i + '">'
-      + '<option value="">เลือก</option>'
-      + '<option value="ตัวผู้">ตัวผู้</option>'
-      + '<option value="ตัวเมีย">ตัวเมีย</option>'
-      + '</select></div>'
-      + '<div class="form-group"><label>ทำหมันแล้วหรือยัง?</label>'
-      + '<select id="dog_neutered_' + i + '">'
-      + '<option value="">เลือก</option>'
-      + '<option value="ทำหมันแล้ว">ทำหมันแล้ว</option>'
-      + '<option value="ยังไม่ได้ทำหมัน">ยังไม่ได้ทำหมัน</option>'
-      + '</select></div>'
+      + '<div class="form-group"><label>เพศ</label><select id="dog_gender_'+i+'"><option value="">เลือก</option><option value="ตัวผู้">ตัวผู้</option><option value="ตัวเมีย">ตัวเมีย</option></select></div>'
+      + '<div class="form-group"><label>ทำหมันแล้วหรือยัง?</label><select id="dog_neutered_'+i+'"><option value="">เลือก</option><option value="ทำหมันแล้ว">ทำหมันแล้ว</option><option value="ยังไม่ได้ทำหมัน">ยังไม่ได้ทำหมัน</option></select></div>'
       + '</div>'
       + '<div class="form-group"><label>ไซส์</label>'
-      + '<select id="dog_size_' + i + '" onchange="updateDogPrice(' + i + ')">'
-      + '<option value="small">Small Paws (< 10 กก.)</option>'
+      + '<select id="dog_size_'+i+'" onchange="updateDogPrice('+i+')">'
+      + '<option value="small">Small Paws (ต่ำกว่า 10 กก.)</option>'
       + '<option value="medium">Medium Paws (10–20 กก.)</option>'
-      + '<option value="large">Large Paws (> 20 กก.)</option>'
+      + '<option value="large">Large Paws (มากกว่า 20 กก.)</option>'
       + '</select></div>'
-      + '<div style="font-size:0.8rem;color:var(--gray-dark);text-align:right;" id="dog_price_' + i + '"></div>'
+      + '<div style="font-size:0.8rem;color:var(--gray-dark);text-align:right;margin-top:0.3rem;" id="dog_price_'+i+'"></div>'
       + '</div>';
   }
   for (var j = 0; j < dogCount; j++) updateDogPrice(j);
 }
 
 function updateDogPrice(i) {
-  var size  = document.getElementById('dog_size_' + i) ? document.getElementById('dog_size_' + i).value : 'small';
+  var size = document.getElementById('dog_size_'+i) ? document.getElementById('dog_size_'+i).value : 'small';
   var price = PRICES[bookingType][size];
-  var label = bookingType === 'overnight' ? '฿' + price + ' × ' + nights + ' คืน = ฿' + (price * nights) : '฿' + price;
-  var el = document.getElementById('dog_price_' + i);
+  var label = bookingType==='overnight' ? '฿'+price+' × '+nights+' คืน = ฿'+(price*nights) : '฿'+price;
+  var el = document.getElementById('dog_price_'+i);
   if (el) el.textContent = label;
 }
 
 function changeDogCount(dir) {
-  dogCount = Math.min(Math.max(dogCount + dir, 1), 8);
+  dogCount = Math.min(Math.max(dogCount+dir, 1), 8);
   document.getElementById('dog_count_num').textContent = dogCount;
   renderDogEntries();
 }
 
 function goStep3() {
   for (var i = 0; i < dogCount; i++) {
-    if (!document.getElementById('dog_name_' + i).value.trim()) {
-      showMsg('dog_msg','กรุณากรอกชื่อน้องหมาตัวที่ ' + (i+1),'error'); return;
+    if (!document.getElementById('dog_name_'+i).value.trim()) {
+      showMsg('dog_msg','กรุณากรอกชื่อน้องหมาตัวที่ '+(i+1),'error'); return;
     }
   }
   document.getElementById('dog_msg').innerHTML = '';
+
   var dogs = [], totalPrice = 0;
   for (var j = 0; j < dogCount; j++) {
-    var name     = document.getElementById('dog_name_' + j).value.trim();
-    var breed    = document.getElementById('dog_breed_' + j) ? document.getElementById('dog_breed_' + j).value.trim() : '';
-    var gender   = document.getElementById('dog_gender_' + j) ? document.getElementById('dog_gender_' + j).value : '';
-    var neutered = document.getElementById('dog_neutered_' + j) ? document.getElementById('dog_neutered_' + j).value : '';
-    var size     = document.getElementById('dog_size_' + j).value;
-    var price = PRICES[bookingType][size] * (bookingType === 'overnight' ? nights : 1);
+    var name     = document.getElementById('dog_name_'+j).value.trim();
+    var breed    = document.getElementById('dog_breed_'+j).value.trim();
+    var gender   = document.getElementById('dog_gender_'+j).value;
+    var neutered = document.getElementById('dog_neutered_'+j).value;
+    var size     = document.getElementById('dog_size_'+j).value;
+    var price    = PRICES[bookingType][size] * (bookingType==='overnight'?nights:1);
     var discount = j > 0 ? 0.1 : 0;
-    var finalPrice = Math.round(price * (1 - discount));
+    var finalPrice = Math.round(price*(1-discount));
     totalPrice += finalPrice;
     dogs.push({name:name, breed:breed, gender:gender, neutered:neutered, size:size, price:finalPrice, discount:discount>0});
   }
+
   var sizeLabel = {small:'Small Paws', medium:'Medium Paws', large:'Large Paws'};
-  var typeLabel = bookingType === 'overnight' ? 'Overnight Care' : 'Daycare';
-  var nightLabel = bookingType === 'overnight' ? nights + ' คืน' : '1 วัน';
+  var typeLabel = bookingType==='overnight'?'Overnight Care':'Daycare';
+  var nightLabel = bookingType==='overnight'?nights+' คืน':'1 วัน';
+
   var dogsHtml = dogs.map(function(d) {
-    return '<div class="summary-row"><span class="summary-label">' + d.name + ' (' + sizeLabel[d.size] + ')' + (d.discount ? ' <span style="color:var(--green);font-size:0.75rem;">-10%</span>' : '') + '</span><span class="summary-val">฿' + d.price.toLocaleString() + '</span></div>';
+    return '<div class="summary-row"><span class="summary-label">'
+      +d.name+' ('+sizeLabel[d.size]+')'
+      +(d.breed?' · '+d.breed:'')
+      +(d.gender?' · '+d.gender:'')
+      +(d.discount?' <span style="color:var(--green);font-size:0.75rem;">-10%</span>':'')
+      +'</span><span class="summary-val">฿'+d.price.toLocaleString()+'</span></div>';
   }).join('');
+
   document.getElementById('summary_content').innerHTML =
-    '<div class="summary-row"><span class="summary-label">ชื่อ</span><span class="summary-val">' + (currentOwner.name || currentOwner.lineName) + '</span></div>'
-    + '<div class="summary-row"><span class="summary-label">ประเภท</span><span class="summary-val">' + typeLabel + '</span></div>'
-    + '<div class="summary-row"><span class="summary-label">วันที่</span><span class="summary-val">' + checkIn + (bookingType==='overnight' ? ' → ' + checkOut : '') + '</span></div>'
-    + '<div class="summary-row"><span class="summary-label">ระยะเวลา</span><span class="summary-val">' + nightLabel + '</span></div>'
-    + dogsHtml
-    + '<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿' + totalPrice.toLocaleString() + '</span></div>'
-    + '<p class="deposit-note">* มัดจำ 50% = ฿' + Math.round(totalPrice/2).toLocaleString() + ' เพื่อยืนยันการจอง</p>';
+    '<div class="summary-row"><span class="summary-label">ชื่อ</span><span class="summary-val">'+(currentOwner.name||currentOwner.lineName)+'</span></div>'
+    +'<div class="summary-row"><span class="summary-label">ประเภท</span><span class="summary-val">'+typeLabel+'</span></div>'
+    +'<div class="summary-row"><span class="summary-label">วันที่</span><span class="summary-val">'+checkIn+(bookingType==='overnight'?' → '+checkOut:'')+'</span></div>'
+    +'<div class="summary-row"><span class="summary-label">ระยะเวลา</span><span class="summary-val">'+nightLabel+'</span></div>'
+    +dogsHtml
+    +'<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿'+totalPrice.toLocaleString()+'</span></div>'
+    +'<p class="deposit-note">* มัดจำ 50% = ฿'+Math.round(totalPrice/2).toLocaleString()+' เพื่อยืนยันการจอง</p>';
   showScreen('step3');
 }
 
-// ── CONFIRM BOOKING ───────────────────────────────────
+// ── CONFIRM ───────────────────────────────────────────
 async function confirmBooking() {
   var btn = document.getElementById('confirmBtn');
   btn.disabled = true;
   showMsg('confirm_msg','⏳ กำลังบันทึก...','success');
+
   var dogs = [], totalPrice = 0;
   for (var i = 0; i < dogCount; i++) {
-    var name     = document.getElementById('dog_name_' + i).value.trim();
-    var breed    = document.getElementById('dog_breed_' + i) ? document.getElementById('dog_breed_' + i).value.trim() : '';
-    var gender   = document.getElementById('dog_gender_' + i) ? document.getElementById('dog_gender_' + i).value : '';
-    var neutered = document.getElementById('dog_neutered_' + i) ? document.getElementById('dog_neutered_' + i).value : '';
-    var size     = document.getElementById('dog_size_' + i).value;
-    var price    = PRICES[bookingType][size] * (bookingType === 'overnight' ? nights : 1);
-    var finalPrice = Math.round(price * (i > 0 ? 0.9 : 1));
+    var name     = document.getElementById('dog_name_'+i).value.trim();
+    var breed    = document.getElementById('dog_breed_'+i).value.trim();
+    var gender   = document.getElementById('dog_gender_'+i).value;
+    var neutered = document.getElementById('dog_neutered_'+i).value;
+    var size     = document.getElementById('dog_size_'+i).value;
+    var price    = PRICES[bookingType][size] * (bookingType==='overnight'?nights:1);
+    var finalPrice = Math.round(price*(i>0?0.9:1));
     totalPrice += finalPrice;
     dogs.push({name:name, breed:breed, gender:gender, neutered:neutered, size:size});
   }
-  var dogNames    = dogs.map(function(d) { return d.name + '(' + d.size + ')'; }).join(', ');
-  var dogBreeds   = dogs.map(function(d) { return d.breed || '-'; }).join(', ');
-  var dogGenders  = dogs.map(function(d) { return d.gender || '-'; }).join(', ');
-  var dogNeutered = dogs.map(function(d) { return d.neutered || '-'; }).join(', ');
+
   var allDates = getDatesInRange(checkIn, checkOut, bookingType);
   var data = {
     action:      'addBooking',
@@ -618,26 +607,30 @@ async function confirmBooking() {
     ownerName:   currentOwner.name || currentOwner.lineName,
     phone:       currentOwner.phone || '',
     lineName:    currentOwner.lineName,
-    dogName:     dogNames,
-    breed:       dogBreeds,
-    gender:      dogGenders,
-    neutered:    dogNeutered,
-    size:        dogs.length + ' ตัว',
-    type:        bookingType === 'overnight' ? 'Overnight Care' : 'Daycare',
+    dogName:     dogs.map(function(d){return d.name+'('+d.size+')';}).join(', '),
+    breed:       dogs.map(function(d){return d.breed||'-';}).join(', '),
+    gender:      dogs.map(function(d){return d.gender||'-';}).join(', '),
+    neutered:    dogs.map(function(d){return d.neutered||'-';}).join(', '),
+    size:        dogs.length+' ตัว',
+    type:        bookingType==='overnight'?'Overnight Care':'Daycare',
     checkIn:     checkIn,
     checkOut:    checkOut,
-    nights:      bookingType === 'overnight' ? nights : 1,
-    totalPrice:  '฿' + totalPrice.toLocaleString(),
+    nights:      bookingType==='overnight'?nights:1,
+    totalPrice:  '฿'+totalPrice.toLocaleString(),
     allDates:    allDates,
     timestamp:   new Date().toLocaleString('th-TH'),
   };
+
   try {
-    var res = await fetch(APPS_SCRIPT_URL, {method:'POST', mode:'cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+    var res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify(data)
+    });
     var result = await res.json();
     document.getElementById('success_bookingid').textContent = result.bookingId || 'BK-XXXX';
     showScreen('success');
   } catch(e) {
-    await fetch(APPS_SCRIPT_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
     document.getElementById('success_bookingid').textContent = 'BK-XXXX';
     showScreen('success');
   }
