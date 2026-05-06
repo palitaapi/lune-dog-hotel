@@ -480,7 +480,7 @@ async function registerAndBook() {
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
   var data={action:'addOwner',name,phone,province:finalProv,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+finalProv,timestamp:new Date().toLocaleString('th-TH')};
   try {
-    var res=var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
+    var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
     currentOwner=Object.assign({},currentOwner,{ownerId:result.ownerId,name,phone});
   } catch(e) { currentOwner=Object.assign({},currentOwner,{name,phone}); }
