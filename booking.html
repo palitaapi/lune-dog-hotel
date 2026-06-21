@@ -581,7 +581,7 @@ function updateDates() {
     var rem = MAX_CAP - maxB;
     el.innerHTML = rem <= 0
       ? '<span style="color:var(--red);">⚠️ วันที่เลือกเต็มแล้วค่ะ</span>'
-      : '✓ ' + nights + ' คืน &nbsp;·&nbsp; Drop-off <strong>' + checkInTime + '</strong> → Pick-up <strong>' + checkOutTime + '</strong>&nbsp;·&nbsp; ว่างอีก <strong>' + rem + '</strong> ที่';
+      : '✓ ' + nights + ' คืน &nbsp;·&nbsp; Drop-off <strong>' + checkInTime + '</strong> → Pick-up <strong>' + checkOutTime + '</strong>'  // rem + '</strong> ที่';
 
   } else {
     checkIn     = document.getElementById('bk_daycare_date').value;
@@ -600,7 +600,7 @@ function updateDates() {
     var rem = MAX_CAP - maxB;
     el.innerHTML = rem <= 0
       ? '<span style="color:var(--red);">⚠️ วันที่เลือกเต็มแล้วค่ะ</span>'
-      : '✓ Daycare &nbsp;·&nbsp; Drop-off <strong>' + dropOffTime + '</strong> – Pick-up <strong>' + pickUpTime + '</strong> น.&nbsp;·&nbsp; ว่างอีก <strong>' + rem + '</strong> ที่';
+      : '✓ Daycare &nbsp;·&nbsp; Drop-off <strong>' + dropOffTime + '</strong> – Pick-up <strong>' + pickUpTime + '</strong> น.'  // rem ที่';
   }
   el.style.display = 'block';
 }
