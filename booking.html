@@ -151,6 +151,12 @@
       <div class="section-label">Step 1 · ขั้นตอนที่ 1</div>
       <h2>Select Dates · เลือกวันที่</h2>
       <div class="divider"></div>
+      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.7rem 1rem;border-radius:4px;font-size:.8rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
+        <strong>การนับเวลาพัก</strong><br>
+        · 24 ชม. นับเป็น 1 คืน<br>
+        · เศษชั่วโมงไม่เกิน 6 ชม. นับเป็นราคา Daycare<br>
+        · เศษชั่วโมงเกิน 6 ชม. นับเป็นราคา 1 คืน
+      </div>
       <div class="form-group"><label>ประเภทการฝาก</label>
         <select id="bk_type" onchange="updateType()">
           <option value="overnight">Overnight Care (ค้างคืน)</option>
@@ -662,6 +668,30 @@ function getOvernightLabel() {
   return label;
 }
 
+// ── SURCHARGE (after-hours after 20:00) ──────────────
+function calcSurcharge() {
+  var CUTOFF = 20 * 60; // 20:00 in minutes
+  var RATE = 100;       // ฿100 per hour (rounded up)
+  var surcharge = 0;
+  var doTime = bookingType === 'overnight' ? checkInTime  : dropOffTime;
+  var puTime = bookingType === 'overnight' ? checkOutTime : pickUpTime;
+  var doMins = timeToMins(doTime);
+  var puMins = timeToMins(puTime);
+  if (doMins > CUTOFF) surcharge += RATE * Math.ceil((doMins - CUTOFF) / 60);
+  if (puMins > CUTOFF) surcharge += RATE * Math.ceil((puMins - CUTOFF) / 60);
+  return surcharge;
+}
+
+function getSurchargeLabel() {
+  var CUTOFF = 20 * 60;
+  var parts = [];
+  var doTime = bookingType === 'overnight' ? checkInTime  : dropOffTime;
+  var puTime = bookingType === 'overnight' ? checkOutTime : pickUpTime;
+  if (timeToMins(doTime) > CUTOFF) parts.push('Drop-off ' + doTime + ' น.');
+  if (timeToMins(puTime) > CUTOFF) parts.push('Pick-up ' + puTime + ' น.');
+  return 'After-hours (' + parts.join(' · ') + ')';
+}
+
 // ── STEP 3 ────────────────────────────────────────────
 function goStep3() {
   var dogs = [];
@@ -715,6 +745,10 @@ function goStep3() {
     totalPrice+=final;
   });
 
+  // After-hours surcharge (shared across all dogs, added once)
+  var surcharge = calcSurcharge();
+  totalPrice += surcharge;
+
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var dogsHtml=dogs.map(function(d){
     return '<div class="summary-row"><span class="summary-label">'+d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="font-size:0.7rem;color:var(--green);">ใหม่</span>':'')+( dogs.indexOf(d)>0?' <span style="color:var(--green);font-size:0.75rem;">-10%</span>':'')+'</span><span class="summary-val">฿'+d.finalPrice.toLocaleString()+'</span></div>';
@@ -727,6 +761,7 @@ function goStep3() {
     +'<div class="summary-row"><span class="summary-label">เวลา</span><span class="summary-val">'+(bookingType==='overnight'?'Drop-off '+checkInTime+' → Pick-up '+checkOutTime+' น.':'Drop-off '+dropOffTime+' – Pick-up '+pickUpTime+' น.')+'</span></div>'
     +'<div class="summary-row"><span class="summary-label">ระยะเวลา</span><span class="summary-val">'+(bookingType==='overnight'?getOvernightLabel():'1 วัน')+'</span></div>'
     +dogsHtml
+    +(surcharge > 0 ? '<div class="summary-row"><span class="summary-label">'+getSurchargeLabel()+'</span><span class="summary-val">฿'+surcharge.toLocaleString()+'</span></div>' : '')
     +'<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿'+totalPrice.toLocaleString()+'</span></div>'
     +'<p class="deposit-note">* มัดจำ 50% = ฿'+Math.round(totalPrice/2).toLocaleString()+' เพื่อยืนยันการจอง</p>';
 
