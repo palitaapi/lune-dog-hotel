@@ -440,7 +440,7 @@ function renderNewDogForm() {
     + '<div class="form-group"><label>ทำหมันแล้วหรือยัง?</label><select id="new_dog_neutered"><option value="">เลือก</option><option value="ทำหมันแล้ว">ทำหมันแล้ว</option><option value="ยังไม่ได้ทำหมัน">ยังไม่ได้ทำหมัน</option></select></div>'
     + '</div>'
     + '<div class="form-row">'
-    + '<div class="form-group"><label>น้ำหนัก (กก.) *</label><input type="number" id="new_dog_weight" placeholder="เช่น 8" min="0.1" max="60" step="0.1" oninput="updateNewDogPrice()"/></div>'
+    + '<div class="form-group"><label>น้ำหนัก (กก.) *</label><input type="number" id="new_dog_weight" placeholder="เช่น 8" min="0.1" max="60" step="0.1" oninput="updateNewDogPrice()"/><div id="new_dog_size_display" style="display:none;margin-top:0.5rem;" class="size-display"></div><div style="font-size:0.8rem;color:var(--gold);font-weight:600;margin-top:0.3rem;" id="new_dog_price"></div></div>'
     + '<div class="form-group"><label>อายุ</label><div class="form-row" style="gap:0.6rem;"><input type="text" id="new_dog_age_years" placeholder="ปี" inputmode="numeric" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\'\')"/><input type="text" id="new_dog_age_months" placeholder="เดือน" inputmode="numeric" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\'\').slice(0,2);if(parseInt(this.value)>11)this.value=\'11\';"/></div></div>'
     + '</div>'
     + '<div class="form-group"><label>ประเภทอาหารที่กิน</label><select id="new_dog_food_type"><option value="">เลือก</option><option value="เม็ด">เม็ด (Dry food)</option><option value="เปียก">เปียก (Wet food)</option><option value="เม็ด + เปียก">เม็ด + เปียก</option><option value="โฮมคุก">โฮมคุก (Home cooked)</option><option value="บาร์ฟ">บาร์ฟ (BARF)</option><option value="อื่นๆ">อื่นๆ</option></select></div>'
@@ -449,8 +449,6 @@ function renderNewDogForm() {
     + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="new_dog_allergy" placeholder="เช่น แพ้ไก่ เป็นโรคหัวใจ ไม่มี"/></div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
     + '<div class="form-group"><label>สมุดวัคซีน * (รูปภาพ หรือ PDF)</label><input type="file" id="new_dog_vaccine_file" accept="image/*,.pdf" onchange="uploadVaccineFile(this)"/><div id="vaccine_upload_status" style="font-size:0.78rem;margin-top:0.4rem;color:var(--gray-dark);"></div></div>'
-    + '<div id="new_dog_size_display" style="display:none;" class="size-display"></div>'
-    + '<div style="font-size:0.8rem;color:var(--red);text-align:right;" id="new_dog_price"></div>'
     + '</div>';
 }
 
@@ -458,12 +456,16 @@ function updateNewDogPrice() {
   var w = parseFloat(document.getElementById('new_dog_weight').value);
   var disp = document.getElementById('new_dog_size_display');
   var priceEl = document.getElementById('new_dog_price');
-  if (!w||w<=0) { disp.style.display='none'; priceEl.textContent=''; return; }
+  if (!w||w<=0) { disp.style.display='none'; priceEl.innerHTML=''; return; }
   var size = getSizeFromWeight(w);
-  var price = PRICES[bookingType][size]*(bookingType==='overnight'?nights:1);
+  var overnightRate = PRICES.overnight[size];
+  var daycareRate = PRICES.daycare[size];
+  var overnightTotal = overnightRate * nights;
   disp.textContent = '🏷️ '+getSizeLabel(size);
   disp.style.display = 'block';
-  priceEl.textContent = bookingType==='overnight'?'฿'+price+' × '+nights+' คืน = ฿'+(price*nights):'฿'+price;
+  priceEl.innerHTML =
+    'Overnight: ฿'+overnightRate.toLocaleString()+' × '+nights+' คืน = ฿'+overnightTotal.toLocaleString()+'<br>'+
+    'Daycare: ฿'+daycareRate.toLocaleString()+'/วัน';
 }
 
 // ── VACCINE BOOKLET UPLOAD ────────────────────────────
