@@ -262,9 +262,9 @@
 
 </div>
 <script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyODUrPmOTI5DTws-SKC2YBNF4dM0w0jyiXuW-S9Y7NUTGAkS-twMRXXLK0-tkyqmRL/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx-DX2O28F2WfKIISqEn-_S0hUGsBNA--OGExtooxpGeBxyGNXV90iWgrt3dW2-wnuE/exec';
 const SHEET_ID        = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
-const OWNER_SHEET_ID  = '1j2VYUu_yCOiU4i4kggP-Qyy-I65leGEK1qZfHrDVchA';
+const OWNER_SHEET_ID  = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
 const MAX_CAP = 8;
 const PRICES = {overnight:{small:400,medium:550,large:700},daycare:{small:200,medium:275,large:350}};
 const TIME_OPTIONS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00'];
@@ -334,11 +334,11 @@ async function loadAllOwners() {
   var rows = (json.table ? json.table.rows || [] : []).map(function(row) {
     var c = row.c || [];
     return {
-      ownerId:  c[0] ? String(c[0].v || '').trim() : '',
-      name:     c[1] ? String(c[1].v || '').trim() : '',
-      phone:    c[2] ? String(c[2].v || '').trim() : '',
-      lineId:   c[3] ? String(c[3].v || '').trim() : '',
-      lineName: c[4] ? String(c[4].v || '').trim() : '',
+      ownerId:  c[1] ? String(c[1].v || '').trim() : '',
+      name:     c[2] ? String(c[2].v || '').trim() : '',
+      phone:    c[3] ? String(c[3].v || '').trim() : '',
+      lineId:   c[4] ? String(c[4].v || '').trim() : '',
+      lineName: c[5] ? String(c[5].v || '').trim() : '',
     };
   }).filter(function(o){ return o.ownerId; });
   allOwnersCache = rows;
@@ -422,6 +422,17 @@ async function registerOwner() {
   if(!finalProv){showMsg('newuser_msg','กรุณาระบุจังหวัด','error');return;}
   if(!district){showMsg('newuser_msg','กรุณาเลือกหรือระบุเขต/อำเภอ','error');return;}
   document.getElementById('regBtn').disabled=true;
+  showMsg('newuser_msg','⏳ กำลังตรวจสอบเบอร์โทร...','success');
+  var phoneNorm = phone.replace(/\D/g,'');
+  try {
+    var existingOwners = await loadAllOwners();
+    var phoneExists = existingOwners.some(function(o){ return String(o.phone||'').replace(/\D/g,'') === phoneNorm; });
+    if (phoneExists) {
+      document.getElementById('regBtn').disabled=false;
+      showMsg('newuser_msg','เบอร์โทรนี้มีอยู่ในระบบแล้ว กรุณาค้นหาในแท็บ "ลูกค้าเก่า" แทน','error');
+      return;
+    }
+  } catch(e) { /* ถ้าเช็คไม่ได้ ปล่อยให้บันทึกต่อไป ดีกว่าบล็อกเพราะปัญหาเครือข่าย */ }
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
   var data={action:'addOwner',name,phone,province:finalProv,district,lineId:'',lineName:lineName||'',address:addr+', '+district+', '+finalProv,source:'line_direct',timestamp:new Date().toLocaleString('th-TH')};
   try {
@@ -470,22 +481,22 @@ async function loadSavedDogs() {
     var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table ? json.table.rows || [] : []).forEach(function(row) {
       var c = row.c || [];
-      var ownerIdCell = c[1] ? String(c[1].v || '').trim() : '';
+      var ownerIdCell = c[2] ? String(c[2].v || '').trim() : '';
       if (ownerIdCell === String(currentOwner.ownerId).trim()) {
         savedDogs.push({
-          dogId:    c[0] ? String(c[0].v || '').trim() : '',
+          dogId:    c[1] ? String(c[1].v || '').trim() : '',
           ownerId:  ownerIdCell,
-          name:     c[2] ? String(c[2].v || '').trim() : '',
-          breed:    c[3] ? String(c[3].v || '').trim() : '',
-          gender:   c[4] ? String(c[4].v || '').trim() : '',
-          neutered: c[5] ? String(c[5].v || '').trim() : '',
-          weight:   c[6] ? String(c[6].v || '').trim() : '',
-          age:      c[7] ? String(c[7].v || '').trim() : '',
-          foodType: c[8] ? String(c[8].v || '').trim() : '',
-          likes:    c[9] ? String(c[9].v || '').trim() : '',
-          dislikes: c[10] ? String(c[10].v || '').trim() : '',
-          allergy:  c[11] ? String(c[11].v || '').trim() : '',
-          note:     c[12] ? String(c[12].v || '').trim() : '',
+          name:     c[3] ? String(c[3].v || '').trim() : '',
+          breed:    c[4] ? String(c[4].v || '').trim() : '',
+          gender:   c[5] ? String(c[5].v || '').trim() : '',
+          neutered: c[6] ? String(c[6].v || '').trim() : '',
+          weight:   c[7] ? String(c[7].v || '').trim() : '',
+          age:      c[8] ? String(c[8].v || '').trim() : '',
+          foodType: c[9] ? String(c[9].v || '').trim() : '',
+          likes:    c[10] ? String(c[10].v || '').trim() : '',
+          dislikes: c[11] ? String(c[11].v || '').trim() : '',
+          allergy:  c[12] ? String(c[12].v || '').trim() : '',
+          note:     c[13] ? String(c[13].v || '').trim() : '',
           mealsPerDay: c[14] ? String(c[14].v || '').trim() : '',
           tickControl: c[15] ? String(c[15].v || '').trim() : '',
         });
