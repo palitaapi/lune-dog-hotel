@@ -267,8 +267,6 @@ const SHEET_ID        = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
 const OWNER_SHEET_ID  = '1j2VYUu_yCOiU4i4kggP-Qyy-I65leGEK1qZfHrDVchA';
 const MAX_CAP = 8;
 const PRICES = {overnight:{small:400,medium:550,large:700},daycare:{small:200,medium:275,large:350}};
-const CLOUDINARY_CLOUD_NAME = 'YOUR_CLOUD_NAME_HERE';
-const CLOUDINARY_UPLOAD_PRESET = 'vaccine_booklets';
 const TIME_OPTIONS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00'];
 const DISTRICTS = {
   'กรุงเทพมหานคร':['คลองเตย','คลองสาน','คลองสามวา','คันนายาว','จตุจักร','จอมทอง','ดอนเมือง','ดินแดง','ดุสิต','ตลิ่งชัน','ทวีวัฒนา','ทุ่งครุ','ธนบุรี','บางเขน','บางแค','บางกอกใหญ่','บางกอกน้อย','บางกะปิ','บางขุนเทียน','บางคอแหลม','บางซื่อ','บางนา','บางบอน','บางพลัด','บางรัก','บึงกุ่ม','ปทุมวัน','ประเวศ','ป้อมปราบศัตรูพ่าย','พญาไท','พระโขนง','พระนคร','ภาษีเจริญ','มีนบุรี','ยานนาวา','ราชเทวี','ราษฎร์บูรณะ','ลาดกระบัง','ลาดพร้าว','วังทองหลาง','วัฒนา','สวนหลวง','สะพานสูง','สัมพันธวงศ์','สาทร','สายไหม','หนองแขม','หนองจอก','หลักสี่','ห้วยขวาง'],
@@ -286,7 +284,6 @@ let availData = {};
 let savedDogs = [];
 let selectedSavedDogs = [];
 let showingNewDogForm = false;
-let newDogVaccineUrl = '';
 let checkInTime  = '14:00', checkOutTime = '20:00';
 let dropOffTime  = '08:00', pickUpTime   = '20:00';
 let extraChargeType = '';
@@ -489,9 +486,8 @@ async function loadSavedDogs() {
           dislikes: c[10] ? String(c[10].v || '').trim() : '',
           allergy:  c[11] ? String(c[11].v || '').trim() : '',
           note:     c[12] ? String(c[12].v || '').trim() : '',
-          vaccineBookletUrl: c[14] ? String(c[14].v || '').trim() : '',
-          mealsPerDay: c[15] ? String(c[15].v || '').trim() : '',
-          tickControl: c[16] ? String(c[16].v || '').trim() : '',
+          mealsPerDay: c[14] ? String(c[14].v || '').trim() : '',
+          tickControl: c[15] ? String(c[15].v || '').trim() : '',
         });
       }
     });
@@ -523,7 +519,6 @@ function renderSavedDogs() {
       + (neuteredBadge ? '<div class="dog-card-badges">'+neuteredBadge+'</div>' : '')
       + (d.note ? '<div class="dog-card-note">📝 '+d.note+'</div>' : '')
       + (d.tickControl ? '<div class="dog-card-note">🦟 '+d.tickControl+'</div>' : '')
-      + (d.vaccineBookletUrl ? '<div class="dog-card-note">📄 <a href="'+d.vaccineBookletUrl+'" target="_blank" onclick="event.stopPropagation();">สมุดวัคซีน</a></div>' : '')
       + '<div class="dog-card-price">฿'+totalPrice.toLocaleString()+(bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน')+'</div>'
       + '</div>';
   }).join('');
@@ -547,7 +542,6 @@ function toggleSavedDog(dogId) {
 
 function toggleNewDogForm() {
   showingNewDogForm = !showingNewDogForm;
-  newDogVaccineUrl = '';
   document.getElementById('new_dog_section').style.display = showingNewDogForm ? 'block' : 'none';
   if (showingNewDogForm) renderNewDogForm();
 }
@@ -573,11 +567,10 @@ function renderNewDogForm() {
     + '<div class="form-group"><label>จำนวนมื้อต่อวัน *</label><select id="new_dog_meals_per_day"><option value="">เลือก</option><option value="1 มื้อ/วัน">1 มื้อ/วัน</option><option value="2 มื้อ/วัน">2 มื้อ/วัน</option><option value="3 มื้อ/วัน">3 มื้อ/วัน</option><option value="มากกว่า 3 มื้อ/วัน">มากกว่า 3 มื้อ/วัน</option></select></div>'
     + '</div>'
     + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด *</label><input type="text" id="new_dog_tick_control" placeholder="เช่น หยดหลัง Frontline ทุกเดือน"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ชอบ *</label><input type="text" id="new_dog_likes" placeholder="เช่น เล่นน้ำ ชอบกอด ชอบนอนโซฟา"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง *</label><input type="text" id="new_dog_dislikes" placeholder="เช่น กลัวเสียงดัง ไม่ชอบสุนัขตัวใหญ่"/></div>'
-    + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว *</label><input type="text" id="new_dog_allergy" placeholder="เช่น แพ้ไก่ เป็นโรคหัวใจ ไม่มี"/></div>'
-    + '<div class="form-group"><label>หมายเหตุเพิ่มเติม *</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
-    + '<div class="form-group"><label>สมุดวัคซีน * (รูปภาพ หรือ PDF)</label><input type="file" id="new_dog_vaccine_file" accept="image/*,.pdf" onchange="uploadVaccineFile(this)"/><div id="vaccine_upload_status" style="font-size:0.78rem;margin-top:0.4rem;color:var(--gray-dark);"></div></div>'
+    + '<div class="form-group"><label>สิ่งที่ชอบ</label><input type="text" id="new_dog_likes" placeholder="เช่น เล่นน้ำ ชอบกอด ชอบนอนโซฟา"/></div>'
+    + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง</label><input type="text" id="new_dog_dislikes" placeholder="เช่น กลัวเสียงดัง ไม่ชอบสุนัขตัวใหญ่"/></div>'
+    + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="new_dog_allergy" placeholder="เช่น แพ้ไก่ เป็นโรคหัวใจ ไม่มี"/></div>'
+    + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
     + '</div>';
 }
 
@@ -590,41 +583,6 @@ function updateNewDogPrice() {
   disp.textContent = '🏷️ '+getSizeLabel(size);
   disp.style.display = 'inline-block';
   priceEl.innerHTML = '';
-}
-
-// ── VACCINE BOOKLET UPLOAD ────────────────────────────
-async function uploadVaccineFile(input) {
-  var file = input.files[0];
-  var statusEl = document.getElementById('vaccine_upload_status');
-  newDogVaccineUrl = '';
-  if (!file) { statusEl.innerHTML = ''; return; }
-  var isValid = file.type.indexOf('image/') === 0 || file.type === 'application/pdf';
-  if (!isValid) {
-    statusEl.innerHTML = '<span style="color:var(--red);">⚠️ รองรับเฉพาะไฟล์รูปภาพหรือ PDF เท่านั้น</span>';
-    input.value = '';
-    return;
-  }
-  if (file.size > 10 * 1024 * 1024) {
-    statusEl.innerHTML = '<span style="color:var(--red);">⚠️ ไฟล์ใหญ่เกิน 10MB กรุณาเลือกไฟล์ที่เล็กกว่านี้</span>';
-    input.value = '';
-    return;
-  }
-  statusEl.innerHTML = '⏳ กำลังอัปโหลด...';
-  try {
-    var formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    var res = await fetch('https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD_NAME+'/auto/upload', {method:'POST', body:formData});
-    var result = await res.json();
-    if (result.secure_url) {
-      newDogVaccineUrl = result.secure_url;
-      statusEl.innerHTML = '<span style="color:var(--green);">✓ อัปโหลดสมุดวัคซีนแล้ว</span>';
-    } else {
-      throw new Error(result.error ? result.error.message : 'อัปโหลดไม่สำเร็จ');
-    }
-  } catch(e) {
-    statusEl.innerHTML = '<span style="color:var(--red);">⚠️ อัปโหลดไม่สำเร็จ: '+e.message+'</span>';
-  }
 }
 
 // ── DATE / TYPE ───────────────────────────────────────
@@ -795,16 +753,11 @@ function goStep3() {
       var tickControl = document.getElementById('new_dog_tick_control').value.trim();
       if (!tickControl) { showMsg('dog_msg','กรุณากรอกวิธีกำจัดเห็บหมัด','error'); return; }
       var likes = document.getElementById('new_dog_likes').value.trim();
-      if (!likes) { showMsg('dog_msg','กรุณากรอกสิ่งที่ชอบ','error'); return; }
       var dislikes = document.getElementById('new_dog_dislikes').value.trim();
-      if (!dislikes) { showMsg('dog_msg','กรุณากรอกสิ่งที่ไม่ชอบ / ข้อควรระวัง','error'); return; }
       var allergy = document.getElementById('new_dog_allergy').value.trim();
-      if (!allergy) { showMsg('dog_msg','กรุณากรอกอาการแพ้ / โรคประจำตัว (พิมพ์ "ไม่มี" ได้ถ้าไม่มี)','error'); return; }
       var note = document.getElementById('new_dog_note').value.trim();
-      if (!note) { showMsg('dog_msg','กรุณากรอกหมายเหตุเพิ่มเติม (พิมพ์ "ไม่มี" ได้ถ้าไม่มี)','error'); return; }
       var size = getSizeFromWeight(w);
       var price = calcDogPrice(size);
-      if (!newDogVaccineUrl) { showMsg('dog_msg','กรุณาแนบสมุดวัคซีนก่อนดำเนินการต่อ','error'); return; }
       dogs.push({
         dogId: null,
         name: name,
@@ -825,7 +778,6 @@ function goStep3() {
         dislikes: dislikes,
         allergy: allergy,
         note: note,
-        vaccineBookletUrl: newDogVaccineUrl,
         size: size, price: price, isNew: true
       });
     } else if (savedDogs.length===0) {
@@ -879,7 +831,7 @@ async function confirmBooking() {
   for (var i=0; i<dogs.length; i++) {
     if (dogs[i].isNew && currentOwner.ownerId) {
       try {
-        var dogData = {action:'addDog', ownerId:currentOwner.ownerId, dogName:dogs[i].name, breed:dogs[i].breed, gender:dogs[i].gender, neutered:dogs[i].neutered, weight:dogs[i].weight, age:dogs[i].age||'', foodType:dogs[i].foodType||'', mealsPerDay:dogs[i].mealsPerDay||'', tickControl:dogs[i].tickControl||'', likes:dogs[i].likes||'', dislikes:dogs[i].dislikes||'', allergy:dogs[i].allergy||'', note:dogs[i].note||'', vaccineBookletUrl:dogs[i].vaccineBookletUrl||'', timestamp:new Date().toLocaleString('th-TH')};
+        var dogData = {action:'addDog', ownerId:currentOwner.ownerId, dogName:dogs[i].name, breed:dogs[i].breed, gender:dogs[i].gender, neutered:dogs[i].neutered, weight:dogs[i].weight, age:dogs[i].age||'', foodType:dogs[i].foodType||'', mealsPerDay:dogs[i].mealsPerDay||'', tickControl:dogs[i].tickControl||'', likes:dogs[i].likes||'', dislikes:dogs[i].dislikes||'', allergy:dogs[i].allergy||'', note:dogs[i].note||'', timestamp:new Date().toLocaleString('th-TH')};
         var res = await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(dogData)});
         var result = await res.json();
         dogs[i].dogId = result.dogId || '';
