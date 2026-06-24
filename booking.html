@@ -205,6 +205,8 @@
         · งดรับน้องหมาที่ป่วยหรือต้องการการดูแลเป็นพิเศษ
       </div>
 
+      <div id="pending_new_dogs_section" style="display:none;margin-bottom:1.5rem;"></div>
+
       <!-- Saved Dogs -->
       <div id="saved_dogs_section" style="display:none;">
         <span class="saved-dogs-label">🐶 น้องหมาที่เคยลงทะเบียนไว้</span>
@@ -237,6 +239,21 @@
       <div class="btn-row">
         <button class="btn-secondary" onclick="showScreen('step2')">← Back · ย้อนกลับ</button>
         <button class="btn-primary" id="confirmBtn" onclick="confirmBooking()">Confirm Booking · ยืนยัน ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT DOG -->
+  <div id="screen-editdog" style="display:none;">
+    <div class="card">
+      <div class="section-label">Edit Dog · แก้ไขข้อมูล</div>
+      <h2 id="editdog_title">แก้ไขข้อมูลน้องหมา</h2>
+      <div class="divider"></div>
+      <div id="editdog_fields"></div>
+      <div id="editdog_msg"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="showScreen('step2')">← ยกเลิก</button>
+        <button class="btn-primary" id="editdog_save_btn" onclick="saveDogEdit()">บันทึกการแก้ไข ✓</button>
       </div>
     </div>
   </div>
@@ -280,12 +297,13 @@ let checkIn = '', checkOut = '';
 let nights = 0;
 let availData = {};
 let savedDogs = [];
+let pendingNewDogs = [];
 let selectedSavedDogs = []; // [{dogId, name, breed, gender, neutered, weight}]
 let showingNewDogForm = false;
 
 // ── UTILS ─────────────────────────────────────────────
 function showScreen(name) {
-  ['loading','login','newuser','step1','step2','step3','success'].forEach(function(s) {
+  ['loading','login','newuser','step1','step2','step3','success','editdog'].forEach(function(s) {
     var el = document.getElementById('screen-'+s);
     if (el) el.style.display = 'none';
   });
@@ -349,6 +367,7 @@ async function checkOwner(profile) {
 async function loadSavedDogs() {
   if (!currentOwner.ownerId) return;
   savedDogs = [];
+  pendingNewDogs = [];
   try {
     // Read from Dogs sheet in the same Owners spreadsheet
     var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs');
@@ -381,6 +400,7 @@ async function loadSavedDogs() {
 }
 
 function renderSavedDogs() {
+  renderPendingNewDogs();
   if (savedDogs.length === 0) {
     document.getElementById('saved_dogs_section').style.display = 'none';
     document.getElementById('new_dog_section').style.display = 'block';
@@ -406,6 +426,7 @@ function renderSavedDogs() {
       + (d.note ? '<div class="dog-card-note">📝 '+d.note+'</div>' : '')
       + (d.tickControl ? '<div class="dog-card-note">🦟 '+d.tickControl+'</div>' : '')
       + '<div class="dog-card-price">฿'+totalPrice.toLocaleString()+(bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน')+'</div>'
+      + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="event.stopPropagation();openEditDog(\''+d.dogId+'\')">✎ แก้ไขข้อมูล</button>'
       + '</div>';
   }).join('');
   document.getElementById('saved_dog_cards').innerHTML = html;
@@ -457,6 +478,7 @@ function renderNewDogForm() {
     + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง</label><input type="text" id="new_dog_dislikes" placeholder="เช่น กลัวเสียงดัง ไม่ชอบสุนัขตัวใหญ่"/></div>'
     + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="new_dog_allergy" placeholder="เช่น แพ้ไก่ เป็นโรคหัวใจ ไม่มี"/></div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
+    + '<button type="button" class="add-new-dog-btn" onclick="saveDogAndAddAnother()">✓ บันทึกน้องหมาตัวนี้ + เพิ่มอีกตัว</button>'
     + '</div>';
 }
 
@@ -736,6 +758,230 @@ function getSurchargeLabel() {
   return 'After-hours (' + parts.join(' · ') + ')';
 }
 
+// ── NEW DOG FORM: VALIDATE & BUILD ───────────────────
+// คืนค่า: dog object (กรอกครบ ผ่าน), null (ฟอร์มว่าง ไม่มีอะไรต้องเพิ่ม), false (กรอกไม่ครบ แสดง error แล้ว)
+function buildNewDogFromForm() {
+  var nameEl = document.getElementById('new_dog_name');
+  var name = nameEl ? nameEl.value.trim() : '';
+  if (!name) return null;
+  var breed = document.getElementById('new_dog_breed').value.trim();
+  if (!breed) { showMsg('dog_msg','กรุณากรอกสายพันธุ์','error'); return false; }
+  var gender = document.getElementById('new_dog_gender').value;
+  if (!gender) { showMsg('dog_msg','กรุณาเลือกเพศ','error'); return false; }
+  var neutered = document.getElementById('new_dog_neutered').value;
+  if (!neutered) { showMsg('dog_msg','กรุณาเลือกสถานะทำหมัน','error'); return false; }
+  var w = parseFloat(document.getElementById('new_dog_weight').value)||0;
+  if (!w||w<=0) { showMsg('dog_msg','กรุณากรอกน้ำหนักน้องหมาตัวใหม่','error'); return false; }
+  var ageYears = document.getElementById('new_dog_age_years').value.trim();
+  var ageMonths = document.getElementById('new_dog_age_months').value.trim();
+  if (!ageYears && !ageMonths) { showMsg('dog_msg','กรุณากรอกอายุ (ปีหรือเดือน อย่างน้อย 1 ช่อง)','error'); return false; }
+  var foodType = document.getElementById('new_dog_food_type').value;
+  if (!foodType) { showMsg('dog_msg','กรุณาเลือกประเภทอาหารที่กิน','error'); return false; }
+  var mealsPerDay = document.getElementById('new_dog_meals_per_day').value;
+  if (!mealsPerDay) { showMsg('dog_msg','กรุณาเลือกจำนวนมื้อต่อวัน','error'); return false; }
+  var tickControl = document.getElementById('new_dog_tick_control').value.trim();
+  if (!tickControl) { showMsg('dog_msg','กรุณากรอกวิธีกำจัดเห็บหมัด','error'); return false; }
+  var likes = document.getElementById('new_dog_likes').value.trim();
+  var dislikes = document.getElementById('new_dog_dislikes').value.trim();
+  var allergy = document.getElementById('new_dog_allergy').value.trim();
+  var note = document.getElementById('new_dog_note').value.trim();
+  var size = getSizeFromWeight(w);
+  var price = calcDogPrice(size);
+  return {
+    dogId: null,
+    name: name,
+    breed: breed,
+    gender: gender,
+    neutered: neutered,
+    weight: w,
+    age: (function(){
+      var parts = [];
+      if (ageYears) parts.push(ageYears + ' ปี');
+      if (ageMonths) parts.push(ageMonths + ' เดือน');
+      return parts.join(' ');
+    })(),
+    foodType: foodType,
+    mealsPerDay: mealsPerDay,
+    tickControl: tickControl,
+    likes: likes,
+    dislikes: dislikes,
+    allergy: allergy,
+    note: note,
+    size: size,
+    price: price,
+    isNew: true
+  };
+}
+
+function saveDogAndAddAnother() {
+  var dog = buildNewDogFromForm();
+  if (dog === false) return; // validation error, message แสดงไปแล้ว
+  if (!dog) { showMsg('dog_msg','กรุณากรอกชื่อน้องหมาก่อนบันทึก','error'); return; }
+  pendingNewDogs.push(dog);
+  document.getElementById('dog_msg').innerHTML = '';
+  renderNewDogForm();
+  renderPendingNewDogs();
+}
+
+function renderPendingNewDogs() {
+  var container = document.getElementById('pending_new_dogs_section');
+  if (pendingNewDogs.length === 0) {
+    container.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+  var sizeLabel = {small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
+  container.style.display = 'block';
+  container.innerHTML = '<span class="saved-dogs-label">📋 น้องหมาที่เพิ่มไว้ในรายการนี้</span>'
+    + '<div class="saved-dog-cards">'
+    + pendingNewDogs.map(function(d, idx) {
+      return '<div class="saved-dog-card selected" style="cursor:default;">'
+        + '<div class="check">✓</div>'
+        + '<div class="dog-card-name">'+d.name+'</div>'
+        + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+(d.age?' · อายุ '+d.age:'')+'</div>'
+        + '<div class="dog-card-meta">'+d.weight+' กก. · '+sizeLabel[d.size]+'</div>'
+        + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--red);background:none;border:none;cursor:pointer;padding:0;" onclick="removePendingNewDog('+idx+')">✕ เอาออกจากรายการ</button>'
+        + '</div>';
+    }).join('')
+    + '</div>';
+}
+
+function removePendingNewDog(idx) {
+  pendingNewDogs.splice(idx, 1);
+  renderPendingNewDogs();
+}
+
+// ── EDIT SAVED DOG ────────────────────────────────────
+let editingDogId = null;
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function parseAgeString(ageStr) {
+  var years = '', months = '';
+  if (!ageStr) return {years:years, months:months};
+  var yMatch = String(ageStr).match(/(\d+)\s*ปี/);
+  var mMatch = String(ageStr).match(/(\d+)\s*เดือน/);
+  if (yMatch) years = yMatch[1];
+  if (mMatch) months = mMatch[1];
+  return {years:years, months:months};
+}
+
+function openEditDog(dogId) {
+  var dog = savedDogs.find(function(d){ return d.dogId === dogId; });
+  if (!dog) return;
+  editingDogId = dogId;
+  renderEditDogForm(dog);
+  document.getElementById('editdog_msg').innerHTML = '';
+  showScreen('editdog');
+}
+
+function renderEditDogForm(dog) {
+  var ageParsed = parseAgeString(dog.age);
+  document.getElementById('editdog_title').textContent = 'แก้ไขข้อมูล: ' + dog.name;
+  var foodOptions = [
+    {v:'', l:'เลือก'}, {v:'เม็ด', l:'เม็ด (Dry food)'}, {v:'เปียก', l:'เปียก (Wet food)'},
+    {v:'เม็ด + เปียก', l:'เม็ด + เปียก'}, {v:'โฮมคุก', l:'โฮมคุก (Home cooked)'},
+    {v:'บาร์ฟ', l:'บาร์ฟ (BARF)'}, {v:'อื่นๆ', l:'อื่นๆ'}
+  ];
+  var mealOptions = ['', '1 มื้อ/วัน', '2 มื้อ/วัน', '3 มื้อ/วัน', 'มากกว่า 3 มื้อ/วัน'];
+  document.getElementById('editdog_fields').innerHTML =
+    '<div class="form-row">'
+    + '<div class="form-group"><label>ชื่อน้องหมา *</label><input type="text" id="edit_dog_name" value="'+escapeHtml(dog.name)+'"/></div>'
+    + '<div class="form-group"><label>สายพันธุ์</label><input type="text" id="edit_dog_breed" value="'+escapeHtml(dog.breed)+'"/></div>'
+    + '</div>'
+    + '<div class="form-row">'
+    + '<div class="form-group"><label>เพศ</label><select id="edit_dog_gender">'
+    + '<option value=""'+(!dog.gender?' selected':'')+'>เลือก</option>'
+    + '<option value="ตัวผู้"'+(dog.gender==='ตัวผู้'?' selected':'')+'>ตัวผู้</option>'
+    + '<option value="ตัวเมีย"'+(dog.gender==='ตัวเมีย'?' selected':'')+'>ตัวเมีย</option>'
+    + '</select></div>'
+    + '<div class="form-group"><label>ทำหมัน</label><select id="edit_dog_neutered">'
+    + '<option value=""'+(!dog.neutered?' selected':'')+'>เลือก</option>'
+    + '<option value="ทำหมันแล้ว"'+(dog.neutered==='ทำหมันแล้ว'?' selected':'')+'>ทำหมันแล้ว</option>'
+    + '<option value="ยังไม่ได้ทำหมัน"'+(dog.neutered==='ยังไม่ได้ทำหมัน'?' selected':'')+'>ยังไม่ได้ทำหมัน</option>'
+    + '</select></div>'
+    + '</div>'
+    + '<div class="form-row">'
+    + '<div class="form-group"><label>น้ำหนัก (กก.) *</label><input type="number" id="edit_dog_weight" value="'+(dog.weight||'')+'" min="0.1" max="60" step="0.1"/></div>'
+    + '<div class="form-group"><label>อายุ</label><div class="form-row" style="gap:0.6rem;">'
+    + '<input type="text" id="edit_dog_age_years" placeholder="ปี" value="'+ageParsed.years+'" inputmode="numeric" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\'\')"/>'
+    + '<input type="text" id="edit_dog_age_months" placeholder="เดือน" value="'+ageParsed.months+'" inputmode="numeric" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\'\').slice(0,2);if(parseInt(this.value)>11)this.value=\'11\';"/>'
+    + '</div></div>'
+    + '</div>'
+    + '<div class="form-row">'
+    + '<div class="form-group"><label>ประเภทอาหารที่กิน</label><select id="edit_dog_food_type">'
+    + foodOptions.map(function(o){ return '<option value="'+o.v+'"'+(dog.foodType===o.v||(!dog.foodType&&o.v==='')?' selected':'')+'>'+o.l+'</option>'; }).join('')
+    + '</select></div>'
+    + '<div class="form-group"><label>จำนวนมื้อต่อวัน</label><select id="edit_dog_meals_per_day">'
+    + mealOptions.map(function(o){ return '<option value="'+o+'"'+(dog.mealsPerDay===o||(!dog.mealsPerDay&&o==='')?' selected':'')+'>'+(o===''?'เลือก':o)+'</option>'; }).join('')
+    + '</select></div>'
+    + '</div>'
+    + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด</label><input type="text" id="edit_dog_tick_control" value="'+escapeHtml(dog.tickControl)+'"/></div>'
+    + '<div class="form-group"><label>สิ่งที่ชอบ</label><input type="text" id="edit_dog_likes" value="'+escapeHtml(dog.likes)+'"/></div>'
+    + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง</label><input type="text" id="edit_dog_dislikes" value="'+escapeHtml(dog.dislikes)+'"/></div>'
+    + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="edit_dog_allergy" value="'+escapeHtml(dog.allergy)+'"/></div>'
+    + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="edit_dog_note" value="'+escapeHtml(dog.note)+'"/></div>';
+}
+
+async function saveDogEdit() {
+  var name = document.getElementById('edit_dog_name').value.trim();
+  if (!name) { showMsg('editdog_msg','กรุณากรอกชื่อน้องหมา','error'); return; }
+  var weight = parseFloat(document.getElementById('edit_dog_weight').value)||0;
+  if (!weight||weight<=0) { showMsg('editdog_msg','กรุณากรอกน้ำหนักให้ถูกต้อง','error'); return; }
+  var ageYears = document.getElementById('edit_dog_age_years').value.trim();
+  var ageMonths = document.getElementById('edit_dog_age_months').value.trim();
+  var age = (function(){
+    var parts = [];
+    if (ageYears) parts.push(ageYears + ' ปี');
+    if (ageMonths) parts.push(ageMonths + ' เดือน');
+    return parts.join(' ');
+  })();
+  var data = {
+    action: 'updateDog',
+    dogId: editingDogId,
+    name: name,
+    breed: document.getElementById('edit_dog_breed').value.trim(),
+    gender: document.getElementById('edit_dog_gender').value,
+    neutered: document.getElementById('edit_dog_neutered').value,
+    weight: weight,
+    age: age,
+    foodType: document.getElementById('edit_dog_food_type').value,
+    mealsPerDay: document.getElementById('edit_dog_meals_per_day').value,
+    tickControl: document.getElementById('edit_dog_tick_control').value.trim(),
+    likes: document.getElementById('edit_dog_likes').value.trim(),
+    dislikes: document.getElementById('edit_dog_dislikes').value.trim(),
+    allergy: document.getElementById('edit_dog_allergy').value.trim(),
+    note: document.getElementById('edit_dog_note').value.trim()
+  };
+  var btn = document.getElementById('editdog_save_btn');
+  btn.disabled = true;
+  showMsg('editdog_msg','⏳ กำลังบันทึก...','success');
+  try {
+    var res = await fetch(APPS_SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(data)});
+    var result = await res.json();
+    if (result.success) {
+      var idx = savedDogs.findIndex(function(d){ return d.dogId === editingDogId; });
+      if (idx > -1) {
+        var updated = Object.assign({}, data);
+        delete updated.action;
+        savedDogs[idx] = Object.assign({}, savedDogs[idx], updated);
+      }
+      btn.disabled = false;
+      showScreen('step2');
+      renderSavedDogs();
+    } else {
+      btn.disabled = false;
+      showMsg('editdog_msg','บันทึกไม่สำเร็จ: '+(result.error||'ไม่ทราบสาเหตุ'),'error');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    showMsg('editdog_msg','บันทึกไม่สำเร็จ: '+e.message,'error');
+  }
+}
+
 // ── STEP 3 ────────────────────────────────────────────
 function goStep3() {
   var dogs = [];
@@ -748,61 +994,13 @@ function goStep3() {
     dogs.push({dogId:d.dogId, name:d.name, breed:d.breed, gender:d.gender, neutered:d.neutered, weight:w, size:size, price:price, isNew:false});
   });
 
-  // จาก new dog form
-  if (showingNewDogForm || savedDogs.length===0) {
-    var name = document.getElementById('new_dog_name') ? document.getElementById('new_dog_name').value.trim() : '';
-    if (name) {
-      var breed = document.getElementById('new_dog_breed').value.trim();
-      if (!breed) { showMsg('dog_msg','กรุณากรอกสายพันธุ์','error'); return; }
-      var gender = document.getElementById('new_dog_gender').value;
-      if (!gender) { showMsg('dog_msg','กรุณาเลือกเพศ','error'); return; }
-      var neutered = document.getElementById('new_dog_neutered').value;
-      if (!neutered) { showMsg('dog_msg','กรุณาเลือกสถานะทำหมัน','error'); return; }
-      var w = parseFloat(document.getElementById('new_dog_weight').value)||0;
-      if (!w||w<=0) { showMsg('dog_msg','กรุณากรอกน้ำหนักน้องหมาตัวใหม่','error'); return; }
-      var ageYears = document.getElementById('new_dog_age_years').value.trim();
-      var ageMonths = document.getElementById('new_dog_age_months').value.trim();
-      if (!ageYears && !ageMonths) { showMsg('dog_msg','กรุณากรอกอายุ (ปีหรือเดือน อย่างน้อย 1 ช่อง)','error'); return; }
-      var foodType = document.getElementById('new_dog_food_type').value;
-      if (!foodType) { showMsg('dog_msg','กรุณาเลือกประเภทอาหารที่กิน','error'); return; }
-      var mealsPerDay = document.getElementById('new_dog_meals_per_day').value;
-      if (!mealsPerDay) { showMsg('dog_msg','กรุณาเลือกจำนวนมื้อต่อวัน','error'); return; }
-      var tickControl = document.getElementById('new_dog_tick_control').value.trim();
-      if (!tickControl) { showMsg('dog_msg','กรุณากรอกวิธีกำจัดเห็บหมัด','error'); return; }
-      var likes = document.getElementById('new_dog_likes').value.trim();
-      var dislikes = document.getElementById('new_dog_dislikes').value.trim();
-      var allergy = document.getElementById('new_dog_allergy').value.trim();
-      var note = document.getElementById('new_dog_note').value.trim();
-      var size = getSizeFromWeight(w);
-      var price = calcDogPrice(size);
-      dogs.push({
-        dogId: null,
-        name: name,
-        breed: breed,
-        gender: gender,
-        neutered: neutered,
-        weight: w,
-        age: (function(){
-          var parts = [];
-          if (ageYears) parts.push(ageYears + ' ปี');
-          if (ageMonths) parts.push(ageMonths + ' เดือน');
-          return parts.join(' ');
-        })(),
-        foodType: foodType,
-        mealsPerDay: mealsPerDay,
-        tickControl: tickControl,
-        likes: likes,
-        dislikes: dislikes,
-        allergy: allergy,
-        note: note,
-        size: size,
-        price: price,
-        isNew: true
-      });
-    } else if (savedDogs.length===0) {
-      showMsg('dog_msg','กรุณากรอกชื่อน้องหมา','error'); return;
-    }
-  }
+  // หมาที่กดบันทึกเข้ารายการไว้ก่อนหน้านี้แล้ว
+  pendingNewDogs.forEach(function(d) { dogs.push(d); });
+
+  // หมาที่กรอกอยู่ในฟอร์มล่าสุด (ถ้ามี ยังไม่ได้กดบันทึก)
+  var formDog = buildNewDogFromForm();
+  if (formDog === false) return; // validation error, message แสดงไปแล้ว
+  if (formDog) dogs.push(formDog);
 
   if (dogs.length===0) { showMsg('dog_msg','กรุณาเลือกน้องหมาอย่างน้อย 1 ตัว','error'); return; }
   document.getElementById('dog_msg').innerHTML='';
