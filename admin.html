@@ -80,6 +80,9 @@
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
   .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.88rem;}
+  .summary-row-dog{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;padding:0.55rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.72rem;}
+  .summary-row-dog .summary-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+  .summary-row-dog .summary-val{flex-shrink:0;font-weight:700;color:var(--gold);}
   .summary-row:last-child{border-bottom:none;}
   .summary-label{color:var(--gray-dark);font-weight:300;}
   .summary-val{font-weight:500;}
@@ -1034,7 +1037,10 @@ function goStep3() {
   document.getElementById('dog_msg').innerHTML='';
 
   var totalPrice=0;
-  var dogsByPriceDesc = dogs.slice().sort(function(a,b){ return b.price - a.price; });
+  var dogsByPriceDesc = dogs.slice().sort(function(a,b){
+    if (b.price !== a.price) return b.price - a.price;
+    return (parseFloat(b.weight)||0) - (parseFloat(a.weight)||0);
+  });
   dogsByPriceDesc.forEach(function(d,i){
     d.finalPrice = Math.round(d.price*(i>0?0.9:1));
   });
@@ -1044,8 +1050,8 @@ function goStep3() {
   totalPrice += surcharge;
 
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
-  var dogsHtml=dogs.map(function(d){
-    return '<div class="summary-row"><span class="summary-label">'+d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="font-size:0.7rem;color:var(--green);">ใหม่</span>':'')+(d.finalPrice<d.price?' <span style="color:var(--green);font-size:0.75rem;">-10%</span>':'')+'</span><span class="summary-val">฿'+d.finalPrice.toLocaleString()+'</span></div>';
+  var dogsHtml=dogsByPriceDesc.map(function(d){
+    return '<div class="summary-row-dog"><span class="summary-label">'+d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'')+(d.finalPrice<d.price?' <span style="color:var(--green);">· -10%</span>':'')+'</span><span class="summary-val">฿'+d.finalPrice.toLocaleString()+'</span></div>';
   }).join('');
 
   document.getElementById('summary_content').innerHTML=
