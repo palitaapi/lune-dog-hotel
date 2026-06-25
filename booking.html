@@ -58,6 +58,9 @@
   .saved-dog-card .check{position:absolute;top:0.5rem;right:0.5rem;width:18px;height:18px;background:#422F25;border-radius:50%;display:none;align-items:center;justify-content:center;color:#FFF7EF;font-size:0.7rem;}
   .saved-dog-card.selected .check{display:flex;}
   .add-new-dog-btn{width:100%;padding:0.8rem;border:1px dashed var(--gray-line);background:transparent;color:var(--gray-dark);font-size:0.85rem;cursor:pointer;border-radius:2px;transition:all 0.2s;margin-bottom:1.2rem;}
+  .mode-tabs{display:flex;gap:0.6rem;margin-bottom:1.8rem;}
+  .mode-tab{flex:1;padding:0.7rem;text-align:center;font-size:0.78rem;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--white);transition:all .15s;}
+  .mode-tab.active{background:#422F25;color:#FFF7EF;border-color:#422F25;}
   .add-new-dog-btn:hover{border-color:#422F25;color:#422F25;}
   .dog-card-breed{margin-bottom:0.2rem;}
   .dog-card-badges{margin:0.35rem 0 0.1rem;}
@@ -161,10 +164,10 @@
         · Drop-off &amp; Pick-up: 8:00–20:00 น. · รับนอกเวลาแนะนำจองแบบค้างคืน หรือแจ้งล่วงหน้าเป็นกรณีพิเศษ
       </div>
       <div class="form-group"><label>ประเภทการฝาก</label>
-        <select id="bk_type" onchange="updateType()">
-          <option value="overnight">Overnight Care (ค้างคืน)</option>
-          <option value="daycare">Daycare (ฝากรายวัน)</option>
-        </select>
+        <div class="mode-tabs">
+          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">Overnight Care<br><span style="font-size:0.7rem;opacity:0.8;">ค้างคืน</span></div>
+          <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">Daycare<br><span style="font-size:0.7rem;opacity:0.8;">ฝากรายวัน</span></div>
+        </div>
       </div>
       <!-- OVERNIGHT -->
       <div id="overnight_fields">
@@ -200,12 +203,17 @@
       <div class="section-label">Step 2 · ขั้นตอนที่ 2</div>
       <h2>Your Dogs · น้องหมาของคุณ</h2>
       <div class="divider"></div>
-      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
-        <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก</strong><br>
-        · รับน้องหมาทุกขนาดและทุกสายพันธุ์ที่ friendly กับเพื่อนๆและพี่เลี้ยง<br>
-        · น้องหมาทุกตัวจะต้องได้รับวัคซีนครบแล้วเท่านั้น<br>
-        · น้องหมาทุกตัวจะต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br>
-        · งดรับน้องหมาที่ป่วยหรือต้องการการดูแลเป็นพิเศษ
+      <div style="display:flex;gap:0.7rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+        <div style="flex:1;min-width:150px;background:var(--bg);border:1px solid var(--honey);border-radius:8px;padding:0.75rem 0.9rem;">
+          <div style="font-size:0.64rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;font-weight:600;">New guests</div>
+          <div style="font-size:0.86rem;font-weight:600;color:var(--black);margin-bottom:0.4rem;">คืนแรกลด 25%</div>
+          <div style="font-size:0.66rem;color:var(--gray-dark);font-style:italic;line-height:1.4;">*ส่วนลดหลังจากจ่ายค่าใช้จ่ายที่เหลือจากค่ามัดจำ</div>
+        </div>
+        <div style="flex:1;min-width:150px;background:var(--bg);border:1px solid var(--honey);border-radius:8px;padding:0.75rem 0.9rem;">
+          <div style="font-size:0.64rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;font-weight:600;">Multi-dog</div>
+          <div style="font-size:0.86rem;font-weight:600;color:var(--black);margin-bottom:0.4rem;">ตัวที่ 2 เป็นต้นไปลด 10%</div>
+          <div style="font-size:0.66rem;color:var(--gray-dark);font-style:italic;line-height:1.4;">*ส่วนลดอัตโนมัติตอนกดจองผ่านระบบ</div>
+        </div>
       </div>
 
       <div id="pending_new_dogs_section" style="display:none;margin-bottom:1.5rem;"></div>
@@ -223,6 +231,15 @@
       </div>
 
       <div id="dog_msg"></div>
+
+      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1.2rem 0;">
+        <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก</strong><br>
+        · รับน้องหมาทุกขนาดและทุกสายพันธุ์ที่ friendly กับเพื่อนๆและพี่เลี้ยง<br>
+        · น้องหมาทุกตัวจะต้องได้รับวัคซีนครบแล้วเท่านั้น<br>
+        · น้องหมาทุกตัวจะต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br>
+        · งดรับน้องหมาที่ป่วยหรือต้องการการดูแลเป็นพิเศษ
+      </div>
+
       <div class="btn-row">
         <button class="btn-secondary" onclick="showScreen('step1')">← Back · ย้อนกลับ</button>
         <button class="btn-primary" onclick="goStep3()">Review Booking → ดูสรุป</button>
@@ -613,11 +630,17 @@ function timeToMins(t) {
   return parseInt(p[0]) * 60 + parseInt(p[1]);
 }
 
-function updateType() {
-  bookingType = document.getElementById('bk_type').value;
-  document.getElementById('overnight_fields').style.display = bookingType === 'overnight' ? 'block' : 'none';
-  document.getElementById('daycare_fields').style.display   = bookingType === 'daycare'   ? 'block' : 'none';
+function selectBookingType(type) {
+  bookingType = type;
+  document.getElementById('type_tab_overnight').classList.toggle('active', type==='overnight');
+  document.getElementById('type_tab_daycare').classList.toggle('active', type==='daycare');
+  document.getElementById('overnight_fields').style.display = type === 'overnight' ? 'block' : 'none';
+  document.getElementById('daycare_fields').style.display   = type === 'daycare'   ? 'block' : 'none';
   updateDates();
+}
+
+function updateType() {
+  selectBookingType('overnight');
 }
 
 function calcOvernightExtra() {
