@@ -235,11 +235,17 @@
       <div id="dog_msg"></div>
 
       <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1.2rem 0;">
-        <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก</strong><br>
-        · รับน้องหมาทุกขนาดและทุกสายพันธุ์ที่ friendly กับเพื่อนๆและพี่เลี้ยง<br>
-        · น้องหมาทุกตัวจะต้องได้รับวัคซีนครบแล้วเท่านั้น<br>
-        · น้องหมาทุกตัวจะต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br>
-        · งดรับน้องหมาที่ป่วยหรือต้องการการดูแลเป็นพิเศษ
+        <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
+        · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
+        · วัคซีนครบ + ป้องกันเห็บหมัดสม่ำเสมอ · งดรับหมาป่วย<br>
+        · มัดจำ 50% ไม่สามารถขอคืนได้ (เลื่อนวันได้ 1 ครั้ง)<br>
+        <a href="#" onclick="event.preventDefault();showScreen('terms');" style="color:var(--gold);text-decoration:underline;font-weight:600;">อ่านเงื่อนไขทั้งหมด (12 ข้อ) →</a>
+      </div>
+      <div style="margin-bottom:1.2rem;">
+        <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:var(--gray-dark);cursor:pointer;">
+          <input type="checkbox" id="terms_accept_checkbox" style="margin-top:0.2rem;flex-shrink:0;width:16px;height:16px;cursor:pointer;"/>
+          <span>ฉันได้อ่านและยอมรับเงื่อนไขการรับฝากข้างต้นแล้ว</span>
+        </label>
       </div>
 
       <div class="btn-row">
@@ -276,6 +282,36 @@
       <div class="btn-row">
         <button class="btn-secondary" onclick="showScreen('step2')">← ยกเลิก</button>
         <button class="btn-primary" id="editdog_save_btn" onclick="saveDogEdit()">บันทึกการแก้ไข ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMS -->
+  <div id="screen-terms" style="display:none;">
+    <div class="card">
+      <div class="section-label">Terms · เงื่อนไขการรับฝาก</div>
+      <h2>เงื่อนไขการรับฝากน้องหมา</h2>
+      <div class="divider"></div>
+      <div style="font-size:0.85rem;line-height:1.9;color:var(--text);">
+        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การรับฝาก</strong><br><br>
+        1. ทางร้านยินดีรับน้องหมาทุกขนาดและทุกสายพันธุ์ ที่เข้าสังคมได้ดีกับเพื่อนๆและพี่เลี้ยง เพราะน้องๆทุกตัวจะใช้พื้นที่ร่วมกันแบบไม่ขังกรง<br><br>
+        2. น้องหมาทุกตัวต้องมีอายุตั้งแต่ 90 วัน (3 เดือน) ขึ้นไป<br><br>
+        3. น้องหมาทุกตัวต้องได้รับวัคซีนครบตามอายุแล้วเท่านั้น<br><br>
+        4. น้องหมาทุกตัวต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br><br>
+        5. ทางร้านขอสงวนสิทธิ์ไม่รับฝากน้องหมาที่ป่วย มีโรคติดต่อ หรือมีอาการที่ต้องการการดูแลเป็นพิเศษเกินกว่าที่ทางร้านจะดูแลได้อย่างปลอดภัย<br><br>
+        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">ความรับผิดชอบระหว่างการพัก</strong><br><br>
+        6. หากน้องหมามีพฤติกรรมก้าวร้าวหรือทำร้ายน้องหมาตัวอื่นระหว่างการพัก อันมิได้เกิดจากความบกพร่องในการดูแลของทางร้าน เจ้าของยินดีรับผิดชอบค่ารักษาพยาบาลของอีกฝ่ายตามจริง<br><br>
+        7. ในทางกลับกัน หากเกิดอุบัติเหตุหรือความเสียหายใดๆขึ้นจากความบกพร่องในการดูแลของทางร้านเอง ทางร้านจะเป็นผู้รับผิดชอบค่าใช้จ่ายที่เกี่ยวข้องทั้งหมด<br><br>
+        8. หากน้องหมาทำให้ทรัพย์สินของทางร้านเสียหาย เจ้าของยินดีรับผิดชอบค่าเสียหายตามมูลค่าจริงที่ทางร้านแจ้งให้ทราบ<br><br>
+        9. กรณีน้องหมาเจ็บป่วยหรือเกิดอุบัติเหตุกะทันหันจากเหตุสุดวิสัยระหว่างพัก หากทางร้านไม่สามารถติดต่อเจ้าของได้ในทันที เจ้าของยินยอมให้ทางร้านนำส่งน้องหมาเข้ารับการรักษาที่โรงพยาบาลสัตว์ที่ใกล้ที่สุดได้ทันที โดยเจ้าของเป็นผู้รับผิดชอบค่าใช้จ่ายในการรักษาทั้งหมด<br><br>
+        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การจองและการชำระเงิน</strong><br><br>
+        10. การจองจะยืนยันสมบูรณ์เมื่อชำระมัดจำ 50% ของยอดรวมแล้วเท่านั้น<br><br>
+        11. มัดจำที่ชำระแล้วไม่สามารถขอคืนได้ แต่สามารถขอเลื่อนวันเข้าพักได้ 1 ครั้ง<br><br>
+        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">กรณีติดต่อเจ้าของไม่ได้</strong><br><br>
+        12. กรณีที่เจ้าของทิ้งน้องหมาไว้และทางร้านไม่สามารถติดต่อได้ภายใน 7 วัน ทางร้านจะดำเนินการตามกฎหมายที่เกี่ยวข้องต่อไป
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="showScreen('step2')" style="margin:0 auto;max-width:280px;">← กลับไปหน้าจอง</button>
       </div>
     </div>
   </div>
@@ -327,6 +363,7 @@ let availData = {};
 let savedDogs = [];
 let pendingNewDogs = [];
 let editingPendingIdx = null;
+let termsAcceptedAt = null;
 let selectedSavedDogs = [];
 let showingNewDogForm = false;
 let checkInTime  = '14:00', checkOutTime = '20:00';
@@ -336,7 +373,7 @@ let searchDebounceTimer = null;
 
 // ── UTILS ─────────────────────────────────────────────
 function showScreen(name) {
-  ['source','step1','step2','step3','success','editdog'].forEach(function(s) {
+  ['source','step1','step2','step3','success','editdog','terms'].forEach(function(s) {
     var el = document.getElementById('screen-'+s);
     if (el) el.style.display = 'none';
   });
@@ -1045,6 +1082,11 @@ async function saveDogEdit() {
 
 // ── STEP 3 ────────────────────────────────────────────
 function goStep3() {
+  if (!document.getElementById('terms_accept_checkbox').checked) {
+    showMsg('dog_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อนดำเนินการต่อ','error');
+    return;
+  }
+  termsAcceptedAt = new Date().toLocaleString('th-TH');
   var dogs = [];
   selectedSavedDogs.forEach(function(d) {
     var w = parseFloat(d.weight)||0;
@@ -1136,6 +1178,8 @@ async function confirmBooking() {
     totalPrice:'฿'+totalPrice.toLocaleString(),
     allDates,
     timestamp:new Date().toLocaleString('th-TH'),
+    termsAccepted: true,
+    termsAcceptedAt: termsAcceptedAt,
     dogs:dogs.map(function(d){
       return {
         dogId:    d.dogId||'',
