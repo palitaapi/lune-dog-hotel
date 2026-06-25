@@ -298,6 +298,7 @@ let nights = 0;
 let availData = {};
 let savedDogs = [];
 let pendingNewDogs = [];
+let editingPendingIdx = null;
 let selectedSavedDogs = []; // [{dogId, name, breed, gender, neutered, weight}]
 let showingNewDogForm = false;
 
@@ -368,6 +369,7 @@ async function loadSavedDogs() {
   if (!currentOwner.ownerId) return;
   savedDogs = [];
   pendingNewDogs = [];
+  editingPendingIdx = null;
   try {
     // Read from Dogs sheet in the same Owners spreadsheet
     var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs');
@@ -478,7 +480,7 @@ function renderNewDogForm() {
     + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง</label><input type="text" id="new_dog_dislikes" placeholder="เช่น กลัวเสียงดัง ไม่ชอบสุนัขตัวใหญ่"/></div>'
     + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="new_dog_allergy" placeholder="เช่น แพ้ไก่ เป็นโรคหัวใจ ไม่มี"/></div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
-    + '<button type="button" class="add-new-dog-btn" onclick="saveDogAndAddAnother()">✓ บันทึกน้องหมาตัวนี้ + เพิ่มอีกตัว</button>'
+    + '<button type="button" class="add-new-dog-btn" onclick="saveDogAndAddAnother()">'+(editingPendingIdx!==null?'💾 บันทึกการแก้ไข':'✓ บันทึกน้องหมาตัวนี้ + เพิ่มอีกตัว')+'</button>'
     + '</div>';
 }
 
@@ -817,10 +819,44 @@ function saveDogAndAddAnother() {
   var dog = buildNewDogFromForm();
   if (dog === false) return; // validation error, message แสดงไปแล้ว
   if (!dog) { showMsg('dog_msg','กรุณากรอกชื่อน้องหมาก่อนบันทึก','error'); return; }
-  pendingNewDogs.push(dog);
+  if (editingPendingIdx !== null) {
+    pendingNewDogs[editingPendingIdx] = dog;
+    editingPendingIdx = null;
+  } else {
+    pendingNewDogs.push(dog);
+  }
   document.getElementById('dog_msg').innerHTML = '';
   renderNewDogForm();
   renderPendingNewDogs();
+}
+
+function fillFormFromDog(dog) {
+  document.getElementById('new_dog_name').value = dog.name || '';
+  document.getElementById('new_dog_breed').value = dog.breed || '';
+  document.getElementById('new_dog_gender').value = dog.gender || '';
+  document.getElementById('new_dog_neutered').value = dog.neutered || '';
+  document.getElementById('new_dog_weight').value = dog.weight || '';
+  var ageParsed = parseAgeString(dog.age);
+  document.getElementById('new_dog_age_years').value = ageParsed.years;
+  document.getElementById('new_dog_age_months').value = ageParsed.months;
+  document.getElementById('new_dog_food_type').value = dog.foodType || '';
+  document.getElementById('new_dog_meals_per_day').value = dog.mealsPerDay || '';
+  document.getElementById('new_dog_tick_control').value = dog.tickControl || '';
+  document.getElementById('new_dog_likes').value = dog.likes || '';
+  document.getElementById('new_dog_dislikes').value = dog.dislikes || '';
+  document.getElementById('new_dog_allergy').value = dog.allergy || '';
+  document.getElementById('new_dog_note').value = dog.note || '';
+  updateNewDogPrice();
+}
+
+function editPendingNewDog(idx) {
+  editingPendingIdx = idx;
+  showingNewDogForm = true;
+  document.getElementById('new_dog_section').style.display = 'block';
+  renderNewDogForm();
+  fillFormFromDog(pendingNewDogs[idx]);
+  document.getElementById('dog_msg').innerHTML = '';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function renderPendingNewDogs() {
@@ -840,15 +876,10 @@ function renderPendingNewDogs() {
         + '<div class="dog-card-name">'+d.name+'</div>'
         + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+(d.age?' · อายุ '+d.age:'')+'</div>'
         + '<div class="dog-card-meta">'+d.weight+' กก. · '+sizeLabel[d.size]+'</div>'
-        + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--red);background:none;border:none;cursor:pointer;padding:0;" onclick="removePendingNewDog('+idx+')">✕ เอาออกจากรายการ</button>'
+        + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="editPendingNewDog('+idx+')">✎ แก้ไข</button>'
         + '</div>';
     }).join('')
     + '</div>';
-}
-
-function removePendingNewDog(idx) {
-  pendingNewDogs.splice(idx, 1);
-  renderPendingNewDogs();
 }
 
 // ── EDIT SAVED DOG ────────────────────────────────────
@@ -994,8 +1025,8 @@ function goStep3() {
     dogs.push({dogId:d.dogId, name:d.name, breed:d.breed, gender:d.gender, neutered:d.neutered, weight:w, size:size, price:price, isNew:false});
   });
 
-  // หมาที่กดบันทึกเข้ารายการไว้ก่อนหน้านี้แล้ว
-  pendingNewDogs.forEach(function(d) { dogs.push(d); });
+  // หมาที่กดบันทึกเข้ารายการไว้ก่อนหน้านี้แล้ว (ข้ามตัวที่กำลังแก้ไขอยู่ จะถูกแทนด้วยข้อมูลจากฟอร์มด้านล่างแทน)
+  pendingNewDogs.forEach(function(d, idx) { if (idx !== editingPendingIdx) dogs.push(d); });
 
   // หมาที่กรอกอยู่ในฟอร์มล่าสุด (ถ้ามี ยังไม่ได้กดบันทึก)
   var formDog = buildNewDogFromForm();
@@ -1003,6 +1034,7 @@ function goStep3() {
   if (formDog) dogs.push(formDog);
 
   if (dogs.length===0) { showMsg('dog_msg','กรุณาเลือกน้องหมาอย่างน้อย 1 ตัว','error'); return; }
+  editingPendingIdx = null;
   document.getElementById('dog_msg').innerHTML='';
 
   // Apply discount
