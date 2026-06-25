@@ -146,6 +146,19 @@
     <div class="form-group" id="other_province_group" style="display:none;"><label>ระบุจังหวัด *</label><input type="text" id="own_province_other" placeholder="กรุณาระบุจังหวัด"/></div>
     <div class="form-group"><label>เขต / อำเภอ *</label><select id="own_district"><option value="">— เลือกจังหวัดก่อน —</option></select></div>
     <div class="form-group" id="other_district_group" style="display:none;"><label>ระบุเขต / อำเภอ *</label><input type="text" id="own_district_other" placeholder="กรุณาระบุเขต/อำเภอ"/></div>
+    <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1rem 0;">
+      <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
+      · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
+      · วัคซีนครบ + ป้องกันเห็บหมัดสม่ำเสมอ · งดรับหมาป่วย<br>
+      · มัดจำ 50% ไม่สามารถขอคืนได้ (เลื่อนวันได้ 1 ครั้ง)<br>
+      <a href="#" onclick="event.preventDefault();openTerms('newuser');" style="color:var(--gold);text-decoration:underline;font-weight:600;">อ่านเงื่อนไขทั้งหมด (12 ข้อ) →</a>
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:var(--gray-dark);cursor:pointer;">
+        <input type="checkbox" id="reg_terms_accept_checkbox" style="margin-top:0.2rem;flex-shrink:0;width:16px;height:16px;cursor:pointer;"/>
+        <span>ฉันได้อ่านและยอมรับเงื่อนไขการรับฝากข้างต้นแล้ว</span>
+      </label>
+    </div>
     <button class="btn-primary" id="regBtn" onclick="registerAndBook()">Next → ถัดไป</button>
     <div id="newuser_msg"></div>
   </div>
@@ -232,12 +245,20 @@
 
       <div id="dog_msg"></div>
 
-      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1.2rem 0;">
-        <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก</strong><br>
-        · รับน้องหมาทุกขนาดและทุกสายพันธุ์ที่ friendly กับเพื่อนๆและพี่เลี้ยง<br>
-        · น้องหมาทุกตัวจะต้องได้รับวัคซีนครบแล้วเท่านั้น<br>
-        · น้องหมาทุกตัวจะต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br>
-        · งดรับน้องหมาที่ป่วยหรือต้องการการดูแลเป็นพิเศษ
+      <div id="step2_terms_section">
+        <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1.2rem 0;">
+          <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
+          · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
+          · วัคซีนครบ + ป้องกันเห็บหมัดสม่ำเสมอ · งดรับหมาป่วย<br>
+          · มัดจำ 50% ไม่สามารถขอคืนได้ (เลื่อนวันได้ 1 ครั้ง)<br>
+          <a href="#" onclick="event.preventDefault();openTerms('step2');" style="color:var(--gold);text-decoration:underline;font-weight:600;">อ่านเงื่อนไขทั้งหมด (12 ข้อ) →</a>
+        </div>
+        <div style="margin-bottom:1.2rem;">
+          <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:var(--gray-dark);cursor:pointer;">
+            <input type="checkbox" id="terms_accept_checkbox" style="margin-top:0.2rem;flex-shrink:0;width:16px;height:16px;cursor:pointer;"/>
+            <span>ฉันได้อ่านและยอมรับเงื่อนไขการรับฝากข้างต้นแล้ว</span>
+          </label>
+        </div>
       </div>
 
       <div class="btn-row">
@@ -278,6 +299,36 @@
     </div>
   </div>
 
+  <!-- TERMS -->
+  <div id="screen-terms" style="display:none;">
+    <div class="card">
+      <div class="section-label">Terms · เงื่อนไขการรับฝาก</div>
+      <h2>เงื่อนไขการรับฝากน้องหมา</h2>
+      <div class="divider"></div>
+      <div style="font-size:0.85rem;line-height:1.9;color:var(--text);">
+        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การรับฝาก</strong><br><br>
+        1. ทางร้านยินดีรับน้องหมาทุกขนาดและทุกสายพันธุ์ ที่เข้าสังคมได้ดีกับเพื่อนๆและพี่เลี้ยง เพราะน้องๆทุกตัวจะใช้พื้นที่ร่วมกันแบบไม่ขังกรง<br><br>
+        2. น้องหมาทุกตัวต้องมีอายุตั้งแต่ 90 วัน (3 เดือน) ขึ้นไป<br><br>
+        3. น้องหมาทุกตัวต้องได้รับวัคซีนครบตามอายุแล้วเท่านั้น<br><br>
+        4. น้องหมาทุกตัวต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br><br>
+        5. ทางร้านขอสงวนสิทธิ์ไม่รับฝากน้องหมาที่ป่วย มีโรคติดต่อ หรือมีอาการที่ต้องการการดูแลเป็นพิเศษเกินกว่าที่ทางร้านจะดูแลได้อย่างปลอดภัย<br><br>
+        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">ความรับผิดชอบระหว่างการพัก</strong><br><br>
+        6. หากน้องหมามีพฤติกรรมก้าวร้าวหรือทำร้ายน้องหมาตัวอื่นระหว่างการพัก อันมิได้เกิดจากความบกพร่องในการดูแลของทางร้าน เจ้าของยินดีรับผิดชอบค่ารักษาพยาบาลของอีกฝ่ายตามจริง<br><br>
+        7. ในทางกลับกัน หากเกิดอุบัติเหตุหรือความเสียหายใดๆขึ้นจากความบกพร่องในการดูแลของทางร้านเอง ทางร้านจะเป็นผู้รับผิดชอบค่าใช้จ่ายที่เกี่ยวข้องทั้งหมด<br><br>
+        8. หากน้องหมาทำให้ทรัพย์สินของทางร้านเสียหาย เจ้าของยินดีรับผิดชอบค่าเสียหายตามมูลค่าจริงที่ทางร้านแจ้งให้ทราบ<br><br>
+        9. กรณีน้องหมาเจ็บป่วยหรือเกิดอุบัติเหตุกะทันหันจากเหตุสุดวิสัยระหว่างพัก หากทางร้านไม่สามารถติดต่อเจ้าของได้ในทันที เจ้าของยินยอมให้ทางร้านนำส่งน้องหมาเข้ารับการรักษาที่โรงพยาบาลสัตว์ที่ใกล้ที่สุดได้ทันที โดยเจ้าของเป็นผู้รับผิดชอบค่าใช้จ่ายในการรักษาทั้งหมด<br><br>
+        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การจองและการชำระเงิน</strong><br><br>
+        10. การจองจะยืนยันสมบูรณ์เมื่อชำระมัดจำ 50% ของยอดรวมแล้วเท่านั้น<br><br>
+        11. มัดจำที่ชำระแล้วไม่สามารถขอคืนได้ แต่สามารถขอเลื่อนวันเข้าพักได้ 1 ครั้ง<br><br>
+        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">กรณีติดต่อเจ้าของไม่ได้</strong><br><br>
+        12. กรณีที่เจ้าของทิ้งน้องหมาไว้และทางร้านไม่สามารถติดต่อได้ภายใน 7 วัน ทางร้านจะดำเนินการตามกฎหมายที่เกี่ยวข้องต่อไป
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="showScreen(termsReturnScreen||'step2')" style="margin:0 auto;max-width:280px;">← กลับ</button>
+      </div>
+    </div>
+  </div>
+
   <!-- SUCCESS -->
   <div id="screen-success" class="card" style="display:none;">
     <div class="success-screen">
@@ -302,6 +353,7 @@ const LINE_CHANNEL_ID = '2009980301';
 const LINE_REDIRECT   = 'https://palitaapi.github.io/lune-dog-hotel/booking.html';
 const LINE_STATE      = Math.random().toString(36).substring(7);
 const MAX_CAP = 8;
+const TERMS_VERSION = '2026-06-25'; // เปลี่ยนค่านี้ทุกครั้งที่แก้เงื่อนไข จะบังคับให้ลูกค้าเก่าติ๊กยอมรับใหม่อัตโนมัติ
 const OVERNIGHT_PRICES = {small:400,medium:550,large:700};
 const DAYCARE_DISCOUNT = 0.30; // ราคา daycare = overnight ลด 30%
 const PRICES = {
@@ -328,18 +380,25 @@ let availData = {};
 let savedDogs = [];
 let pendingNewDogs = [];
 let editingPendingIdx = null;
+let termsAcceptedAt = null;
+let termsReturnScreen = null;
 let selectedSavedDogs = []; // [{dogId, name, breed, gender, neutered, weight}]
 let showingNewDogForm = false;
 
 // ── UTILS ─────────────────────────────────────────────
 function showScreen(name) {
-  ['loading','login','newuser','step1','step2','step3','success','editdog'].forEach(function(s) {
+  ['loading','login','newuser','step1','step2','step3','success','editdog','terms'].forEach(function(s) {
     var el = document.getElementById('screen-'+s);
     if (el) el.style.display = 'none';
   });
   var el = document.getElementById('screen-'+name);
   if (el) el.style.display = 'block';
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function openTerms(fromScreen) {
+  termsReturnScreen = fromScreen;
+  showScreen('terms');
 }
 function showMsg(id, msg, type) {
   var el = document.getElementById(id);
@@ -379,7 +438,7 @@ async function checkOwner(profile) {
     var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table?json.table.rows||[]:[]).forEach(function(row) {
       if (String(row.c&&row.c[4]?row.c[4].v||'':'').trim()===profile.userId) {
-        currentOwner = Object.assign({},currentOwner,{ownerId:row.c[1]?row.c[1].v:'',name:row.c[2]?row.c[2].v:'',phone:row.c[3]?row.c[3].v:''});
+        currentOwner = Object.assign({},currentOwner,{ownerId:row.c[1]?row.c[1].v:'',name:row.c[2]?row.c[2].v:'',phone:row.c[3]?row.c[3].v:'',termsVersion:row.c[9]?String(row.c[9].v||'').trim():'',termsAcceptedAt:row.c[10]?String(row.c[10].v||'').trim():''});
       }
     });
   } catch(e) {}
@@ -430,8 +489,14 @@ async function loadSavedDogs() {
   } catch(e) { savedDogs = []; }
 }
 
+function needsTermsAcceptance() {
+  return !currentOwner || !currentOwner.termsVersion || currentOwner.termsVersion !== TERMS_VERSION;
+}
+
 function renderSavedDogs() {
   renderPendingNewDogs();
+  var termsSection = document.getElementById('step2_terms_section');
+  if (termsSection) termsSection.style.display = needsTermsAcceptance() ? 'block' : 'none';
   if (savedDogs.length === 0) {
     document.getElementById('saved_dogs_section').style.display = 'none';
     document.getElementById('new_dog_section').style.display = 'block';
@@ -553,6 +618,8 @@ async function loadAllOwners() {
       phone:    c[3] ? String(c[3].v || '').trim() : '',
       lineId:   c[4] ? String(c[4].v || '').trim() : '',
       lineName: c[5] ? String(c[5].v || '').trim() : '',
+      termsVersion:     c[9]  ? String(c[9].v || '').trim()  : '',
+      termsAcceptedAt:  c[10] ? String(c[10].v || '').trim() : '',
     };
   }).filter(function(o){ return o.ownerId; });
   allOwnersCache = rows;
@@ -574,6 +641,7 @@ async function registerAndBook() {
   if(!province){showMsg('newuser_msg','กรุณาเลือกจังหวัด','error');return;}
   if(!finalProv){showMsg('newuser_msg','กรุณาระบุจังหวัด','error');return;}
   if(!district){showMsg('newuser_msg','กรุณาเลือกหรือระบุเขต/อำเภอ','error');return;}
+  if(!document.getElementById('reg_terms_accept_checkbox').checked){showMsg('newuser_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อน','error');return;}
   document.getElementById('regBtn').disabled=true;
   showMsg('newuser_msg','⏳ กำลังตรวจสอบเบอร์โทร...','success');
   var phoneNorm = phone.replace(/\D/g,'');
@@ -587,11 +655,12 @@ async function registerAndBook() {
     }
   } catch(e) { /* ถ้าเช็คไม่ได้ ปล่อยให้บันทึกต่อไป ดีกว่าบล็อกเพราะปัญหาเครือข่าย */ }
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
-  var data={action:'addOwner',name,phone,province:finalProv,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+finalProv,timestamp:new Date().toLocaleString('th-TH')};
+  var regTermsAcceptedAt = new Date().toLocaleString('th-TH');
+  var data={action:'addOwner',name,phone,province:finalProv,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+finalProv,timestamp:regTermsAcceptedAt,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt};
   try {
     var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
-    currentOwner=Object.assign({},currentOwner,{ownerId:result.ownerId,name,phone});
+    currentOwner=Object.assign({},currentOwner,{ownerId:result.ownerId,name,phone,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt});
     allOwnersCache = null; // invalidate cache เพราะมี owner ใหม่เพิ่มเข้ามา
   } catch(e) { currentOwner=Object.assign({},currentOwner,{name,phone}); }
   showScreen('step1');
@@ -1054,6 +1123,15 @@ async function saveDogEdit() {
 
 // ── STEP 3 ────────────────────────────────────────────
 function goStep3() {
+  if (needsTermsAcceptance()) {
+    if (!document.getElementById('terms_accept_checkbox').checked) {
+      showMsg('dog_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อนดำเนินการต่อ','error');
+      return;
+    }
+    termsAcceptedAt = new Date().toLocaleString('th-TH');
+    currentOwner.termsVersion = TERMS_VERSION;
+    currentOwner.termsAcceptedAt = termsAcceptedAt;
+  }
   var dogs = [];
 
   // จาก saved dogs ที่เลือก
@@ -1151,6 +1229,8 @@ async function confirmBooking() {
     totalPrice:'฿'+totalPrice.toLocaleString(),
     allDates,
     timestamp:new Date().toLocaleString('th-TH'),
+    termsVersion: currentOwner.termsVersion || TERMS_VERSION,
+    termsAcceptedAt: currentOwner.termsAcceptedAt || termsAcceptedAt,
     dogs:dogs.map(function(d){
       return {
         dogId:    d.dogId||'',
