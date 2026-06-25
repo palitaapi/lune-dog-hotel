@@ -217,7 +217,7 @@
       <div id="saved_dogs_section" style="display:none;">
         <span class="saved-dogs-label">🐶 น้องหมาที่เคยลงทะเบียนไว้</span>
         <div class="saved-dog-cards" id="saved_dog_cards"></div>
-        <button class="btn-ghost" onclick="toggleNewDogForm()">+ เพิ่มน้องหมาตัวใหม่</button>
+        <button class="btn-ghost" id="add_new_dog_toggle_btn" onclick="toggleNewDogForm()">+ เพิ่มน้องหมาตัวใหม่</button>
       </div>
 
       <div id="new_dog_section">
@@ -535,6 +535,7 @@ function renderSavedDogs() {
     return;
   }
   document.getElementById('saved_dogs_section').style.display = 'block';
+  document.getElementById('add_new_dog_toggle_btn').style.display = showingNewDogForm ? 'none' : 'block';
   var html = savedDogs.map(function(d) {
     var w = parseFloat(d.weight) || 0;
     var size = getSizeFromWeight(w);
@@ -577,6 +578,7 @@ function toggleSavedDog(dogId) {
 function toggleNewDogForm() {
   showingNewDogForm = !showingNewDogForm;
   document.getElementById('new_dog_section').style.display = showingNewDogForm ? 'block' : 'none';
+  document.getElementById('add_new_dog_toggle_btn').style.display = showingNewDogForm ? 'none' : 'block';
   if (showingNewDogForm) renderNewDogForm();
 }
 
@@ -605,7 +607,7 @@ function renderNewDogForm() {
     + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง</label><input type="text" id="new_dog_dislikes" placeholder="เช่น กลัวเสียงดัง ไม่ชอบสุนัขตัวใหญ่"/></div>'
     + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="new_dog_allergy" placeholder="เช่น แพ้ไก่ เป็นโรคหัวใจ ไม่มี"/></div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
-    + '<button type="button" class="btn-ghost" onclick="saveDogAndAddAnother()">'+(editingPendingIdx!==null?'💾 บันทึกการแก้ไข':'✓ บันทึกน้องหมาตัวนี้ + เพิ่มอีกตัว')+'</button>'
+    + '<button type="button" class="btn-ghost" onclick="saveDogAndAddAnother()">'+(editingPendingIdx!==null?'💾 บันทึกการแก้ไข':'✓ บันทึก')+'</button>'
     + '</div>';
 }
 
@@ -847,6 +849,8 @@ function editPendingNewDog(idx) {
   editingPendingIdx = idx;
   showingNewDogForm = true;
   document.getElementById('new_dog_section').style.display = 'block';
+  var toggleBtn = document.getElementById('add_new_dog_toggle_btn');
+  if (toggleBtn) toggleBtn.style.display = 'none';
   renderNewDogForm();
   fillFormFromDog(pendingNewDogs[idx]);
   document.getElementById('dog_msg').innerHTML = '';
@@ -1030,18 +1034,18 @@ function goStep3() {
   document.getElementById('dog_msg').innerHTML='';
 
   var totalPrice=0;
-  dogs.forEach(function(d,i){
-    var final=Math.round(d.price*(i>0?0.9:1));
-    d.finalPrice=final;
-    totalPrice+=final;
+  var dogsByPriceDesc = dogs.slice().sort(function(a,b){ return b.price - a.price; });
+  dogsByPriceDesc.forEach(function(d,i){
+    d.finalPrice = Math.round(d.price*(i>0?0.9:1));
   });
+  dogs.forEach(function(d){ totalPrice += d.finalPrice; });
 
   var surcharge = calcSurcharge();
   totalPrice += surcharge;
 
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var dogsHtml=dogs.map(function(d){
-    return '<div class="summary-row"><span class="summary-label">'+d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="font-size:0.7rem;color:var(--green);">ใหม่</span>':'')+( dogs.indexOf(d)>0?' <span style="color:var(--green);font-size:0.75rem;">-10%</span>':'')+'</span><span class="summary-val">฿'+d.finalPrice.toLocaleString()+'</span></div>';
+    return '<div class="summary-row"><span class="summary-label">'+d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="font-size:0.7rem;color:var(--green);">ใหม่</span>':'')+(d.finalPrice<d.price?' <span style="color:var(--green);font-size:0.75rem;">-10%</span>':'')+'</span><span class="summary-val">฿'+d.finalPrice.toLocaleString()+'</span></div>';
   }).join('');
 
   document.getElementById('summary_content').innerHTML=
