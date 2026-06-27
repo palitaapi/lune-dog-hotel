@@ -842,10 +842,10 @@ function calcDogPrice(size) {
 }
 
 function getOvernightLabel() {
-  var label = nights + ' days (Overnight)';
+  var label = nights + ' ' + (nights===1?'day':'days') + ' (Overnight)';
   if (extraChargeType === 'daycare') {
     var extraHrs = Math.round(calcOvernightExtra()/60*10)/10;
-    label += ' + ' + extraHrs + ' hrs. (Daycare)';
+    label += ' + ' + extraHrs + ' ' + (extraHrs===1?'hr.':'hrs.') + ' (Daycare)';
   }
   return label;
 }
@@ -1184,7 +1184,7 @@ function goStep3() {
     if (bookingType === 'overnight') {
       var nightlyRate = PRICES.overnight[d.size];
       var nightlyTotal = nightlyRate * nights;
-      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' Days x ฿'+nightlyRate.toLocaleString());
+      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' '+(nights===1?'Day':'Days')+' x ฿'+nightlyRate.toLocaleString());
       if (extraChargeType === 'daycare') {
         lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day x ฿'+PRICES.daycare[d.size].toLocaleString());
       }
