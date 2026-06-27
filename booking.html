@@ -842,9 +842,10 @@ function calcDogPrice(size) {
 }
 
 function getOvernightLabel() {
-  var label = nights + ' คืน';
+  var label = nights + ' days (Overnight)';
   if (extraChargeType === 'daycare') {
-    label += ' + Daycare (เกินกำหนด มารับก่อน 20:00)';
+    var extraHrs = Math.round(calcOvernightExtra()/60*10)/10;
+    label += ' + ' + extraHrs + ' hrs. (Daycare)';
   }
   return label;
 }
@@ -1183,12 +1184,12 @@ function goStep3() {
     if (bookingType === 'overnight') {
       var nightlyRate = PRICES.overnight[d.size];
       var nightlyTotal = nightlyRate * nights;
-      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' คืน x ฿'+nightlyRate.toLocaleString());
+      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' Days x ฿'+nightlyRate.toLocaleString());
       if (extraChargeType === 'daycare') {
-        lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Extra Daycare 1 วัน เช็คเอาท์เกิน 24 ชม.');
+        lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day x ฿'+PRICES.daycare[d.size].toLocaleString());
       }
     } else {
-      lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 วัน');
+      lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day');
     }
     if (d.finalPrice < d.price) {
       lines.push('- ฿'+(d.price-d.finalPrice).toLocaleString()+' = Discount 10%');
