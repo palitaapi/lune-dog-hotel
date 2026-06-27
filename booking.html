@@ -79,9 +79,10 @@
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
   .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.88rem;}
-  .summary-row-dog{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;padding:0.55rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.72rem;}
-  .summary-row-dog .summary-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
-  .summary-row-dog .summary-val{flex-shrink:0;font-weight:700;color:var(--gold);}
+  .summary-row-dog{padding:0.6rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.78rem;}
+  .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .summary-row-dog .row-line{font-size:0.74rem;color:var(--gray-dark);padding-left:0.8rem;margin-top:0.3rem;}
+  .summary-row-dog .row-total{font-weight:700;color:var(--gold);margin-top:0.4rem;font-size:0.8rem;}
   .summary-row:last-child{border-bottom:none;}
   .summary-label{color:var(--gray-dark);font-weight:300;}
   .summary-val{font-weight:500;}
@@ -1177,7 +1178,26 @@ function goStep3() {
 
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var dogsHtml=dogsByPriceDesc.map(function(d){
-    return '<div class="summary-row-dog"><span class="summary-label">'+d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'')+(d.finalPrice<d.price?' <span style="color:var(--green);">· -10%</span>':'')+'</span><span class="summary-val">฿'+d.finalPrice.toLocaleString()+'</span></div>';
+    var headerName = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'');
+    var lines = [];
+    if (bookingType === 'overnight') {
+      var nightlyRate = PRICES.overnight[d.size];
+      var nightlyTotal = nightlyRate * nights;
+      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' คืน x ฿'+nightlyRate.toLocaleString());
+      if (extraChargeType === 'daycare') {
+        lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Extra Daycare 1 วัน เช็คเอาท์เกิน 24 ชม.');
+      }
+    } else {
+      lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 วัน');
+    }
+    if (d.finalPrice < d.price) {
+      lines.push('- ฿'+(d.price-d.finalPrice).toLocaleString()+' = Discount 10%');
+    }
+    return '<div class="summary-row-dog">'
+      + '<div class="row-header">'+headerName+'</div>'
+      + lines.map(function(l){ return '<div class="row-line">'+l+'</div>'; }).join('')
+      + '<div class="row-total">Total = ฿'+d.finalPrice.toLocaleString()+'</div>'
+      + '</div>';
   }).join('');
 
   document.getElementById('summary_content').innerHTML=
