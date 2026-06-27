@@ -136,6 +136,7 @@
     <p class="subtitle">กรอกข้อมูลให้ครบเพื่อเริ่มจอง · Fill in your details to start booking.</p>
     <div class="form-group"><label>ชื่อของคุณพ่อคุณแม่ *</label><input type="text" id="own_name" placeholder=""/></div>
     <div class="form-group"><label>เบอร์โทรศัพท์ * (10 หลัก)</label><input type="tel" id="own_phone" placeholder="0XX-XXX-XXXX" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
+    <div class="form-group"><label>อีเมล (ถ้ามี)</label><input type="email" id="own_email" placeholder="example@email.com"/></div>
     <div class="form-group"><label>บ้านเลขที่ / ถนน *</label><input type="text" id="own_address_detail" placeholder="เช่น 123/4 หมู่บ้านอนาสิริ ถ.บางใหญ่"/></div>
     <div class="form-group"><label>จังหวัด *</label>
       <select id="own_province" onchange="updateDistricts()">
@@ -146,6 +147,17 @@
     <div class="form-group" id="other_province_group" style="display:none;"><label>ระบุจังหวัด *</label><input type="text" id="own_province_other" placeholder="กรุณาระบุจังหวัด"/></div>
     <div class="form-group"><label>เขต / อำเภอ *</label><select id="own_district"><option value="">— เลือกจังหวัดก่อน —</option></select></div>
     <div class="form-group" id="other_district_group" style="display:none;"><label>ระบุเขต / อำเภอ *</label><input type="text" id="own_district_other" placeholder="กรุณาระบุเขต/อำเภอ"/></div>
+    <div class="form-group"><label>รู้จักเราจากไหน (ถ้าทราบ)</label>
+      <select id="own_acquisition_source">
+        <option value="">— เลือก —</option>
+        <option value="Facebook/Instagram Ads">Facebook / Instagram Ads</option>
+        <option value="Google ค้นหา">Google ค้นหา</option>
+        <option value="เพื่อน/คนรู้จักแนะนำ">เพื่อน/คนรู้จักแนะนำ</option>
+        <option value="เดินผ่าน/เห็นหน้าร้าน">เดินผ่าน/เห็นหน้าร้าน</option>
+        <option value="TikTok">TikTok</option>
+        <option value="อื่นๆ">อื่นๆ</option>
+      </select>
+    </div>
     <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1rem 0;">
       <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
       · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
@@ -173,8 +185,8 @@
       <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
         <strong style="font-size:.76rem;">อัตราค่าบริการ</strong><br>
         · 24 ชม. นับเป็นราคา 1 คืน<br>
-        · เศษไม่เกิน 6 ชม. คิดราคา Daycare · เกิน 6 ชม. คิดราคา 1 คืน<br>
-        · Drop-off &amp; Pick-up: 8:00–20:00 น. · รับนอกเวลาแนะนำจองแบบค้างคืน หรือแจ้งล่วงหน้าเป็นกรณีพิเศษ
+        · เกินกำหนดเช็คเอาท์ คิดราคา Daycare เพิ่ม (มารับก่อน 20:00)<br>
+        · Drop-off &amp; Pick-up: 8:00–20:00 น. · มารับหลัง 20:00 มีค่า after-hours เพิ่ม ฿100/ชม.
       </div>
       <div class="form-group"><label>ประเภทการฝาก</label>
         <div class="mode-tabs">
@@ -635,6 +647,8 @@ async function registerAndBook() {
   var isOther=province==='อื่นๆ';
   var finalProv=isOther?document.getElementById('own_province_other').value.trim():province;
   var district=isOther?document.getElementById('own_district_other').value.trim():document.getElementById('own_district').value;
+  var email=document.getElementById('own_email').value.trim();
+  var acquisitionSource=document.getElementById('own_acquisition_source').value;
   if(!name){showMsg('newuser_msg','กรุณากรอกชื่อของคุณพ่อคุณแม่','error');return;}
   if(!phone||phone.length!==10){showMsg('newuser_msg','กรุณากรอกเบอร์โทรให้ครบ 10 หลัก','error');return;}
   if(!addr){showMsg('newuser_msg','กรุณากรอกบ้านเลขที่/ถนน','error');return;}
@@ -656,7 +670,7 @@ async function registerAndBook() {
   } catch(e) { /* ถ้าเช็คไม่ได้ ปล่อยให้บันทึกต่อไป ดีกว่าบล็อกเพราะปัญหาเครือข่าย */ }
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
   var regTermsAcceptedAt = new Date().toLocaleString('th-TH');
-  var data={action:'addOwner',name,phone,province:finalProv,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+finalProv,timestamp:regTermsAcceptedAt,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt};
+  var data={action:'addOwner',name,phone,province:finalProv,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+finalProv,timestamp:regTermsAcceptedAt,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt,email:email||'',acquisitionSource:acquisitionSource||''};
   try {
     var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
@@ -738,18 +752,10 @@ function updateDates() {
     var extraMins = calcOvernightExtra();
     var extraText = '';
     extraChargeType = '';
-    if (extraMins > 0 && extraMins <= 360) {
-      // เกิน ≤ 6 ชม. → คิด daycare
+    if (extraMins > 0) {
+      // เกินกำหนดเช็คเอาท์ ไม่ว่ากี่ชม. → คิด daycare เต็มราคา (ถ้ามารับหลัง 20:00 จะมี after-hours surcharge เพิ่มแยกอัตโนมัติ)
       extraChargeType = 'daycare';
-      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Daycare rate';
-    } else if (extraMins > 360) {
-      // เกิน > 6 ชม. → คิดราคาเต็มวัน (overnight +1)
-      extraChargeType = 'overnight';
-      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Overnight rate';
-    } else if (extraMins < 0) {
-      // pick-up ก่อน drop-off = ไม่มีส่วนเกิน
-      extraChargeType = '';
-      extraText = '';
+      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Daycare rate (ถ้ามารับหลัง 20:00 จะมีค่า after-hours เพิ่มตามจริง)';
     }
     var extraBox = document.getElementById('overnight_extra');
     extraBox.style.display = extraText ? 'block' : 'none';
@@ -826,8 +832,6 @@ function calcDogPrice(size) {
   // extra ส่วนเกินวันสุดท้าย
   if (extraChargeType === 'daycare') {
     base += PRICES.daycare[size];
-  } else if (extraChargeType === 'overnight') {
-    base += PRICES.overnight[size];
   }
   return base;
 }
@@ -835,9 +839,7 @@ function calcDogPrice(size) {
 function getOvernightLabel() {
   var label = nights + ' คืน';
   if (extraChargeType === 'daycare') {
-    label += ' + Daycare (เกิน ≤6 ชม.)';
-  } else if (extraChargeType === 'overnight') {
-    label += ' + 1 คืน (เกิน >6 ชม.)';
+    label += ' + Daycare (เกินกำหนด มารับก่อน 20:00)';
   }
   return label;
 }
