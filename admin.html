@@ -28,6 +28,10 @@
   .step.active{background:#422F25;color:#FFF7EF;font-weight:700;}
   .step.done{background:#FDDA7B;color:#5b4327;}
   .form-group{margin-bottom:1.1rem;}
+  .searchable-dropdown-list{position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--gray-line);border-radius:6px;max-height:220px;overflow-y:auto;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,0.12);margin-top:2px;}
+  .searchable-dropdown-item{padding:0.6rem 0.8rem;cursor:pointer;font-size:0.9rem;color:var(--text);}
+  .searchable-dropdown-item:hover{background:var(--bg2);}
+  .searchable-dropdown-empty{padding:0.6rem 0.8rem;font-size:0.85rem;color:var(--gray-dark);}
   .form-group label{display:block;font-size:0.68rem;letter-spacing:0.15em;color:var(--gold);margin-bottom:0.4rem;text-transform:uppercase;font-weight:500;font-family:'Space Mono','IBM Plex Sans Thai',monospace;}
   .form-group input,.form-group select{width:100%;padding:0.75rem 0.9rem;border:1px solid var(--gray-line);font-size:0.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color 0.2s;border-radius:4px;font-family:'Hanken Grotesk','IBM Plex Sans Thai',sans-serif;}
   .form-group input:focus,.form-group select:focus{border-color:#422F25;}
@@ -141,18 +145,15 @@
       <div class="form-group"><label>เบอร์โทรศัพท์ * (10 หลัก)</label><input type="tel" id="own_phone" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
       <div class="form-group"><label>อีเมล *</label><input type="email" id="own_email" placeholder="example@email.com" oninput="validateEmailFormat()"/><div id="email_format_msg" style="font-size:0.75rem;color:var(--red);margin-top:0.3rem;"></div></div>
       <div class="form-group"><label>บ้านเลขที่ / ถนน *</label><input type="text" id="own_address_detail" placeholder="เช่น 123/4 หมู่บ้านอนาสิริ ถ.บางใหญ่"/></div>
-      <div class="form-group"><label>จังหวัด *</label>
-        <input type="text" id="own_province" list="province_datalist" placeholder="พิมพ์ค้นหาจังหวัด..." oninput="updateDistricts()"/>
-        <datalist id="province_datalist">
-          <option value="กรุงเทพมหานคร"></option>
-          <option value="นนทบุรี"></option>
-          <option value="นครปฐม"></option>
-          <option value="ปทุมธานี"></option>
-        </datalist>
+      <div class="form-group" style="position:relative;"><label>จังหวัด *</label>
+        <input type="text" id="own_province" placeholder="พิมพ์ค้นหาจังหวัด..." autocomplete="off"
+          oninput="filterDropdown('province')" onfocus="filterDropdown('province')" onblur="setTimeout(function(){closeDropdown('province')},150)"/>
+        <div id="province_dropdown_list" class="searchable-dropdown-list" style="display:none;"></div>
       </div>
-      <div class="form-group"><label>เขต / อำเภอ *</label>
-        <input type="text" id="own_district" list="district_datalist" placeholder="พิมพ์ค้นหาเขต/อำเภอ..."/>
-        <datalist id="district_datalist"></datalist>
+      <div class="form-group" style="position:relative;"><label>เขต / อำเภอ *</label>
+        <input type="text" id="own_district" placeholder="เลือกจังหวัดก่อน..." autocomplete="off"
+          oninput="filterDropdown('district')" onfocus="filterDropdown('district')" onblur="setTimeout(function(){closeDropdown('district')},150)"/>
+        <div id="district_dropdown_list" class="searchable-dropdown-list" style="display:none;"></div>
       </div>
       <div class="form-group"><label>LINE Display Name (ถ้ามี)</label><input type="text" id="own_line_name" placeholder="ชื่อ LINE ของลูกค้า เผื่ออ้างอิง"/></div>
       <div class="form-group"><label>รู้จักเราจากไหน (ถ้าทราบ)</label>
@@ -210,7 +211,7 @@
       </div>
       <div id="overnight_fields">
         <div class="form-row">
-          <div class="form-group"><label>วันที่ Drop-off</label><input type="date" id="bk_checkin" onchange="updateDates()"/></div>
+          <div class="form-group"><label>วันที่ Drop-off</label><input type="date" id="bk_checkin" onchange="onCheckinDateChange()"/></div>
           <div class="form-group"><label>วันที่ Pick-up</label><input type="date" id="bk_checkout" onchange="updateDates()"/></div>
         </div>
         <div class="form-row">
@@ -385,6 +386,7 @@ const PRICES = {
   }
 };
 const TIME_OPTIONS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00'];
+const PROVINCES = ['กรุงเทพมหานคร','นนทบุรี','นครปฐม','ปทุมธานี'];
 const DISTRICTS = {
   'กรุงเทพมหานคร':['คลองเตย','คลองสาน','คลองสามวา','คันนายาว','จตุจักร','จอมทอง','ดอนเมือง','ดินแดง','ดุสิต','ตลิ่งชัน','ทวีวัฒนา','ทุ่งครุ','ธนบุรี','บางเขน','บางแค','บางกอกใหญ่','บางกอกน้อย','บางกะปิ','บางขุนเทียน','บางคอแหลม','บางซื่อ','บางนา','บางบอน','บางพลัด','บางรัก','บึงกุ่ม','ปทุมวัน','ประเวศ','ป้อมปราบศัตรูพ่าย','พญาไท','พระโขนง','พระนคร','ภาษีเจริญ','มีนบุรี','ยานนาวา','ราชเทวี','ราษฎร์บูรณะ','ลาดกระบัง','ลาดพร้าว','วังทองหลาง','วัฒนา','สวนหลวง','สะพานสูง','สัมพันธวงศ์','สาทร','สายไหม','หนองแขม','หนองจอก','หลักสี่','ห้วยขวาง'],
   'นนทบุรี':['เมืองนนทบุรี','บางกรวย','บางใหญ่','บางบัวทอง','ไทรน้อย','ปากเกร็ด'],
@@ -445,6 +447,20 @@ function fillTimeSelect(id, defaultVal, minTime) {
     + options.map(function(t){return '<option value="'+t+'"'+(t===defaultVal?' selected':'')+'>'+t+'</option>';}).join('');
 }
 
+function onCheckinDateChange() {
+  var ciDate = document.getElementById('bk_checkin').value;
+  var coDateEl = document.getElementById('bk_checkout');
+  if (!ciDate) {
+    coDateEl.value = '';
+    coDateEl.disabled = true;
+  } else {
+    coDateEl.disabled = false;
+    coDateEl.min = ciDate;
+    if (coDateEl.value && coDateEl.value < ciDate) coDateEl.value = '';
+  }
+  updateDates();
+}
+
 function onCheckinTimeChange() {
   var ciTime = document.getElementById('bk_checkin_time').value;
   var coSel = document.getElementById('bk_checkout_time');
@@ -453,7 +469,7 @@ function onCheckinTimeChange() {
     coSel.disabled = true;
   } else {
     coSel.disabled = false;
-    fillTimeSelect('bk_checkout_time', '', ciTime);
+    fillTimeSelect('bk_checkout_time', ''); // ไม่กรองเวลา เพราะ Pick-up (Overnight) อยู่คนละวันกับ Drop-off เสมอ
   }
   updateDates();
 }
@@ -554,15 +570,51 @@ function validateEmailFormat() {
   var email = document.getElementById('own_email').value.trim();
   var msgEl = document.getElementById('email_format_msg');
   if (!email) { msgEl.textContent = ''; return; }
-  var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  var valid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
   msgEl.textContent = valid ? '' : 'รูปแบบอีเมลไม่ถูกต้อง';
 }
 
-function updateDistricts() {
-  var province = document.getElementById('own_province').value.trim();
-  var datalist = document.getElementById('district_datalist');
-  var districts = DISTRICTS[province] || [];
-  datalist.innerHTML = districts.map(function(d){ return '<option value="'+d+'"></option>'; }).join('');
+function filterDropdown(type) {
+  var inputId = type === 'province' ? 'own_province' : 'own_district';
+  var input = document.getElementById(inputId);
+  var list = document.getElementById(type + '_dropdown_list');
+  var query = input.value.trim().toLowerCase();
+  var options;
+  if (type === 'province') {
+    options = PROVINCES;
+  } else {
+    var province = document.getElementById('own_province').value.trim();
+    options = DISTRICTS[province] || [];
+    if (!province) {
+      list.innerHTML = '<div class="searchable-dropdown-empty">เลือกจังหวัดก่อน</div>';
+      list.style.display = 'block';
+      return;
+    }
+  }
+  var filtered = options.filter(function(o){ return o.toLowerCase().indexOf(query) > -1; });
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="searchable-dropdown-empty">ไม่พบตัวเลือกที่ตรงกัน</div>';
+    list.style.display = 'block';
+    return;
+  }
+  list.innerHTML = filtered.map(function(o){
+    return '<div class="searchable-dropdown-item" onmousedown="selectDropdownItem(\''+type+'\',\''+o+'\')">'+o+'</div>';
+  }).join('');
+  list.style.display = 'block';
+}
+
+function selectDropdownItem(type, value) {
+  var inputId = type === 'province' ? 'own_province' : 'own_district';
+  document.getElementById(inputId).value = value;
+  closeDropdown(type);
+  if (type === 'province') {
+    document.getElementById('own_district').value = '';
+  }
+}
+
+function closeDropdown(type) {
+  var list = document.getElementById(type + '_dropdown_list');
+  if (list) list.style.display = 'none';
 }
 
 async function registerOwner() {
@@ -577,10 +629,12 @@ async function registerOwner() {
   if(!name){showMsg('newuser_msg','กรุณากรอกชื่อของคุณพ่อคุณแม่','error');return;}
   if(!phone||phone.length!==10){showMsg('newuser_msg','กรุณากรอกเบอร์โทรให้ครบ 10 หลัก','error');return;}
   if(!email){showMsg('newuser_msg','กรุณากรอกอีเมล','error');return;}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showMsg('newuser_msg','กรุณากรอกอีเมลให้ถูกต้อง','error');return;}
+  if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)){showMsg('newuser_msg','กรุณากรอกอีเมลให้ถูกต้อง','error');return;}
   if(!addr){showMsg('newuser_msg','กรุณากรอกบ้านเลขที่/ถนน','error');return;}
-  if(!province){showMsg('newuser_msg','กรุณาเลือกหรือพิมพ์จังหวัด','error');return;}
-  if(!district){showMsg('newuser_msg','กรุณาเลือกหรือพิมพ์เขต/อำเภอ','error');return;}
+  if(!province){showMsg('newuser_msg','กรุณาเลือกจังหวัดจากลิสต์','error');return;}
+  if(PROVINCES.indexOf(province)===-1){showMsg('newuser_msg','กรุณาเลือกจังหวัดจากลิสต์ที่มีให้','error');return;}
+  if(!district){showMsg('newuser_msg','กรุณาเลือกเขต/อำเภอจากลิสต์','error');return;}
+  if((DISTRICTS[province]||[]).indexOf(district)===-1){showMsg('newuser_msg','กรุณาเลือกเขต/อำเภอจากลิสต์ที่มีให้','error');return;}
   if(!document.getElementById('reg_terms_accept_checkbox').checked){showMsg('newuser_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อน','error');return;}
   document.getElementById('regBtn').disabled=true;
   showMsg('newuser_msg','⏳ กำลังตรวจสอบเบอร์โทร...','success');
@@ -1330,8 +1384,8 @@ window.addEventListener('load', function() {
   document.documentElement.lang='th';
   var today=new Date().toISOString().slice(0,10);
   document.getElementById('bk_checkin').min=today;
-  document.getElementById('bk_checkin').value=today;
   document.getElementById('bk_checkout').min=today;
+  document.getElementById('bk_checkout').disabled=true;
   document.getElementById('bk_daycare_date').min=today;
   fillTimeSelect('bk_checkin_time','');
   document.getElementById('bk_checkout_time').innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
