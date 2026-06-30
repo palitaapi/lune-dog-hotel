@@ -82,9 +82,16 @@
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
   .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.88rem;}
-  .summary-row-dog{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;padding:0.55rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.72rem;}
-  .summary-row-dog .summary-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+  .summary-row-dog{display:block;padding:0.7rem 0.9rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.72rem;}
+  .summary-row-dog .summary-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;display:block;margin-bottom:0.4rem;}
   .summary-row-dog .summary-val{flex-shrink:0;font-weight:700;color:var(--gold);}
+  .dog-price-breakdown{display:table;width:100%;border-collapse:collapse;}
+  .dog-price-line{display:table-row;}
+  .dog-price-line .dpl-label{display:table-cell;padding:0.1rem 0;color:var(--gray-dark);font-weight:400;white-space:nowrap;}
+  .dog-price-line .dpl-eq{display:table-cell;padding:0.1rem 0.4rem;color:var(--gray-dark);text-align:right;width:1%;white-space:nowrap;}
+  .dog-price-line .dpl-amt{display:table-cell;padding:0.1rem 0;text-align:right;width:100%;white-space:nowrap;}
+  .dog-price-line.total .dpl-label,.dog-price-line.total .dpl-eq,.dog-price-line.total .dpl-amt{font-weight:700;color:var(--black);border-top:1px solid var(--gray-line);padding-top:0.35rem;margin-top:0.2rem;}
+  .dog-price-line.discount .dpl-amt{color:var(--green);}
   .summary-row:last-child{border-bottom:none;}
   .summary-label{color:var(--gray-dark);font-weight:300;}
   .summary-val{font-weight:500;}
@@ -1231,8 +1238,41 @@ function goStep3() {
   totalPrice += surcharge;
 
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
+  var OVERNIGHT_RATE = PRICES.overnight;
+  var DAYCARE_RATE = PRICES.daycare;
   var dogsHtml=dogsByPriceDesc.map(function(d){
-    return '<div class="summary-row-dog"><span class="summary-label">'+d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'')+(d.finalPrice<d.price?' <span style="color:var(--green);">· -10%</span>':'')+'</span><span class="summary-val">฿'+d.finalPrice.toLocaleString()+'</span></div>';
+    var size = d.size;
+    var lines = [];
+    var preDiscountPrice;
+
+    if (bookingType === 'overnight') {
+      var nightlyRate = OVERNIGHT_RATE[size];
+      var nightlyTotal = nightlyRate * nights;
+      lines.push('<div class="dog-price-line"><span class="dpl-label">Overnight '+nights+' day'+(nights===1?'':'s')+' × ฿'+nightlyRate.toLocaleString()+'</span><span class="dpl-eq">=</span><span class="dpl-amt">฿'+nightlyTotal.toLocaleString()+'</span></div>');
+      preDiscountPrice = nightlyTotal;
+      if (extraChargeType === 'daycare') {
+        var extraAmt = DAYCARE_RATE[size];
+        lines.push('<div class="dog-price-line"><span class="dpl-label">Daycare 1 day x ฿'+extraAmt.toLocaleString()+'</span><span class="dpl-eq">=</span><span class="dpl-amt">฿'+extraAmt.toLocaleString()+'</span></div>');
+        preDiscountPrice += extraAmt;
+      } else if (extraChargeType === 'overnight') {
+        var extraAmt2 = OVERNIGHT_RATE[size];
+        lines.push('<div class="dog-price-line"><span class="dpl-label">Overnight 1 day x ฿'+extraAmt2.toLocaleString()+'</span><span class="dpl-eq">=</span><span class="dpl-amt">฿'+extraAmt2.toLocaleString()+'</span></div>');
+        preDiscountPrice += extraAmt2;
+      }
+    } else {
+      var daycareAmt = DAYCARE_RATE[size];
+      lines.push('<div class="dog-price-line"><span class="dpl-label">Daycare 1 day</span><span class="dpl-eq">=</span><span class="dpl-amt">฿'+daycareAmt.toLocaleString()+'</span></div>');
+      preDiscountPrice = daycareAmt;
+    }
+
+    var discountAmt = preDiscountPrice - d.finalPrice;
+    if (discountAmt > 0) {
+      lines.push('<div class="dog-price-line discount"><span class="dpl-label">Discount 10%</span><span class="dpl-eq">=</span><span class="dpl-amt">-฿'+discountAmt.toLocaleString()+'</span></div>');
+    }
+    lines.push('<div class="dog-price-line total"><span class="dpl-label">Total</span><span class="dpl-eq">=</span><span class="dpl-amt">฿'+d.finalPrice.toLocaleString()+'</span></div>');
+
+    var headerLabel = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'');
+    return '<div class="summary-row-dog"><span class="summary-label">'+headerLabel+'</span><div class="dog-price-breakdown">'+lines.join('')+'</div></div>';
   }).join('');
 
   document.getElementById('summary_content').innerHTML=
