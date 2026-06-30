@@ -476,7 +476,7 @@ function debouncedPaymentSearch() {
 
 async function loadAllBookingsGrouped() {
   if (allBookingsCache) return allBookingsCache;
-  var res = await fetch('https://docs.google.com/spreadsheets/d/'+BOOKING_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Booking');
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Booking');
   var raw = await res.text();
   var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
   var rows = (json.table ? json.table.rows || [] : []).map(function(row) {
