@@ -58,9 +58,6 @@
   .saved-dog-card .check{position:absolute;top:0.5rem;right:0.5rem;width:18px;height:18px;background:#422F25;border-radius:50%;display:none;align-items:center;justify-content:center;color:#FFF7EF;font-size:0.7rem;}
   .saved-dog-card.selected .check{display:flex;}
   .add-new-dog-btn{width:100%;padding:0.8rem;border:1px dashed var(--gray-line);background:transparent;color:var(--gray-dark);font-size:0.85rem;cursor:pointer;border-radius:2px;transition:all 0.2s;margin-bottom:1.2rem;}
-  .mode-tabs{display:flex;gap:0.6rem;margin-bottom:1.8rem;}
-  .mode-tab{flex:1;padding:0.7rem;text-align:center;font-size:0.78rem;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--white);transition:all .15s;}
-  .mode-tab.active{background:#422F25;color:#FFF7EF;border-color:#422F25;}
   .add-new-dog-btn:hover{border-color:#422F25;color:#422F25;}
   .dog-card-breed{margin-bottom:0.2rem;}
   .dog-card-badges{margin:0.35rem 0 0.1rem;}
@@ -79,10 +76,9 @@
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
   .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.88rem;}
-  .summary-row-dog{padding:0.6rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.78rem;}
-  .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .summary-row-dog .row-line{font-size:0.74rem;color:var(--gray-dark);padding-left:0.8rem;margin-top:0.3rem;}
-  .summary-row-dog .row-total{font-weight:700;color:var(--gold);margin-top:0.4rem;font-size:0.8rem;}
+  .summary-row-dog{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;padding:0.55rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.72rem;}
+  .summary-row-dog .summary-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+  .summary-row-dog .summary-val{flex-shrink:0;font-weight:700;color:var(--gold);}
   .summary-row:last-child{border-bottom:none;}
   .summary-label{color:var(--gray-dark);font-weight:300;}
   .summary-val{font-weight:500;}
@@ -137,7 +133,6 @@
     <p class="subtitle">กรอกข้อมูลให้ครบเพื่อเริ่มจอง · Fill in your details to start booking.</p>
     <div class="form-group"><label>ชื่อของคุณพ่อคุณแม่ *</label><input type="text" id="own_name" placeholder=""/></div>
     <div class="form-group"><label>เบอร์โทรศัพท์ * (10 หลัก)</label><input type="tel" id="own_phone" placeholder="0XX-XXX-XXXX" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
-    <div class="form-group"><label>อีเมล (ถ้ามี)</label><input type="email" id="own_email" placeholder="example@email.com"/></div>
     <div class="form-group"><label>บ้านเลขที่ / ถนน *</label><input type="text" id="own_address_detail" placeholder="เช่น 123/4 หมู่บ้านอนาสิริ ถ.บางใหญ่"/></div>
     <div class="form-group"><label>จังหวัด *</label>
       <select id="own_province" onchange="updateDistricts()">
@@ -148,30 +143,6 @@
     <div class="form-group" id="other_province_group" style="display:none;"><label>ระบุจังหวัด *</label><input type="text" id="own_province_other" placeholder="กรุณาระบุจังหวัด"/></div>
     <div class="form-group"><label>เขต / อำเภอ *</label><select id="own_district"><option value="">— เลือกจังหวัดก่อน —</option></select></div>
     <div class="form-group" id="other_district_group" style="display:none;"><label>ระบุเขต / อำเภอ *</label><input type="text" id="own_district_other" placeholder="กรุณาระบุเขต/อำเภอ"/></div>
-    <div class="form-group"><label>รู้จักเราจากไหน (ถ้าทราบ)</label>
-      <select id="own_acquisition_source">
-        <option value="">— เลือก —</option>
-        <option value="Facebook/Instagram Ads">Facebook / Instagram Ads</option>
-        <option value="Google ค้นหา">Google ค้นหา</option>
-        <option value="เพื่อน/คนรู้จักแนะนำ">เพื่อน/คนรู้จักแนะนำ</option>
-        <option value="เดินผ่าน/เห็นหน้าร้าน">เดินผ่าน/เห็นหน้าร้าน</option>
-        <option value="TikTok">TikTok</option>
-        <option value="อื่นๆ">อื่นๆ</option>
-      </select>
-    </div>
-    <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1rem 0;">
-      <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
-      · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
-      · วัคซีนครบ + ป้องกันเห็บหมัดสม่ำเสมอ · งดรับหมาป่วย<br>
-      · มัดจำ 50% ไม่สามารถขอคืนได้ (เลื่อนวันได้ 1 ครั้ง)<br>
-      <a href="#" onclick="event.preventDefault();openTerms('newuser');" style="color:var(--gold);text-decoration:underline;font-weight:600;">อ่านเงื่อนไขทั้งหมด (12 ข้อ) →</a>
-    </div>
-    <div style="margin-bottom:1rem;">
-      <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:var(--gray-dark);cursor:pointer;">
-        <input type="checkbox" id="reg_terms_accept_checkbox" style="margin-top:0.2rem;flex-shrink:0;width:16px;height:16px;cursor:pointer;"/>
-        <span>ฉันได้อ่านและยอมรับเงื่อนไขการรับฝากข้างต้นแล้ว</span>
-      </label>
-    </div>
     <button class="btn-primary" id="regBtn" onclick="registerAndBook()">Next → ถัดไป</button>
     <div id="newuser_msg"></div>
   </div>
@@ -184,20 +155,16 @@
       <h2>Select Dates · เลือกวันที่</h2>
       <div class="divider"></div>
       <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
-        <strong style="font-size:.76rem;">Hours</strong><br>
-        · Drop-off &amp; Pick-up: 8:00–20:00 น.<br>
-        · มารับหลัง 20:00 น. มีค่า after-hours เพิ่ม ฿100/ชม.<br><br>
-        <strong style="font-size:.76rem;">Daycare</strong><br>
-        · ฝาก-รับภายในวันเดียวกัน ไม่ค้างคืน<br><br>
-        <strong style="font-size:.76rem;">Overnight</strong><br>
+        <strong style="font-size:.76rem;">อัตราค่าบริการ</strong><br>
         · 24 ชม. นับเป็นราคา 1 คืน<br>
-        · เกินกำหนดเช็คเอาท์ คิดราคา Daycare เพิ่ม (ถ้ามารับก่อน 20:00 น.)
+        · เศษไม่เกิน 6 ชม. คิดราคา Daycare · เกิน 6 ชม. คิดราคา 1 คืน<br>
+        · Drop-off &amp; Pick-up: 8:00–20:00 น. · รับนอกเวลาแนะนำจองแบบค้างคืน หรือแจ้งล่วงหน้าเป็นกรณีพิเศษ
       </div>
       <div class="form-group"><label>ประเภทการฝาก</label>
-        <div class="mode-tabs">
-          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">Overnight Care<br><span style="font-size:0.7rem;opacity:0.8;">ค้างคืน</span></div>
-          <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">Daycare<br><span style="font-size:0.7rem;opacity:0.8;">ฝากรายวัน</span></div>
-        </div>
+        <select id="bk_type" onchange="updateType()">
+          <option value="overnight">Overnight Care (ค้างคืน)</option>
+          <option value="daycare">Daycare (ฝากรายวัน)</option>
+        </select>
       </div>
       <!-- OVERNIGHT -->
       <div id="overnight_fields">
@@ -233,17 +200,12 @@
       <div class="section-label">Step 2 · ขั้นตอนที่ 2</div>
       <h2>Your Dogs · น้องหมาของคุณ</h2>
       <div class="divider"></div>
-      <div style="display:flex;gap:0.7rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-        <div style="flex:1;min-width:150px;background:var(--bg);border:1px solid var(--honey);border-radius:8px;padding:0.75rem 0.9rem;">
-          <div style="font-size:0.64rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;font-weight:600;">New guests</div>
-          <div style="font-size:0.86rem;font-weight:600;color:var(--black);margin-bottom:0.4rem;">คืนแรกลด 25%</div>
-          <div style="font-size:0.66rem;color:var(--gray-dark);font-style:italic;line-height:1.4;">*ส่วนลดหลังจากจ่ายค่าใช้จ่ายที่เหลือจากค่ามัดจำ</div>
-        </div>
-        <div style="flex:1;min-width:150px;background:var(--bg);border:1px solid var(--honey);border-radius:8px;padding:0.75rem 0.9rem;">
-          <div style="font-size:0.64rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;font-weight:600;">Multi-dog</div>
-          <div style="font-size:0.86rem;font-weight:600;color:var(--black);margin-bottom:0.4rem;">ตัวที่ 2 เป็นต้นไปลด 10%</div>
-          <div style="font-size:0.66rem;color:var(--gray-dark);font-style:italic;line-height:1.4;">*ส่วนลดอัตโนมัติตอนกดจองผ่านระบบ</div>
-        </div>
+      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
+        <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก</strong><br>
+        · รับน้องหมาทุกขนาดและทุกสายพันธุ์ที่ friendly กับเพื่อนๆและพี่เลี้ยง<br>
+        · น้องหมาทุกตัวจะต้องได้รับวัคซีนครบแล้วเท่านั้น<br>
+        · น้องหมาทุกตัวจะต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br>
+        · งดรับน้องหมาที่ป่วยหรือต้องการการดูแลเป็นพิเศษ
       </div>
 
       <div id="pending_new_dogs_section" style="display:none;margin-bottom:1.5rem;"></div>
@@ -261,23 +223,6 @@
       </div>
 
       <div id="dog_msg"></div>
-
-      <div id="step2_terms_section">
-        <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1.2rem 0;">
-          <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
-          · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
-          · วัคซีนครบ + ป้องกันเห็บหมัดสม่ำเสมอ · งดรับหมาป่วย<br>
-          · มัดจำ 50% ไม่สามารถขอคืนได้ (เลื่อนวันได้ 1 ครั้ง)<br>
-          <a href="#" onclick="event.preventDefault();openTerms('step2');" style="color:var(--gold);text-decoration:underline;font-weight:600;">อ่านเงื่อนไขทั้งหมด (12 ข้อ) →</a>
-        </div>
-        <div style="margin-bottom:1.2rem;">
-          <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:var(--gray-dark);cursor:pointer;">
-            <input type="checkbox" id="terms_accept_checkbox" style="margin-top:0.2rem;flex-shrink:0;width:16px;height:16px;cursor:pointer;"/>
-            <span>ฉันได้อ่านและยอมรับเงื่อนไขการรับฝากข้างต้นแล้ว</span>
-          </label>
-        </div>
-      </div>
-
       <div class="btn-row">
         <button class="btn-secondary" onclick="showScreen('step1')">← Back · ย้อนกลับ</button>
         <button class="btn-primary" onclick="goStep3()">Review Booking → ดูสรุป</button>
@@ -316,36 +261,6 @@
     </div>
   </div>
 
-  <!-- TERMS -->
-  <div id="screen-terms" style="display:none;">
-    <div class="card">
-      <div class="section-label">Terms · เงื่อนไขการรับฝาก</div>
-      <h2>เงื่อนไขการรับฝากน้องหมา</h2>
-      <div class="divider"></div>
-      <div style="font-size:0.85rem;line-height:1.9;color:var(--text);">
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การรับฝาก</strong><br><br>
-        1. ทางร้านยินดีรับน้องหมาทุกขนาดและทุกสายพันธุ์ ที่เข้าสังคมได้ดีกับเพื่อนๆและพี่เลี้ยง เพราะน้องๆทุกตัวจะใช้พื้นที่ร่วมกันแบบไม่ขังกรง<br><br>
-        2. น้องหมาทุกตัวต้องมีอายุตั้งแต่ 90 วัน (3 เดือน) ขึ้นไป<br><br>
-        3. น้องหมาทุกตัวต้องได้รับวัคซีนครบตามอายุแล้วเท่านั้น<br><br>
-        4. น้องหมาทุกตัวต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br><br>
-        5. ทางร้านขอสงวนสิทธิ์ไม่รับฝากน้องหมาที่ป่วย มีโรคติดต่อ หรือมีอาการที่ต้องการการดูแลเป็นพิเศษเกินกว่าที่ทางร้านจะดูแลได้อย่างปลอดภัย<br><br>
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">ความรับผิดชอบระหว่างการพัก</strong><br><br>
-        6. หากน้องหมามีพฤติกรรมก้าวร้าวหรือทำร้ายน้องหมาตัวอื่นระหว่างการพัก อันมิได้เกิดจากความบกพร่องในการดูแลของทางร้าน เจ้าของยินดีรับผิดชอบค่ารักษาพยาบาลของอีกฝ่ายตามจริง<br><br>
-        7. ในทางกลับกัน หากเกิดอุบัติเหตุหรือความเสียหายใดๆขึ้นจากความบกพร่องในการดูแลของทางร้านเอง ทางร้านจะเป็นผู้รับผิดชอบค่าใช้จ่ายที่เกี่ยวข้องทั้งหมด<br><br>
-        8. หากน้องหมาทำให้ทรัพย์สินของทางร้านเสียหาย เจ้าของยินดีรับผิดชอบค่าเสียหายตามมูลค่าจริงที่ทางร้านแจ้งให้ทราบ<br><br>
-        9. กรณีน้องหมาเจ็บป่วยหรือเกิดอุบัติเหตุกะทันหันจากเหตุสุดวิสัยระหว่างพัก หากทางร้านไม่สามารถติดต่อเจ้าของได้ในทันที เจ้าของยินยอมให้ทางร้านนำส่งน้องหมาเข้ารับการรักษาที่โรงพยาบาลสัตว์ที่ใกล้ที่สุดได้ทันที โดยเจ้าของเป็นผู้รับผิดชอบค่าใช้จ่ายในการรักษาทั้งหมด<br><br>
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การจองและการชำระเงิน</strong><br><br>
-        10. การจองจะยืนยันสมบูรณ์เมื่อชำระมัดจำ 50% ของยอดรวมแล้วเท่านั้น<br><br>
-        11. มัดจำที่ชำระแล้วไม่สามารถขอคืนได้ แต่สามารถขอเลื่อนวันเข้าพักได้ 1 ครั้ง<br><br>
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">กรณีติดต่อเจ้าของไม่ได้</strong><br><br>
-        12. กรณีที่เจ้าของทิ้งน้องหมาไว้และทางร้านไม่สามารถติดต่อได้ภายใน 7 วัน ทางร้านจะดำเนินการตามกฎหมายที่เกี่ยวข้องต่อไป
-      </div>
-      <div class="btn-row">
-        <button class="btn-primary" onclick="showScreen(termsReturnScreen||'step2')" style="margin:0 auto;max-width:280px;">← กลับ</button>
-      </div>
-    </div>
-  </div>
-
   <!-- SUCCESS -->
   <div id="screen-success" class="card" style="display:none;">
     <div class="success-screen">
@@ -370,7 +285,6 @@ const LINE_CHANNEL_ID = '2009980301';
 const LINE_REDIRECT   = 'https://palitaapi.github.io/lune-dog-hotel/booking.html';
 const LINE_STATE      = Math.random().toString(36).substring(7);
 const MAX_CAP = 8;
-const TERMS_VERSION = '2026-06-25'; // เปลี่ยนค่านี้ทุกครั้งที่แก้เงื่อนไข จะบังคับให้ลูกค้าเก่าติ๊กยอมรับใหม่อัตโนมัติ
 const OVERNIGHT_PRICES = {small:400,medium:550,large:700};
 const DAYCARE_DISCOUNT = 0.30; // ราคา daycare = overnight ลด 30%
 const PRICES = {
@@ -397,25 +311,18 @@ let availData = {};
 let savedDogs = [];
 let pendingNewDogs = [];
 let editingPendingIdx = null;
-let termsAcceptedAt = null;
-let termsReturnScreen = null;
 let selectedSavedDogs = []; // [{dogId, name, breed, gender, neutered, weight}]
 let showingNewDogForm = false;
 
 // ── UTILS ─────────────────────────────────────────────
 function showScreen(name) {
-  ['loading','login','newuser','step1','step2','step3','success','editdog','terms'].forEach(function(s) {
+  ['loading','login','newuser','step1','step2','step3','success','editdog'].forEach(function(s) {
     var el = document.getElementById('screen-'+s);
     if (el) el.style.display = 'none';
   });
   var el = document.getElementById('screen-'+name);
   if (el) el.style.display = 'block';
   window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function openTerms(fromScreen) {
-  termsReturnScreen = fromScreen;
-  showScreen('terms');
 }
 function showMsg(id, msg, type) {
   var el = document.getElementById(id);
@@ -454,8 +361,8 @@ async function checkOwner(profile) {
     var raw = await res.text();
     var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table?json.table.rows||[]:[]).forEach(function(row) {
-      if (String(row.c&&row.c[8]?row.c[8].v||'':'').trim()===profile.userId) {
-        currentOwner = Object.assign({},currentOwner,{ownerId:row.c[1]?row.c[1].v:'',name:row.c[2]?row.c[2].v:'',phone:row.c[3]?row.c[3].v:'',termsVersion:row.c[11]?String(row.c[11].v||'').trim():'',termsAcceptedAt:row.c[12]?String(row.c[12].v||'').trim():''});
+      if (String(row.c&&row.c[4]?row.c[4].v||'':'').trim()===profile.userId) {
+        currentOwner = Object.assign({},currentOwner,{ownerId:row.c[1]?row.c[1].v:'',name:row.c[2]?row.c[2].v:'',phone:row.c[3]?row.c[3].v:''});
       }
     });
   } catch(e) {}
@@ -506,14 +413,8 @@ async function loadSavedDogs() {
   } catch(e) { savedDogs = []; }
 }
 
-function needsTermsAcceptance() {
-  return !currentOwner || !currentOwner.termsVersion || currentOwner.termsVersion !== TERMS_VERSION;
-}
-
 function renderSavedDogs() {
   renderPendingNewDogs();
-  var termsSection = document.getElementById('step2_terms_section');
-  if (termsSection) termsSection.style.display = needsTermsAcceptance() ? 'block' : 'none';
   if (savedDogs.length === 0) {
     document.getElementById('saved_dogs_section').style.display = 'none';
     document.getElementById('new_dog_section').style.display = 'block';
@@ -633,10 +534,8 @@ async function loadAllOwners() {
       ownerId:  c[1] ? String(c[1].v || '').trim() : '',
       name:     c[2] ? String(c[2].v || '').trim() : '',
       phone:    c[3] ? String(c[3].v || '').trim() : '',
-      lineId:   c[8] ? String(c[8].v || '').trim() : '',
-      lineName: c[9] ? String(c[9].v || '').trim() : '',
-      termsVersion:     c[11] ? String(c[11].v || '').trim() : '',
-      termsAcceptedAt:  c[12] ? String(c[12].v || '').trim() : '',
+      lineId:   c[4] ? String(c[4].v || '').trim() : '',
+      lineName: c[5] ? String(c[5].v || '').trim() : '',
     };
   }).filter(function(o){ return o.ownerId; });
   allOwnersCache = rows;
@@ -652,15 +551,12 @@ async function registerAndBook() {
   var isOther=province==='อื่นๆ';
   var finalProv=isOther?document.getElementById('own_province_other').value.trim():province;
   var district=isOther?document.getElementById('own_district_other').value.trim():document.getElementById('own_district').value;
-  var email=document.getElementById('own_email').value.trim();
-  var acquisitionSource=document.getElementById('own_acquisition_source').value;
   if(!name){showMsg('newuser_msg','กรุณากรอกชื่อของคุณพ่อคุณแม่','error');return;}
   if(!phone||phone.length!==10){showMsg('newuser_msg','กรุณากรอกเบอร์โทรให้ครบ 10 หลัก','error');return;}
   if(!addr){showMsg('newuser_msg','กรุณากรอกบ้านเลขที่/ถนน','error');return;}
   if(!province){showMsg('newuser_msg','กรุณาเลือกจังหวัด','error');return;}
   if(!finalProv){showMsg('newuser_msg','กรุณาระบุจังหวัด','error');return;}
   if(!district){showMsg('newuser_msg','กรุณาเลือกหรือระบุเขต/อำเภอ','error');return;}
-  if(!document.getElementById('reg_terms_accept_checkbox').checked){showMsg('newuser_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อน','error');return;}
   document.getElementById('regBtn').disabled=true;
   showMsg('newuser_msg','⏳ กำลังตรวจสอบเบอร์โทร...','success');
   var phoneNorm = phone.replace(/\D/g,'');
@@ -674,12 +570,11 @@ async function registerAndBook() {
     }
   } catch(e) { /* ถ้าเช็คไม่ได้ ปล่อยให้บันทึกต่อไป ดีกว่าบล็อกเพราะปัญหาเครือข่าย */ }
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
-  var regTermsAcceptedAt = new Date().toLocaleString('th-TH');
-  var data={action:'addOwner',name,phone,province:finalProv,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+finalProv,timestamp:regTermsAcceptedAt,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt,email:email||'',acquisitionSource:acquisitionSource||''};
+  var data={action:'addOwner',name,phone,province:finalProv,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+finalProv,timestamp:new Date().toLocaleString('th-TH')};
   try {
     var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
-    currentOwner=Object.assign({},currentOwner,{ownerId:result.ownerId,name,phone,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt});
+    currentOwner=Object.assign({},currentOwner,{ownerId:result.ownerId,name,phone});
     allOwnersCache = null; // invalidate cache เพราะมี owner ใหม่เพิ่มเข้ามา
   } catch(e) { currentOwner=Object.assign({},currentOwner,{name,phone}); }
   showScreen('step1');
@@ -718,17 +613,11 @@ function timeToMins(t) {
   return parseInt(p[0]) * 60 + parseInt(p[1]);
 }
 
-function selectBookingType(type) {
-  bookingType = type;
-  document.getElementById('type_tab_overnight').classList.toggle('active', type==='overnight');
-  document.getElementById('type_tab_daycare').classList.toggle('active', type==='daycare');
-  document.getElementById('overnight_fields').style.display = type === 'overnight' ? 'block' : 'none';
-  document.getElementById('daycare_fields').style.display   = type === 'daycare'   ? 'block' : 'none';
-  updateDates();
-}
-
 function updateType() {
-  selectBookingType('overnight');
+  bookingType = document.getElementById('bk_type').value;
+  document.getElementById('overnight_fields').style.display = bookingType === 'overnight' ? 'block' : 'none';
+  document.getElementById('daycare_fields').style.display   = bookingType === 'daycare'   ? 'block' : 'none';
+  updateDates();
 }
 
 function calcOvernightExtra() {
@@ -757,10 +646,18 @@ function updateDates() {
     var extraMins = calcOvernightExtra();
     var extraText = '';
     extraChargeType = '';
-    if (extraMins > 0) {
-      // เกินกำหนดเช็คเอาท์ ไม่ว่ากี่ชม. → คิด daycare เต็มราคา (ถ้ามารับหลัง 20:00 จะมี after-hours surcharge เพิ่มแยกอัตโนมัติ)
+    if (extraMins > 0 && extraMins <= 360) {
+      // เกิน ≤ 6 ชม. → คิด daycare
       extraChargeType = 'daycare';
-      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Daycare rate (ถ้ามารับหลัง 20:00 จะมีค่า after-hours เพิ่มตามจริง)';
+      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Daycare rate';
+    } else if (extraMins > 360) {
+      // เกิน > 6 ชม. → คิดราคาเต็มวัน (overnight +1)
+      extraChargeType = 'overnight';
+      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Overnight rate';
+    } else if (extraMins < 0) {
+      // pick-up ก่อน drop-off = ไม่มีส่วนเกิน
+      extraChargeType = '';
+      extraText = '';
     }
     var extraBox = document.getElementById('overnight_extra');
     extraBox.style.display = extraText ? 'block' : 'none';
@@ -837,15 +734,18 @@ function calcDogPrice(size) {
   // extra ส่วนเกินวันสุดท้าย
   if (extraChargeType === 'daycare') {
     base += PRICES.daycare[size];
+  } else if (extraChargeType === 'overnight') {
+    base += PRICES.overnight[size];
   }
   return base;
 }
 
 function getOvernightLabel() {
-  var label = nights + ' ' + (nights===1?'day':'days') + ' (Overnight)';
+  var label = nights + ' คืน';
   if (extraChargeType === 'daycare') {
-    var extraHrs = Math.round(calcOvernightExtra()/60*10)/10;
-    label += ' + ' + extraHrs + ' ' + (extraHrs===1?'hr.':'hrs.') + ' (Daycare)';
+    label += ' + Daycare (เกิน ≤6 ชม.)';
+  } else if (extraChargeType === 'overnight') {
+    label += ' + 1 คืน (เกิน >6 ชม.)';
   }
   return label;
 }
@@ -1131,15 +1031,6 @@ async function saveDogEdit() {
 
 // ── STEP 3 ────────────────────────────────────────────
 function goStep3() {
-  if (needsTermsAcceptance()) {
-    if (!document.getElementById('terms_accept_checkbox').checked) {
-      showMsg('dog_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อนดำเนินการต่อ','error');
-      return;
-    }
-    termsAcceptedAt = new Date().toLocaleString('th-TH');
-    currentOwner.termsVersion = TERMS_VERSION;
-    currentOwner.termsAcceptedAt = termsAcceptedAt;
-  }
   var dogs = [];
 
   // จาก saved dogs ที่เลือก
@@ -1179,26 +1070,7 @@ function goStep3() {
 
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var dogsHtml=dogsByPriceDesc.map(function(d){
-    var headerName = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'');
-    var lines = [];
-    if (bookingType === 'overnight') {
-      var nightlyRate = PRICES.overnight[d.size];
-      var nightlyTotal = nightlyRate * nights;
-      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' '+(nights===1?'Day':'Days')+' x ฿'+nightlyRate.toLocaleString());
-      if (extraChargeType === 'daycare') {
-        lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day x ฿'+PRICES.daycare[d.size].toLocaleString());
-      }
-    } else {
-      lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day');
-    }
-    if (d.finalPrice < d.price) {
-      lines.push('- ฿'+(d.price-d.finalPrice).toLocaleString()+' = Discount 10%');
-    }
-    return '<div class="summary-row-dog">'
-      + '<div class="row-header">'+headerName+'</div>'
-      + lines.map(function(l){ return '<div class="row-line">'+l+'</div>'; }).join('')
-      + '<div class="row-total">Total = ฿'+d.finalPrice.toLocaleString()+'</div>'
-      + '</div>';
+    return '<div class="summary-row-dog"><span class="summary-label">'+d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'')+(d.finalPrice<d.price?' <span style="color:var(--green);">· -10%</span>':'')+'</span><span class="summary-val">฿'+d.finalPrice.toLocaleString()+'</span></div>';
   }).join('');
 
   document.getElementById('summary_content').innerHTML=
@@ -1253,11 +1125,9 @@ async function confirmBooking() {
     pickUpTime:  bookingType==='overnight' ? checkOutTime : pickUpTime,
     extraCharge: bookingType==='overnight' ? extraChargeType : '',
     nights:bookingType==='overnight'?nights:1,
-    totalPrice:'฿'+totalPrice.toLocaleString(),
+    totalPrice:totalPrice,
     allDates,
     timestamp:new Date().toLocaleString('th-TH'),
-    termsVersion: currentOwner.termsVersion || TERMS_VERSION,
-    termsAcceptedAt: currentOwner.termsAcceptedAt || termsAcceptedAt,
     dogs:dogs.map(function(d){
       return {
         dogId:    d.dogId||'',
@@ -1267,7 +1137,7 @@ async function confirmBooking() {
         neutered: d.neutered||'-',
         weight:   d.weight+'กก.',
         size:     d.size,
-        price:    '฿'+d.finalPrice.toLocaleString(),
+        price:    d.finalPrice,
       };
     }),
   };

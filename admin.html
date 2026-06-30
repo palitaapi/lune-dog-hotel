@@ -559,7 +559,7 @@ function renderPaymentResults(bookings) {
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
       + '<div class="bpc-meta">'+b.ownerName+' · '+(b.phone||'-')+'<br>'+b.type+' · '+dateLabel+'</div>'
       + '<div class="bpc-dogs">🐶 '+(b.dogNames.join(', ')||'-')+'</div>'
-      + '<div class="bpc-price">ยอดรวม '+b.totalPrice+' · มัดจำ 50% = ฿'+deposit.toLocaleString()+'</div>'
+      + '<div class="bpc-price">ยอดรวม ฿'+(parseFloat(b.totalPrice)||0).toLocaleString()+' · มัดจำ 50% = ฿'+deposit.toLocaleString()+'</div>'
       + '<div class="bpc-status-row"><span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span></div>'
       + '<div class="bpc-actions">'+actionsHtml+'</div>'
       + '<div id="bpc_msg_'+b.bookingId+'"></div>'
@@ -1285,7 +1285,7 @@ async function confirmBooking() {
     pickUpTime:  bookingType==='overnight' ? checkOutTime : pickUpTime,
     extraCharge: bookingType==='overnight' ? extraChargeType : '',
     nights:bookingType==='overnight'?nights:1,
-    totalPrice:'฿'+totalPrice.toLocaleString(),
+    totalPrice:totalPrice,
     allDates,
     timestamp:new Date().toLocaleString('th-TH'),
     dogs:dogs.map(function(d){
@@ -1297,7 +1297,7 @@ async function confirmBooking() {
         neutered: d.neutered||'-',
         weight:   d.weight+'กก.',
         size:     d.size,
-        price:    '฿'+d.finalPrice.toLocaleString(),
+        price:    d.finalPrice,
       };
     }),
   };
