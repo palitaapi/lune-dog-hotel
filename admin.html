@@ -28,10 +28,6 @@
   .step.active{background:#422F25;color:#FFF7EF;font-weight:700;}
   .step.done{background:#FDDA7B;color:#5b4327;}
   .form-group{margin-bottom:1.1rem;}
-  .searchable-dropdown-list{position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--gray-line);border-radius:6px;max-height:220px;overflow-y:auto;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,0.12);margin-top:2px;}
-  .searchable-dropdown-item{padding:0.6rem 0.8rem;cursor:pointer;font-size:0.9rem;color:var(--text);}
-  .searchable-dropdown-item:hover{background:var(--bg2);}
-  .searchable-dropdown-empty{padding:0.6rem 0.8rem;font-size:0.85rem;color:var(--gray-dark);}
   .form-group label{display:block;font-size:0.68rem;letter-spacing:0.15em;color:var(--gold);margin-bottom:0.4rem;text-transform:uppercase;font-weight:500;font-family:'Space Mono','IBM Plex Sans Thai',monospace;}
   .form-group input,.form-group select{width:100%;padding:0.75rem 0.9rem;border:1px solid var(--gray-line);font-size:0.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color 0.2s;border-radius:4px;font-family:'Hanken Grotesk','IBM Plex Sans Thai',sans-serif;}
   .form-group input:focus,.form-group select:focus{border-color:#422F25;}
@@ -48,7 +44,9 @@
   .btn-ghost:hover{border-color:#422F25;color:#422F25;}
 
   .mode-tabs{display:flex;gap:0.6rem;margin-bottom:1.8rem;}
-  .mode-tab{flex:1;padding:0.7rem;text-align:center;font-size:0.78rem;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--white);transition:all .15s;}
+  .mode-tab{flex:1;padding:0.6rem 0.4rem;text-align:center;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--white);transition:all .15s;line-height:1.4;}
+  .mode-tab .tab-en{display:block;font-size:0.76rem;letter-spacing:0.02em;}
+  .mode-tab .tab-th{display:block;font-size:0.7rem;opacity:0.75;margin-top:0.1rem;}
   .mode-tab.active{background:#422F25;color:#FFF7EF;border-color:#422F25;}
 
   .search-row{display:flex;gap:0.6rem;margin-bottom:1rem;}
@@ -84,10 +82,9 @@
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
   .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.88rem;}
-  .summary-row-dog{padding:0.6rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.78rem;}
-  .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .summary-row-dog .row-line{font-size:0.74rem;color:var(--gray-dark);padding-left:0.8rem;margin-top:0.3rem;}
-  .summary-row-dog .row-total{font-weight:700;color:var(--gold);margin-top:0.4rem;font-size:0.8rem;}
+  .summary-row-dog{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;padding:0.55rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.72rem;}
+  .summary-row-dog .summary-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+  .summary-row-dog .summary-val{flex-shrink:0;font-weight:700;color:var(--gold);}
   .summary-row:last-child{border-bottom:none;}
   .summary-label{color:var(--gray-dark);font-weight:300;}
   .summary-val{font-weight:500;}
@@ -101,6 +98,22 @@
   .success-icon{font-size:3rem;margin-bottom:1rem;}
   .booking-id-badge{display:inline-block;background:var(--yellow);border:0.5px solid var(--gray-line);padding:0.5rem 1.4rem;font-size:0.85rem;color:#422F25;letter-spacing:0.12em;margin:1rem 0;font-family:'Space Mono',monospace;font-weight:700;}
   .source-tag{display:inline-block;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.55rem;border-radius:999px;background:var(--bg2);color:var(--gold);border:0.5px solid var(--gray-line);font-family:'Space Mono','IBM Plex Sans Thai',monospace;margin-left:0.5rem;}
+  .booking-payment-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--yellow);padding:1.2rem;border-radius:4px;margin-bottom:1rem;}
+  .bpc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.6rem;gap:0.6rem;}
+  .bpc-id{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:0.78rem;font-weight:700;color:var(--black);}
+  .bpc-meta{font-size:0.8rem;color:var(--gray-dark);line-height:1.6;margin-bottom:0.6rem;}
+  .bpc-dogs{font-size:0.78rem;color:var(--gray-dark);margin-bottom:0.6rem;}
+  .bpc-price{font-size:0.9rem;font-weight:600;color:var(--gold);margin-bottom:0.8rem;}
+  .status-badge{display:inline-block;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.65rem;border-radius:999px;font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-weight:700;}
+  .status-pending_deposit{background:#FDF4E3;color:#8a6d1f;border:0.5px solid var(--yellow);}
+  .status-deposit_paid{background:#e8f5e9;color:#2e7d32;border:0.5px solid #a5d6a7;}
+  .status-fully_paid{background:#1b5e20;color:#fff;border:0.5px solid #1b5e20;}
+  .status-cancelled{background:#f0ebe4;color:var(--gray-dark);border:0.5px solid var(--gray-line);}
+  .bpc-status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;}
+  .bpc-actions{display:flex;flex-wrap:wrap;gap:0.5rem;}
+  .bpc-action-btn{flex:1;min-width:120px;padding:0.55rem 0.7rem;font-size:0.74rem;border-radius:6px;border:0.5px solid var(--gray-line);background:var(--white);color:var(--black);cursor:pointer;transition:all .15s;}
+  .bpc-action-btn:hover{border-color:#422F25;}
+  .bpc-action-btn.danger:hover{border-color:#b3261e;color:#b3261e;}
   @media(max-width:500px){.card{padding:1.5rem 1.1rem;}.form-row{grid-template-columns:1fr;}.btn-row{flex-direction:column-reverse;}.btn-row .btn-secondary{flex:1;}.saved-dog-cards{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -122,8 +135,9 @@
     <p class="subtitle">ใช้หน้านี้เมื่อลูกค้าทัก LINE OA มาจองตรง ไม่ได้จองผ่าน booking.html ระบบจะบันทึกเข้า Sheet เดียวกัน ปฎิทินจะอัปเดตให้ตรงกันทันที</p>
 
     <div class="mode-tabs">
-      <div class="mode-tab active" id="tab-existing" onclick="switchMode('existing')">ลูกค้าเก่า</div>
-      <div class="mode-tab" id="tab-new" onclick="switchMode('new')">ลงทะเบียนใหม่</div>
+      <div class="mode-tab active" id="tab-existing" onclick="switchMode('existing')"><span class="tab-en">Existing Customer</span><span class="tab-th">ลูกค้าเก่า</span></div>
+      <div class="mode-tab" id="tab-new" onclick="switchMode('new')"><span class="tab-en">New Registration</span><span class="tab-th">ลงทะเบียนใหม่</span></div>
+      <div class="mode-tab" id="tab-payment" onclick="switchMode('payment')"><span class="tab-en">Payment Status</span><span class="tab-th">สถานะจ่ายเงิน</span></div>
     </div>
 
     <!-- EXISTING OWNER SEARCH -->
@@ -143,46 +157,32 @@
     <div id="mode-new" style="display:none;">
       <div class="form-group"><label>ชื่อของคุณพ่อคุณแม่ *</label><input type="text" id="own_name"/></div>
       <div class="form-group"><label>เบอร์โทรศัพท์ * (10 หลัก)</label><input type="tel" id="own_phone" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
-      <div class="form-group"><label>อีเมล *</label><input type="email" id="own_email" placeholder="example@email.com" oninput="validateEmailFormat()"/><div id="email_format_msg" style="font-size:0.75rem;color:var(--red);margin-top:0.3rem;"></div></div>
       <div class="form-group"><label>บ้านเลขที่ / ถนน *</label><input type="text" id="own_address_detail" placeholder="เช่น 123/4 หมู่บ้านอนาสิริ ถ.บางใหญ่"/></div>
-      <div class="form-group" style="position:relative;"><label>จังหวัด *</label>
-        <input type="text" id="own_province" placeholder="พิมพ์ค้นหาจังหวัด..." autocomplete="off"
-          oninput="filterDropdown('province')" onfocus="filterDropdown('province')" onblur="setTimeout(function(){closeDropdown('province')},150)"/>
-        <div id="province_dropdown_list" class="searchable-dropdown-list" style="display:none;"></div>
-      </div>
-      <div class="form-group" style="position:relative;"><label>เขต / อำเภอ *</label>
-        <input type="text" id="own_district" placeholder="เลือกจังหวัดก่อน..." autocomplete="off"
-          oninput="filterDropdown('district')" onfocus="filterDropdown('district')" onblur="setTimeout(function(){closeDropdown('district')},150)"/>
-        <div id="district_dropdown_list" class="searchable-dropdown-list" style="display:none;"></div>
-      </div>
-      <div class="form-group"><label>LINE Display Name (ถ้ามี)</label><input type="text" id="own_line_name" placeholder="ชื่อ LINE ของลูกค้า เผื่ออ้างอิง"/></div>
-      <div class="form-group"><label>รู้จักเราจากไหน (ถ้าทราบ)</label>
-        <select id="own_acquisition_source">
-          <option value="">— เลือก —</option>
-          <option value="Facebook">Facebook</option>
-          <option value="Instagram">Instagram</option>
-          <option value="Google">Google</option>
-          <option value="TikTok">TikTok</option>
-          <option value="เพื่อน, คนรู้จักแนะนำ">เพื่อน, คนรู้จักแนะนำ</option>
-          <option value="ผ่าน, เห็นหน้าร้าน">ผ่าน, เห็นหน้าร้าน</option>
-          <option value="อื่นๆ">อื่นๆ</option>
+      <div class="form-group"><label>จังหวัด *</label>
+        <select id="own_province" onchange="updateDistricts()">
+          <option value="">— เลือกจังหวัด —</option>
+          <option>กรุงเทพมหานคร</option><option>นนทบุรี</option><option>นครปฐม</option><option>ปทุมธานี</option><option>อื่นๆ</option>
         </select>
       </div>
-      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1rem 0;">
-        <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
-        · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
-        · วัคซีนครบ + ป้องกันเห็บหมัดสม่ำเสมอ · งดรับหมาป่วย<br>
-        · มัดจำ 50% ไม่สามารถขอคืนได้ (เลื่อนวันได้ 1 ครั้ง)<br>
-        <a href="#" onclick="event.preventDefault();openTerms('source');" style="color:var(--gold);text-decoration:underline;font-weight:600;">อ่านเงื่อนไขทั้งหมด (12 ข้อ) →</a>
-      </div>
-      <div style="margin-bottom:1rem;">
-        <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:var(--gray-dark);cursor:pointer;">
-          <input type="checkbox" id="reg_terms_accept_checkbox" style="margin-top:0.2rem;flex-shrink:0;width:16px;height:16px;cursor:pointer;"/>
-          <span>ลูกค้าได้อ่านและยอมรับเงื่อนไขการรับฝากข้างต้นแล้ว</span>
-        </label>
-      </div>
+      <div class="form-group" id="other_province_group" style="display:none;"><label>ระบุจังหวัด *</label><input type="text" id="own_province_other"/></div>
+      <div class="form-group"><label>เขต / อำเภอ *</label><select id="own_district"><option value="">— เลือกจังหวัดก่อน —</option></select></div>
+      <div class="form-group" id="other_district_group" style="display:none;"><label>ระบุเขต / อำเภอ *</label><input type="text" id="own_district_other"/></div>
+      <div class="form-group"><label>LINE Display Name (ถ้ามี)</label><input type="text" id="own_line_name" placeholder="ชื่อ LINE ของลูกค้า เผื่ออ้างอิง"/></div>
       <button class="btn-primary" id="regBtn" onclick="registerOwner()">บันทึกและไปต่อ → ถัดไป</button>
       <div id="newuser_msg"></div>
+    </div>
+
+    <!-- PAYMENT STATUS -->
+    <div id="mode-payment" style="display:none;">
+      <div class="form-group">
+        <label>ค้นหาด้วย Booking ID หรือชื่อลูกค้า</label>
+        <div class="search-row">
+          <input type="text" id="payment_search_input" placeholder="เช่น BK-260625-001 หรือ คุณแพร" oninput="debouncedPaymentSearch()"/>
+          <button onclick="searchBookingsForPayment()">ค้นหา</button>
+        </div>
+      </div>
+      <div id="payment_search_results"></div>
+      <div id="payment_search_msg"></div>
     </div>
   </div>
 
@@ -194,28 +194,24 @@
       <h2 id="step1_owner_label">Select Dates · เลือกวันที่</h2>
       <div class="divider"></div>
       <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
-        <strong style="font-size:.76rem;">Hours</strong><br>
-        · Drop-off &amp; Pick-up: 8:00–20:00 น.<br>
-        · มารับหลัง 20:00 น. มีค่า after-hours เพิ่ม ฿100/ชม.<br><br>
-        <strong style="font-size:.76rem;">Daycare</strong><br>
-        · ฝาก-รับภายในวันเดียวกัน ไม่ค้างคืน<br><br>
-        <strong style="font-size:.76rem;">Overnight</strong><br>
+        <strong style="font-size:.76rem;">อัตราค่าบริการ</strong><br>
         · 24 ชม. นับเป็นราคา 1 คืน<br>
-        · เกินกำหนดเช็คเอาท์ คิดราคา Daycare เพิ่ม (ถ้ามารับก่อน 20:00 น.)
+        · เศษไม่เกิน 6 ชม. คิดราคา Daycare · เกิน 6 ชม. คิดราคา 1 คืน<br>
+        · Drop-off &amp; Pick-up: 8:00–20:00 น. · รับนอกเวลาแนะนำจองแบบค้างคืน หรือแจ้งล่วงหน้าเป็นกรณีพิเศษ
       </div>
       <div class="form-group"><label>ประเภทการฝาก</label>
-        <div class="mode-tabs">
-          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">Overnight Care<br><span style="font-size:0.7rem;opacity:0.8;">ค้างคืน</span></div>
-          <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">Daycare<br><span style="font-size:0.7rem;opacity:0.8;">ฝากรายวัน</span></div>
-        </div>
+        <select id="bk_type" onchange="updateType()">
+          <option value="overnight">Overnight Care (ค้างคืน)</option>
+          <option value="daycare">Daycare (ฝากรายวัน)</option>
+        </select>
       </div>
       <div id="overnight_fields">
         <div class="form-row">
-          <div class="form-group"><label>วันที่ Drop-off</label><input type="date" id="bk_checkin" onchange="onCheckinDateChange()"/></div>
+          <div class="form-group"><label>วันที่ Drop-off</label><input type="date" id="bk_checkin" onchange="updateDates()"/></div>
           <div class="form-group"><label>วันที่ Pick-up</label><input type="date" id="bk_checkout" onchange="updateDates()"/></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>เวลา Drop-off</label><select id="bk_checkin_time" onchange="onCheckinTimeChange()"></select></div>
+          <div class="form-group"><label>เวลา Drop-off</label><select id="bk_checkin_time" onchange="updateDates()"></select></div>
           <div class="form-group"><label>เวลา Pick-up</label><select id="bk_checkout_time" onchange="updateDates()"></select></div>
         </div>
         <div id="overnight_extra" style="display:none;font-size:0.8rem;padding:0.6rem 0.9rem;background:var(--bg2);border:0.5px solid var(--gray-line);margin-bottom:0.8rem;color:var(--gray-dark);"></div>
@@ -223,7 +219,7 @@
       <div id="daycare_fields" style="display:none;">
         <div class="form-group"><label>วันที่ฝาก</label><input type="date" id="bk_daycare_date" onchange="updateDates()"/></div>
         <div class="form-row">
-          <div class="form-group"><label>เวลา Drop-off</label><select id="bk_dropoff" onchange="onDropoffTimeChange()"></select></div>
+          <div class="form-group"><label>เวลา Drop-off</label><select id="bk_dropoff" onchange="updateDates()"></select></div>
           <div class="form-group"><label>เวลา Pick-up</label><select id="bk_pickup" onchange="updateDates()"></select></div>
         </div>
       </div>
@@ -243,17 +239,12 @@
       <div class="section-label">Step 2 · ขั้นตอนที่ 2</div>
       <h2>Your Dogs · น้องหมาของลูกค้า</h2>
       <div class="divider"></div>
-      <div style="display:flex;gap:0.7rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-        <div style="flex:1;min-width:150px;background:var(--bg);border:1px solid var(--honey);border-radius:8px;padding:0.75rem 0.9rem;">
-          <div style="font-size:0.64rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;font-weight:600;">New guests</div>
-          <div style="font-size:0.86rem;font-weight:600;color:var(--black);margin-bottom:0.4rem;">คืนแรกลด 25%</div>
-          <div style="font-size:0.66rem;color:var(--gray-dark);font-style:italic;line-height:1.4;">*ส่วนลดหลังจากจ่ายค่าใช้จ่ายที่เหลือจากค่ามัดจำ</div>
-        </div>
-        <div style="flex:1;min-width:150px;background:var(--bg);border:1px solid var(--honey);border-radius:8px;padding:0.75rem 0.9rem;">
-          <div style="font-size:0.64rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;font-weight:600;">Multi-dog</div>
-          <div style="font-size:0.86rem;font-weight:600;color:var(--black);margin-bottom:0.4rem;">ตัวที่ 2 เป็นต้นไปลด 10%</div>
-          <div style="font-size:0.66rem;color:var(--gray-dark);font-style:italic;line-height:1.4;">*ส่วนลดอัตโนมัติตอนกดจองผ่านระบบ</div>
-        </div>
+      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
+        <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก</strong><br>
+        · รับน้องหมาทุกขนาดและทุกสายพันธุ์ที่ friendly กับเพื่อนๆและพี่เลี้ยง<br>
+        · น้องหมาทุกตัวจะต้องได้รับวัคซีนครบแล้วเท่านั้น<br>
+        · น้องหมาทุกตัวจะต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br>
+        · งดรับน้องหมาที่ป่วยหรือต้องการการดูแลเป็นพิเศษ
       </div>
 
       <div id="pending_new_dogs_section" style="display:none;margin-bottom:1.5rem;"></div>
@@ -269,23 +260,6 @@
       </div>
 
       <div id="dog_msg"></div>
-
-      <div id="step2_terms_section">
-        <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1.2rem 0;">
-          <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
-          · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
-          · วัคซีนครบ + ป้องกันเห็บหมัดสม่ำเสมอ · งดรับหมาป่วย<br>
-          · มัดจำ 50% ไม่สามารถขอคืนได้ (เลื่อนวันได้ 1 ครั้ง)<br>
-          <a href="#" onclick="event.preventDefault();openTerms('step2');" style="color:var(--gold);text-decoration:underline;font-weight:600;">อ่านเงื่อนไขทั้งหมด (12 ข้อ) →</a>
-        </div>
-        <div style="margin-bottom:1.2rem;">
-          <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:var(--gray-dark);cursor:pointer;">
-            <input type="checkbox" id="terms_accept_checkbox" style="margin-top:0.2rem;flex-shrink:0;width:16px;height:16px;cursor:pointer;"/>
-            <span>ฉันได้อ่านและยอมรับเงื่อนไขการรับฝากข้างต้นแล้ว</span>
-          </label>
-        </div>
-      </div>
-
       <div class="btn-row">
         <button class="btn-secondary" onclick="showScreen('step1')">← Back · ย้อนกลับ</button>
         <button class="btn-primary" onclick="goStep3()">Review Booking → ดูสรุป</button>
@@ -324,36 +298,6 @@
     </div>
   </div>
 
-  <!-- TERMS -->
-  <div id="screen-terms" style="display:none;">
-    <div class="card">
-      <div class="section-label">Terms · เงื่อนไขการรับฝาก</div>
-      <h2>เงื่อนไขการรับฝากน้องหมา</h2>
-      <div class="divider"></div>
-      <div style="font-size:0.85rem;line-height:1.9;color:var(--text);">
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การรับฝาก</strong><br><br>
-        1. ทางร้านยินดีรับน้องหมาทุกขนาดและทุกสายพันธุ์ ที่เข้าสังคมได้ดีกับเพื่อนๆและพี่เลี้ยง เพราะน้องๆทุกตัวจะใช้พื้นที่ร่วมกันแบบไม่ขังกรง<br><br>
-        2. น้องหมาทุกตัวต้องมีอายุตั้งแต่ 90 วัน (3 เดือน) ขึ้นไป<br><br>
-        3. น้องหมาทุกตัวต้องได้รับวัคซีนครบตามอายุแล้วเท่านั้น<br><br>
-        4. น้องหมาทุกตัวต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br><br>
-        5. ทางร้านขอสงวนสิทธิ์ไม่รับฝากน้องหมาที่ป่วย มีโรคติดต่อ หรือมีอาการที่ต้องการการดูแลเป็นพิเศษเกินกว่าที่ทางร้านจะดูแลได้อย่างปลอดภัย<br><br>
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">ความรับผิดชอบระหว่างการพัก</strong><br><br>
-        6. หากน้องหมามีพฤติกรรมก้าวร้าวหรือทำร้ายน้องหมาตัวอื่นระหว่างการพัก อันมิได้เกิดจากความบกพร่องในการดูแลของทางร้าน เจ้าของยินดีรับผิดชอบค่ารักษาพยาบาลของอีกฝ่ายตามจริง<br><br>
-        7. ในทางกลับกัน หากเกิดอุบัติเหตุหรือความเสียหายใดๆขึ้นจากความบกพร่องในการดูแลของทางร้านเอง ทางร้านจะเป็นผู้รับผิดชอบค่าใช้จ่ายที่เกี่ยวข้องทั้งหมด<br><br>
-        8. หากน้องหมาทำให้ทรัพย์สินของทางร้านเสียหาย เจ้าของยินดีรับผิดชอบค่าเสียหายตามมูลค่าจริงที่ทางร้านแจ้งให้ทราบ<br><br>
-        9. กรณีน้องหมาเจ็บป่วยหรือเกิดอุบัติเหตุกะทันหันจากเหตุสุดวิสัยระหว่างพัก หากทางร้านไม่สามารถติดต่อเจ้าของได้ในทันที เจ้าของยินยอมให้ทางร้านนำส่งน้องหมาเข้ารับการรักษาที่โรงพยาบาลสัตว์ที่ใกล้ที่สุดได้ทันที โดยเจ้าของเป็นผู้รับผิดชอบค่าใช้จ่ายในการรักษาทั้งหมด<br><br>
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การจองและการชำระเงิน</strong><br><br>
-        10. การจองจะยืนยันสมบูรณ์เมื่อชำระมัดจำ 50% ของยอดรวมแล้วเท่านั้น<br><br>
-        11. มัดจำที่ชำระแล้วไม่สามารถขอคืนได้ แต่สามารถขอเลื่อนวันเข้าพักได้ 1 ครั้ง<br><br>
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">กรณีติดต่อเจ้าของไม่ได้</strong><br><br>
-        12. กรณีที่เจ้าของทิ้งน้องหมาไว้และทางร้านไม่สามารถติดต่อได้ภายใน 7 วัน ทางร้านจะดำเนินการตามกฎหมายที่เกี่ยวข้องต่อไป
-      </div>
-      <div class="btn-row">
-        <button class="btn-primary" onclick="showScreen(termsReturnScreen||'step2')" style="margin:0 auto;max-width:280px;">← กลับ</button>
-      </div>
-    </div>
-  </div>
-
   <!-- SUCCESS -->
   <div id="screen-success" class="card" style="display:none;">
     <div class="success-screen">
@@ -374,7 +318,6 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx-DX2O28F2WfKI
 const SHEET_ID        = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
 const OWNER_SHEET_ID  = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
 const MAX_CAP = 8;
-const TERMS_VERSION = '2026-06-25'; // เปลี่ยนค่านี้ทุกครั้งที่แก้เงื่อนไข จะบังคับให้ลูกค้าเก่าติ๊กยอมรับใหม่อัตโนมัติ
 const OVERNIGHT_PRICES = {small:400,medium:550,large:700};
 const DAYCARE_DISCOUNT = 0.30; // ราคา daycare = overnight ลด 30%
 const PRICES = {
@@ -386,7 +329,6 @@ const PRICES = {
   }
 };
 const TIME_OPTIONS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00'];
-const PROVINCES = ['กรุงเทพมหานคร','นนทบุรี','นครปฐม','ปทุมธานี'];
 const DISTRICTS = {
   'กรุงเทพมหานคร':['คลองเตย','คลองสาน','คลองสามวา','คันนายาว','จตุจักร','จอมทอง','ดอนเมือง','ดินแดง','ดุสิต','ตลิ่งชัน','ทวีวัฒนา','ทุ่งครุ','ธนบุรี','บางเขน','บางแค','บางกอกใหญ่','บางกอกน้อย','บางกะปิ','บางขุนเทียน','บางคอแหลม','บางซื่อ','บางนา','บางบอน','บางพลัด','บางรัก','บึงกุ่ม','ปทุมวัน','ประเวศ','ป้อมปราบศัตรูพ่าย','พญาไท','พระโขนง','พระนคร','ภาษีเจริญ','มีนบุรี','ยานนาวา','ราชเทวี','ราษฎร์บูรณะ','ลาดกระบัง','ลาดพร้าว','วังทองหลาง','วัฒนา','สวนหลวง','สะพานสูง','สัมพันธวงศ์','สาทร','สายไหม','หนองแขม','หนองจอก','หลักสี่','ห้วยขวาง'],
   'นนทบุรี':['เมืองนนทบุรี','บางกรวย','บางใหญ่','บางบัวทอง','ไทรน้อย','ปากเกร็ด'],
@@ -403,8 +345,6 @@ let availData = {};
 let savedDogs = [];
 let pendingNewDogs = [];
 let editingPendingIdx = null;
-let termsAcceptedAt = null;
-let termsReturnScreen = null;
 let selectedSavedDogs = [];
 let showingNewDogForm = false;
 let checkInTime  = '14:00', checkOutTime = '20:00';
@@ -414,18 +354,13 @@ let searchDebounceTimer = null;
 
 // ── UTILS ─────────────────────────────────────────────
 function showScreen(name) {
-  ['source','step1','step2','step3','success','editdog','terms'].forEach(function(s) {
+  ['source','step1','step2','step3','success','editdog'].forEach(function(s) {
     var el = document.getElementById('screen-'+s);
     if (el) el.style.display = 'none';
   });
   var el = document.getElementById('screen-'+name);
   if (el) el.style.display = 'block';
   window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function openTerms(fromScreen) {
-  termsReturnScreen = fromScreen;
-  showScreen('terms');
 }
 function showMsg(id, msg, type) {
   var el = document.getElementById(id);
@@ -440,59 +375,19 @@ function getSizeLabel(size) {
   return {small:'Small Paws (< 10 กก.)', medium:'Medium Paws (10–18 กก.)', large:'Large Paws (18–25 กก.)'}[size];
 }
 function timeToMins(t) { var p = t.split(':'); return parseInt(p[0]) * 60 + parseInt(p[1]); }
-function fillTimeSelect(id, defaultVal, minTime) {
+function fillTimeSelect(id, defaultVal) {
   var sel = document.getElementById(id);
-  var options = minTime ? TIME_OPTIONS.filter(function(t){ return t > minTime; }) : TIME_OPTIONS;
-  sel.innerHTML = '<option value="">— เลือกเวลา —</option>'
-    + options.map(function(t){return '<option value="'+t+'"'+(t===defaultVal?' selected':'')+'>'+t+'</option>';}).join('');
-}
-
-function onCheckinDateChange() {
-  var ciDate = document.getElementById('bk_checkin').value;
-  var coDateEl = document.getElementById('bk_checkout');
-  if (!ciDate) {
-    coDateEl.value = '';
-    coDateEl.disabled = true;
-  } else {
-    coDateEl.disabled = false;
-    coDateEl.min = ciDate;
-    if (coDateEl.value && coDateEl.value < ciDate) coDateEl.value = '';
-  }
-  updateDates();
-}
-
-function onCheckinTimeChange() {
-  var ciTime = document.getElementById('bk_checkin_time').value;
-  var coSel = document.getElementById('bk_checkout_time');
-  if (!ciTime) {
-    coSel.innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
-    coSel.disabled = true;
-  } else {
-    coSel.disabled = false;
-    fillTimeSelect('bk_checkout_time', ''); // ไม่กรองเวลา เพราะ Pick-up (Overnight) อยู่คนละวันกับ Drop-off เสมอ
-  }
-  updateDates();
-}
-
-function onDropoffTimeChange() {
-  var doTime = document.getElementById('bk_dropoff').value;
-  var puSel = document.getElementById('bk_pickup');
-  if (!doTime) {
-    puSel.innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
-    puSel.disabled = true;
-  } else {
-    puSel.disabled = false;
-    fillTimeSelect('bk_pickup', '', doTime);
-  }
-  updateDates();
+  sel.innerHTML = TIME_OPTIONS.map(function(t){return '<option value="'+t+'"'+(t===defaultVal?' selected':'')+'>'+t+'</option>';}).join('');
 }
 
 // ── MODE TABS ─────────────────────────────────────────
 function switchMode(mode) {
   document.getElementById('tab-existing').classList.toggle('active', mode==='existing');
   document.getElementById('tab-new').classList.toggle('active', mode==='new');
+  document.getElementById('tab-payment').classList.toggle('active', mode==='payment');
   document.getElementById('mode-existing').style.display = mode==='existing' ? 'block' : 'none';
   document.getElementById('mode-new').style.display = mode==='new' ? 'block' : 'none';
+  document.getElementById('mode-payment').style.display = mode==='payment' ? 'block' : 'none';
 }
 
 // ── OWNER SEARCH (existing) ──────────────────────────
@@ -507,10 +402,8 @@ async function loadAllOwners() {
       ownerId:  c[1] ? String(c[1].v || '').trim() : '',
       name:     c[2] ? String(c[2].v || '').trim() : '',
       phone:    c[3] ? String(c[3].v || '').trim() : '',
-      lineId:   c[8] ? String(c[8].v || '').trim() : '',
-      lineName: c[9] ? String(c[9].v || '').trim() : '',
-      termsVersion:     c[11] ? String(c[11].v || '').trim() : '',
-      termsAcceptedAt:  c[12] ? String(c[12].v || '').trim() : '',
+      lineId:   c[4] ? String(c[4].v || '').trim() : '',
+      lineName: c[5] ? String(c[5].v || '').trim() : '',
     };
   }).filter(function(o){ return o.ownerId; });
   allOwnersCache = rows;
@@ -558,84 +451,179 @@ async function selectOwner(ownerId) {
   var owners = await loadAllOwners();
   var o = owners.find(function(x){ return x.ownerId === ownerId; });
   if (!o) return;
-  currentOwner = {ownerId:o.ownerId, name:o.name, phone:o.phone, lineName:o.lineName, termsVersion:o.termsVersion, termsAcceptedAt:o.termsAcceptedAt};
+  currentOwner = {ownerId:o.ownerId, name:o.name, phone:o.phone, lineName:o.lineName};
   await loadAvailability();
   await loadSavedDogs();
   document.getElementById('step1_owner_label').textContent = 'จองให้: ' + currentOwner.name;
   showScreen('step1');
 }
 
-// ── REGISTER NEW OWNER ────────────────────────────────
-function validateEmailFormat() {
-  var email = document.getElementById('own_email').value.trim();
-  var msgEl = document.getElementById('email_format_msg');
-  if (!email) { msgEl.textContent = ''; return; }
-  var valid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
-  msgEl.textContent = valid ? '' : 'รูปแบบอีเมลไม่ถูกต้อง';
+// ── PAYMENT STATUS ────────────────────────────────────
+var paymentSearchDebounceTimer = null;
+var allBookingsCache = null; // raw rows from Booking sheet, grouped by bookingId
+
+var STATUS_LABEL = {
+  pending_deposit: 'Pending Deposit · รอมัดจำ',
+  deposit_paid:    'Deposit Paid · รับมัดจำแล้ว',
+  fully_paid:      'Fully Paid · จ่ายครบแล้ว',
+  cancelled:       'Cancelled · ยกเลิก'
+};
+
+function debouncedPaymentSearch() {
+  clearTimeout(paymentSearchDebounceTimer);
+  paymentSearchDebounceTimer = setTimeout(searchBookingsForPayment, 350);
 }
 
-function filterDropdown(type) {
-  var inputId = type === 'province' ? 'own_province' : 'own_district';
-  var input = document.getElementById(inputId);
-  var list = document.getElementById(type + '_dropdown_list');
-  var query = input.value.trim().toLowerCase();
-  var options;
-  if (type === 'province') {
-    options = PROVINCES;
-  } else {
-    var province = document.getElementById('own_province').value.trim();
-    options = DISTRICTS[province] || [];
-    if (!province) {
-      list.innerHTML = '<div class="searchable-dropdown-empty">เลือกจังหวัดก่อน</div>';
-      list.style.display = 'block';
+async function loadAllBookingsGrouped() {
+  if (allBookingsCache) return allBookingsCache;
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+BOOKING_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Booking');
+  var raw = await res.text();
+  var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
+  var rows = (json.table ? json.table.rows || [] : []).map(function(row) {
+    var c = row.c || [];
+    return {
+      bookingId:  c[1] ? String(c[1].v || '').trim() : '',
+      ownerName:  c[3] ? String(c[3].v || '').trim() : '',
+      phone:      c[4] ? String(c[4].v || '').trim() : '',
+      dogName:    c[7] ? String(c[7].v || '').trim() : '',
+      price:      c[13]? String(c[13].v || '').trim() : '',
+      type:       c[14]? String(c[14].v || '').trim() : '',
+      checkIn:    c[15]? String(c[15].v || '').trim() : '',
+      checkOut:   c[17]? String(c[17].v || '').trim() : '',
+      totalPrice: c[20]? String(c[20].v || '').trim() : '',
+      status:     c[22]? String(c[22].v || '').trim() : '',
+    };
+  }).filter(function(r){ return r.bookingId; });
+
+  // Group by bookingId — 1 booking อาจมีหลาย row (1 row ต่อ 1 หมา)
+  var grouped = {};
+  rows.forEach(function(r) {
+    if (!grouped[r.bookingId]) {
+      grouped[r.bookingId] = {
+        bookingId: r.bookingId,
+        ownerName: r.ownerName,
+        phone: r.phone,
+        type: r.type,
+        checkIn: r.checkIn,
+        checkOut: r.checkOut,
+        totalPrice: r.totalPrice,
+        status: r.status || 'pending_deposit',
+        dogNames: []
+      };
+    }
+    if (r.dogName) grouped[r.bookingId].dogNames.push(r.dogName);
+  });
+
+  var list = Object.keys(grouped).map(function(k){ return grouped[k]; });
+  allBookingsCache = list;
+  return list;
+}
+
+async function searchBookingsForPayment() {
+  var q = document.getElementById('payment_search_input').value.trim();
+  document.getElementById('payment_search_msg').innerHTML = '';
+  if (!q) { document.getElementById('payment_search_results').innerHTML = ''; return; }
+  document.getElementById('payment_search_results').innerHTML = '<p class="empty-note">⏳ กำลังค้นหา...</p>';
+  try {
+    var bookings = await loadAllBookingsGrouped();
+    var qLower = q.toLowerCase();
+    var qNorm = q.replace(/\D/g,'');
+    var results = bookings.filter(function(b) {
+      var idMatch = b.bookingId.toLowerCase().indexOf(qLower) !== -1;
+      var nameMatch = b.ownerName && b.ownerName.toLowerCase().indexOf(qLower) !== -1;
+      var phoneMatch = qNorm.length >= 3 && b.phone && b.phone.replace(/\D/g,'').indexOf(qNorm) !== -1;
+      return idMatch || nameMatch || phoneMatch;
+    });
+    if (results.length === 0) {
+      document.getElementById('payment_search_results').innerHTML = '<p class="empty-note">ไม่พบ booking ที่ตรงกับ "'+q+'"</p>';
       return;
     }
+    renderPaymentResults(results);
+  } catch(e) {
+    document.getElementById('payment_search_results').innerHTML = '';
+    showMsg('payment_search_msg','ค้นหาไม่สำเร็จ: '+e.message,'error');
   }
-  var filtered = options.filter(function(o){ return o.toLowerCase().indexOf(query) > -1; });
-  if (filtered.length === 0) {
-    list.innerHTML = '<div class="searchable-dropdown-empty">ไม่พบตัวเลือกที่ตรงกัน</div>';
-    list.style.display = 'block';
-    return;
-  }
-  list.innerHTML = filtered.map(function(o){
-    return '<div class="searchable-dropdown-item" onmousedown="selectDropdownItem(\''+type+'\',\''+o+'\')">'+o+'</div>';
+}
+
+function renderPaymentResults(bookings) {
+  document.getElementById('payment_search_results').innerHTML = bookings.map(function(b) {
+    var deposit = Math.round((parseFloat(String(b.totalPrice).replace(/[^0-9.]/g,''))||0) * 0.5);
+    var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_deposit';
+    var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
+    var actionsHtml = Object.keys(STATUS_LABEL).map(function(s) {
+      if (s === statusKey) return '';
+      var danger = s === 'cancelled' ? ' danger' : '';
+      return '<button class="bpc-action-btn'+danger+'" onclick="confirmUpdateStatus(\''+b.bookingId+'\',\''+s+'\')">→ '+STATUS_LABEL[s]+'</button>';
+    }).join('');
+    return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
+      + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
+      + '<div class="bpc-meta">'+b.ownerName+' · '+(b.phone||'-')+'<br>'+b.type+' · '+dateLabel+'</div>'
+      + '<div class="bpc-dogs">🐶 '+(b.dogNames.join(', ')||'-')+'</div>'
+      + '<div class="bpc-price">ยอดรวม '+b.totalPrice+' · มัดจำ 50% = ฿'+deposit.toLocaleString()+'</div>'
+      + '<div class="bpc-status-row"><span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span></div>'
+      + '<div class="bpc-actions">'+actionsHtml+'</div>'
+      + '<div id="bpc_msg_'+b.bookingId+'"></div>'
+      + '</div>';
   }).join('');
-  list.style.display = 'block';
 }
 
-function selectDropdownItem(type, value) {
-  var inputId = type === 'province' ? 'own_province' : 'own_district';
-  document.getElementById(inputId).value = value;
-  closeDropdown(type);
-  if (type === 'province') {
-    document.getElementById('own_district').value = '';
+function confirmUpdateStatus(bookingId, newStatus) {
+  var label = STATUS_LABEL[newStatus] || newStatus;
+  if (!confirm('ยืนยันเปลี่ยนสถานะ '+bookingId+' เป็น "'+label+'" ?')) return;
+  updateBookingStatus(bookingId, newStatus);
+}
+
+async function updateBookingStatus(bookingId, newStatus) {
+  var msgId = 'bpc_msg_'+bookingId;
+  showMsg(msgId, '⏳ กำลังอัปเดต...', 'success');
+  try {
+    var res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'text/plain'},
+      body: JSON.stringify({ action:'updateBookingStatus', bookingId: bookingId, status: newStatus })
+    });
+    var result = await res.json();
+    if (!result.success) {
+      showMsg(msgId, 'อัปเดตไม่สำเร็จ: '+(result.error||'unknown error'), 'error');
+      return;
+    }
+    allBookingsCache = null; // invalidate cache เพื่อให้ค้นหาครั้งถัดไปได้ข้อมูลล่าสุด
+    showMsg(msgId, '✓ อัปเดตสถานะแล้ว', 'success');
+    // re-render ผลค้นหาปัจจุบันให้ตรงกับสถานะใหม่
+    searchBookingsForPayment();
+  } catch(e) {
+    showMsg(msgId, 'อัปเดตไม่สำเร็จ: '+e.message, 'error');
   }
 }
 
-function closeDropdown(type) {
-  var list = document.getElementById(type + '_dropdown_list');
-  if (list) list.style.display = 'none';
+// ── REGISTER NEW OWNER ────────────────────────────────
+function updateDistricts() {
+  var province = document.getElementById('own_province').value;
+  var sel = document.getElementById('own_district');
+  var otherProv = document.getElementById('other_province_group');
+  var otherDist = document.getElementById('other_district_group');
+  sel.innerHTML = '<option value="">— เลือกเขต/อำเภอ —</option>';
+  if (province==='อื่นๆ') { sel.style.display='none'; otherProv.style.display='block'; otherDist.style.display='block'; return; }
+  sel.style.display='block'; otherProv.style.display='none'; otherDist.style.display='none';
+  if (!province) return;
+  (DISTRICTS[province]||['อื่นๆ']).forEach(function(d){sel.innerHTML+='<option>'+d+'</option>';});
 }
 
 async function registerOwner() {
   var name=document.getElementById('own_name').value.trim();
   var phone=document.getElementById('own_phone').value.trim();
   var addr=document.getElementById('own_address_detail').value.trim();
-  var province=document.getElementById('own_province').value.trim();
-  var district=document.getElementById('own_district').value.trim();
+  var province=document.getElementById('own_province').value;
+  var isOther=province==='อื่นๆ';
+  var finalProv=isOther?document.getElementById('own_province_other').value.trim():province;
+  var district=isOther?document.getElementById('own_district_other').value.trim():document.getElementById('own_district').value;
   var lineName=document.getElementById('own_line_name').value.trim();
-  var email=document.getElementById('own_email').value.trim();
-  var acquisitionSource=document.getElementById('own_acquisition_source').value;
   if(!name){showMsg('newuser_msg','กรุณากรอกชื่อของคุณพ่อคุณแม่','error');return;}
   if(!phone||phone.length!==10){showMsg('newuser_msg','กรุณากรอกเบอร์โทรให้ครบ 10 หลัก','error');return;}
-  if(!email){showMsg('newuser_msg','กรุณากรอกอีเมล','error');return;}
-  if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)){showMsg('newuser_msg','กรุณากรอกอีเมลให้ถูกต้อง','error');return;}
   if(!addr){showMsg('newuser_msg','กรุณากรอกบ้านเลขที่/ถนน','error');return;}
-  if(!province){showMsg('newuser_msg','กรุณาเลือกจังหวัดจากลิสต์','error');return;}
-  if(PROVINCES.indexOf(province)===-1){showMsg('newuser_msg','กรุณาเลือกจังหวัดจากลิสต์ที่มีให้','error');return;}
-  if(!district){showMsg('newuser_msg','กรุณาเลือกเขต/อำเภอจากลิสต์','error');return;}
-  if((DISTRICTS[province]||[]).indexOf(district)===-1){showMsg('newuser_msg','กรุณาเลือกเขต/อำเภอจากลิสต์ที่มีให้','error');return;}
-  if(!document.getElementById('reg_terms_accept_checkbox').checked){showMsg('newuser_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อน','error');return;}
+  if(!province){showMsg('newuser_msg','กรุณาเลือกจังหวัด','error');return;}
+  if(!finalProv){showMsg('newuser_msg','กรุณาระบุจังหวัด','error');return;}
+  if(!district){showMsg('newuser_msg','กรุณาเลือกหรือระบุเขต/อำเภอ','error');return;}
   document.getElementById('regBtn').disabled=true;
   showMsg('newuser_msg','⏳ กำลังตรวจสอบเบอร์โทร...','success');
   var phoneNorm = phone.replace(/\D/g,'');
@@ -649,12 +637,11 @@ async function registerOwner() {
     }
   } catch(e) { /* ถ้าเช็คไม่ได้ ปล่อยให้บันทึกต่อไป ดีกว่าบล็อกเพราะปัญหาเครือข่าย */ }
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
-  var regTermsAcceptedAt = new Date().toLocaleString('th-TH');
-  var data={action:'addOwner',name,phone,province,district,lineId:'',lineName:lineName||'',address:addr+', '+district+', '+province,source:'line_direct',timestamp:regTermsAcceptedAt,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt,email:email||'',acquisitionSource:acquisitionSource||''};
+  var data={action:'addOwner',name,phone,province:finalProv,district,lineId:'',lineName:lineName||'',address:addr+', '+district+', '+finalProv,source:'line_direct',timestamp:new Date().toLocaleString('th-TH')};
   try {
     var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
-    currentOwner={ownerId:result.ownerId,name,phone,lineName:lineName||'',termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt};
+    currentOwner={ownerId:result.ownerId,name,phone,lineName:lineName||''};
     allOwnersCache = null; // invalidate cache so next search sees this new owner
   } catch(e) {
     document.getElementById('regBtn').disabled=false;
@@ -723,14 +710,8 @@ async function loadSavedDogs() {
   } catch(e) { savedDogs = []; }
 }
 
-function needsTermsAcceptance() {
-  return !currentOwner || !currentOwner.termsVersion || currentOwner.termsVersion !== TERMS_VERSION;
-}
-
 function renderSavedDogs() {
   renderPendingNewDogs();
-  var termsSection = document.getElementById('step2_terms_section');
-  if (termsSection) termsSection.style.display = needsTermsAcceptance() ? 'block' : 'none';
   if (savedDogs.length === 0) {
     document.getElementById('saved_dogs_section').style.display = 'none';
     document.getElementById('new_dog_section').style.display = 'block';
@@ -826,17 +807,11 @@ function updateNewDogPrice() {
 }
 
 // ── DATE / TYPE ───────────────────────────────────────
-function selectBookingType(type) {
-  bookingType = type;
-  document.getElementById('type_tab_overnight').classList.toggle('active', type==='overnight');
-  document.getElementById('type_tab_daycare').classList.toggle('active', type==='daycare');
-  document.getElementById('overnight_fields').style.display = type === 'overnight' ? 'block' : 'none';
-  document.getElementById('daycare_fields').style.display   = type === 'daycare'   ? 'block' : 'none';
-  updateDates();
-}
-
 function updateType() {
-  selectBookingType('overnight');
+  bookingType = document.getElementById('bk_type').value;
+  document.getElementById('overnight_fields').style.display = bookingType === 'overnight' ? 'block' : 'none';
+  document.getElementById('daycare_fields').style.display   = bookingType === 'daycare'   ? 'block' : 'none';
+  updateDates();
 }
 
 function calcOvernightExtra() {
@@ -850,10 +825,10 @@ function updateDates() {
   if (bookingType === 'overnight') {
     checkIn      = document.getElementById('bk_checkin').value;
     checkOut     = document.getElementById('bk_checkout').value;
-    checkInTime  = document.getElementById('bk_checkin_time').value;
-    checkOutTime = document.getElementById('bk_checkout_time').value;
+    checkInTime  = document.getElementById('bk_checkin_time').value  || '14:00';
+    checkOutTime = document.getElementById('bk_checkout_time').value || '20:00';
 
-    if (!checkIn || !checkOut || !checkInTime || !checkOutTime) { el.style.display = 'none'; return; }
+    if (!checkIn || !checkOut) { el.style.display = 'none'; return; }
     var ci = new Date(checkIn), co = new Date(checkOut);
     if (co <= ci) { el.style.display = 'none'; return; }
     nights = Math.round((co - ci) / 86400000);
@@ -861,9 +836,12 @@ function updateDates() {
     var extraMins = calcOvernightExtra();
     var extraText = '';
     extraChargeType = '';
-    if (extraMins > 0) {
+    if (extraMins > 0 && extraMins <= 360) {
       extraChargeType = 'daycare';
-      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Daycare rate (ถ้ามารับหลัง 20:00 จะมีค่า after-hours เพิ่มตามจริง)';
+      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Daycare rate';
+    } else if (extraMins > 360) {
+      extraChargeType = 'overnight';
+      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Overnight rate';
     }
     var extraBox = document.getElementById('overnight_extra');
     extraBox.style.display = extraText ? 'block' : 'none';
@@ -880,13 +858,13 @@ function updateDates() {
     checkIn     = document.getElementById('bk_daycare_date').value;
     checkOut    = checkIn;
     nights      = 1;
-    dropOffTime = document.getElementById('bk_dropoff').value;
-    pickUpTime  = document.getElementById('bk_pickup').value;
-    if (!checkIn || !dropOffTime || !pickUpTime) { el.style.display = 'none'; return; }
-    if (dropOffTime >= pickUpTime) {
+    dropOffTime = document.getElementById('bk_dropoff').value || '08:00';
+    pickUpTime  = document.getElementById('bk_pickup').value  || '20:00';
+    if (checkIn && dropOffTime >= pickUpTime) {
       el.innerHTML = '<span style="color:var(--red);">⚠️ เวลา Pick-up ต้องหลัง Drop-off</span>';
       el.style.display = 'block'; return;
     }
+    if (!checkIn) { el.style.display = 'none'; return; }
     var dates = getDatesInRange(checkIn, checkOut, 'daycare');
     var maxB = 0;
     dates.forEach(function(d) { if ((availData[d]||0) > maxB) maxB = availData[d]||0; });
@@ -934,15 +912,14 @@ function calcDogPrice(size) {
   if (bookingType === 'daycare') return PRICES.daycare[size];
   var base = PRICES.overnight[size] * nights;
   if (extraChargeType === 'daycare') base += PRICES.daycare[size];
+  else if (extraChargeType === 'overnight') base += PRICES.overnight[size];
   return base;
 }
 
 function getOvernightLabel() {
-  var label = nights + ' ' + (nights===1?'day':'days') + ' (Overnight)';
-  if (extraChargeType === 'daycare') {
-    var extraHrs = Math.round(calcOvernightExtra()/60*10)/10;
-    label += ' + ' + extraHrs + ' ' + (extraHrs===1?'hr.':'hrs.') + ' (Daycare)';
-  }
+  var label = nights + ' คืน';
+  if (extraChargeType === 'daycare') label += ' + Daycare (เกิน ≤6 ชม.)';
+  else if (extraChargeType === 'overnight') label += ' + 1 คืน (เกิน >6 ชม.)';
   return label;
 }
 
@@ -1220,15 +1197,6 @@ async function saveDogEdit() {
 
 // ── STEP 3 ────────────────────────────────────────────
 function goStep3() {
-  if (needsTermsAcceptance()) {
-    if (!document.getElementById('terms_accept_checkbox').checked) {
-      showMsg('dog_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อนดำเนินการต่อ','error');
-      return;
-    }
-    termsAcceptedAt = new Date().toLocaleString('th-TH');
-    currentOwner.termsVersion = TERMS_VERSION;
-    currentOwner.termsAcceptedAt = termsAcceptedAt;
-  }
   var dogs = [];
   selectedSavedDogs.forEach(function(d) {
     var w = parseFloat(d.weight)||0;
@@ -1264,26 +1232,7 @@ function goStep3() {
 
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var dogsHtml=dogsByPriceDesc.map(function(d){
-    var headerName = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'');
-    var lines = [];
-    if (bookingType === 'overnight') {
-      var nightlyRate = PRICES.overnight[d.size];
-      var nightlyTotal = nightlyRate * nights;
-      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' '+(nights===1?'Day':'Days')+' x ฿'+nightlyRate.toLocaleString());
-      if (extraChargeType === 'daycare') {
-        lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day x ฿'+PRICES.daycare[d.size].toLocaleString());
-      }
-    } else {
-      lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day');
-    }
-    if (d.finalPrice < d.price) {
-      lines.push('- ฿'+(d.price-d.finalPrice).toLocaleString()+' = Discount 10%');
-    }
-    return '<div class="summary-row-dog">'
-      + '<div class="row-header">'+headerName+'</div>'
-      + lines.map(function(l){ return '<div class="row-line">'+l+'</div>'; }).join('')
-      + '<div class="row-total">Total = ฿'+d.finalPrice.toLocaleString()+'</div>'
-      + '</div>';
+    return '<div class="summary-row-dog"><span class="summary-label">'+d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'')+(d.finalPrice<d.price?' <span style="color:var(--green);">· -10%</span>':'')+'</span><span class="summary-val">฿'+d.finalPrice.toLocaleString()+'</span></div>';
   }).join('');
 
   document.getElementById('summary_content').innerHTML=
@@ -1339,8 +1288,6 @@ async function confirmBooking() {
     totalPrice:'฿'+totalPrice.toLocaleString(),
     allDates,
     timestamp:new Date().toLocaleString('th-TH'),
-    termsVersion: currentOwner.termsVersion || TERMS_VERSION,
-    termsAcceptedAt: currentOwner.termsAcceptedAt || termsAcceptedAt,
     dogs:dogs.map(function(d){
       return {
         dogId:    d.dogId||'',
@@ -1385,14 +1332,11 @@ window.addEventListener('load', function() {
   var today=new Date().toISOString().slice(0,10);
   document.getElementById('bk_checkin').min=today;
   document.getElementById('bk_checkout').min=today;
-  document.getElementById('bk_checkout').disabled=true;
   document.getElementById('bk_daycare_date').min=today;
-  fillTimeSelect('bk_checkin_time','');
-  document.getElementById('bk_checkout_time').innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
-  document.getElementById('bk_checkout_time').disabled = true;
-  fillTimeSelect('bk_dropoff','');
-  document.getElementById('bk_pickup').innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
-  document.getElementById('bk_pickup').disabled = true;
+  fillTimeSelect('bk_checkin_time','14:00');
+  fillTimeSelect('bk_checkout_time','20:00');
+  fillTimeSelect('bk_dropoff','08:00');
+  fillTimeSelect('bk_pickup','20:00');
   updateType();
   showScreen('source');
 });
