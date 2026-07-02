@@ -1341,6 +1341,7 @@ async function confirmBooking() {
     ownerId:currentOwner.ownerId||'',
     ownerName:currentOwner.name||currentOwner.lineName,
     phone:currentOwner.phone||'',
+    lineId:currentOwner.lineId||'',
     lineName:currentOwner.lineName,
     type:bookingType==='overnight'?'Overnight Care':'Daycare',
     checkIn,checkOut,
