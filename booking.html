@@ -449,7 +449,11 @@ async function handleLineCallback() {
   showScreen('loading');
   window.history.replaceState({}, document.title, window.location.pathname);
   try {
-    var res = await fetch(APPS_SCRIPT_URL+'?action=lineLogin&code='+encodeURIComponent(code)+'&redirectUri='+encodeURIComponent(LINE_REDIRECT));
+    var res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({ action: 'lineLogin', code: code, redirectUri: LINE_REDIRECT })
+    });
     var result = await res.json();
     if (result.profile) { await checkOwner(result.profile); return true; }
     showScreen('login'); showMsg('login_msg','เกิดข้อผิดพลาด กรุณาลองใหม่','error'); return true;
