@@ -451,12 +451,13 @@ async function handleLineCallback() {
   try {
     var res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
+      redirect: 'follow',
       headers: {'Content-Type': 'text/plain'},
       body: JSON.stringify({ action: 'lineLogin', code: code, redirectUri: LINE_REDIRECT })
     });
     var result = await res.json();
     if (result.profile) { await checkOwner(result.profile); return true; }
-    showScreen('login'); showMsg('login_msg','เกิดข้อผิดพลาด กรุณาลองใหม่','error'); return true;
+    showScreen('login'); showMsg('login_msg','เกิดข้อผิดพลาด: '+(result.error||'unknown'),'error'); return true;
   } catch(e) { showScreen('login'); showMsg('login_msg','เกิดข้อผิดพลาด: '+e.message,'error'); return true; }
 }
 async function checkOwner(profile) {
