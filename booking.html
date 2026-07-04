@@ -440,7 +440,7 @@ function getSizeLabel(size) {
 
 // ── LINE ──────────────────────────────────────────────
 function lineLogin() {
-  window.location.href = 'https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id='+LINE_CHANNEL_ID+'&redirect_uri='+encodeURIComponent(LINE_REDIRECT)+'&state='+LINE_STATE+'&scope=profile%20openid';
+  window.location.href = 'https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id='+LINE_CHANNEL_ID+'&redirect_uri='+encodeURIComponent(LINE_REDIRECT)+'&state='+LINE_STATE+'&scope=profile%20openid&bot_prompt=aggressive';
 }
 async function handleLineCallback() {
   var params = new URLSearchParams(window.location.search);
