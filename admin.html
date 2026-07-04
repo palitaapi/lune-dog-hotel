@@ -569,7 +569,7 @@ function switchTopTab(tab) {
   document.getElementById('top-panel-entry').style.display = tab==='entry' ? 'block' : 'none';
   document.getElementById('top-panel-payment').style.display = tab==='payment' ? 'block' : 'none';
   document.getElementById('top-panel-reports').style.display = tab==='reports' ? 'block' : 'none';
-  if (tab==='payment' || tab==='reports') allBookingsCache = null; // โหลดข้อมูลใหม่เสมอ ไม่ใช้ cache ค้าง
+  if (tab==='payment' || tab==='reports') { allBookingsCache = null; dogsFoodMapCache = null; } // โหลดข้อมูลใหม่เสมอ ไม่ใช้ cache ค้าง
   if (tab==='reports') switchReportTab('revenue');
 }
 
@@ -705,6 +705,26 @@ function parseAllDates(val) {
   return raw;
 }
 
+var dogsFoodMapCache = null;
+async function loadDogsFoodMap() {
+  if (dogsFoodMapCache) return dogsFoodMapCache;
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs');
+  var raw = await res.text();
+  var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
+  var map = {};
+  (json.table ? json.table.rows || [] : []).forEach(function(row) {
+    var c = row.c || [];
+    var dogId = c[1] ? String(c[1].v || '').trim() : '';
+    if (!dogId) return;
+    map[dogId] = {
+      foodType:    c[9] ? String(c[9].v || '').trim() : '',
+      mealsPerDay: c[10]? String(c[10].v || '').trim() : '',
+    };
+  });
+  dogsFoodMapCache = map;
+  return map;
+}
+
 async function loadAllBookingsGrouped() {
   if (allBookingsCache) return allBookingsCache;
   var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Booking');
@@ -716,6 +736,7 @@ async function loadAllBookingsGrouped() {
       bookingId:   c[1] ? String(c[1].v || '').trim() : '',
       ownerName:   c[3] ? String(c[3].v || '').trim() : '',
       phone:       c[4] ? String(c[4].v || '').trim() : '',
+      dogId:       c[6] ? String(c[6].v || '').trim() : '',
       dogName:     c[7] ? String(c[7].v || '').trim() : '',
       breed:       c[8] ? String(c[8].v || '').trim() : '',
       size:        c[12]? String(c[12].v || '').trim() : '',
@@ -750,7 +771,7 @@ async function loadAllBookingsGrouped() {
         dogs: []
       };
     }
-    if (r.dogName) grouped[r.bookingId].dogs.push({ name: r.dogName, breed: r.breed, size: r.size });
+    if (r.dogName) grouped[r.bookingId].dogs.push({ dogId: r.dogId, name: r.dogName, breed: r.breed, size: r.size });
   });
 
   var list = Object.keys(grouped).map(function(k){ return grouped[k]; });
@@ -919,22 +940,52 @@ async function renderDogVisits() {
 
   try {
     var bookings = await loadAllBookingsGrouped();
+    var foodMap = await loadDogsFoodMap();
 
     var todaysBookings = bookings.filter(function(b) {
       return b.status !== 'cancelled' && (b.allDates||'').indexOf(selectedDate) > -1;
     });
 
+    // เรียง Daycare ก่อน Overnight Care เสมอ
+    todaysBookings = todaysBookings.slice().sort(function(a, b) {
+      if (a.type === b.type) return 0;
+      return a.type === 'Daycare' ? -1 : 1;
+    });
+
     var sizeLabel = {small:'Small',medium:'Medium',large:'Large'};
     var cardsHtml = [];
     todaysBookings.forEach(function(b) {
-      var timeLabel = (b.dropOffTime||b.pickUpTime) ? ('เช็คอิน '+(b.dropOffTime||'-')+' → เช็คเอาท์ '+(b.pickUpTime||'-')) : '';
+      // ── Logic แสดงเวลาตามประเภทและวันที่เลือก ──
+      var timeLabel = '';
+      if (b.type === 'Daycare') {
+        timeLabel = 'Check in ' + (b.dropOffTime||'-') + ' และ Check Out ' + (b.pickUpTime||'-');
+      } else {
+        var isCheckInDay = selectedDate === b.checkIn;
+        var isCheckOutDay = selectedDate === b.checkOut;
+        if (isCheckInDay && isCheckOutDay) timeLabel = 'Check in ' + (b.dropOffTime||'-') + ' และ Check Out ' + (b.pickUpTime||'-');
+        else if (isCheckInDay) timeLabel = 'Check In ' + (b.dropOffTime||'-');
+        else if (isCheckOutDay) timeLabel = 'Check Out ' + (b.pickUpTime||'-');
+        // วันกลาง (ไม่ใช่ check-in หรือ check-out) → timeLabel ว่างเปล่า ไม่ต้องมี action
+      }
+
       b.dogs.forEach(function(d) {
         var metaParts = [d.breed||'ไม่ระบุพันธุ์', sizeLabel[d.size]||d.size||'-'];
-        if (timeLabel) metaParts.push(timeLabel);
+        var foodInfo = foodMap[d.dogId];
+        var foodLine;
+        if (!foodInfo || (!foodInfo.foodType && !foodInfo.mealsPerDay)) {
+          foodLine = 'ไม่ระบุ';
+        } else {
+          var foodPart = foodInfo.foodType || 'ไม่ระบุประเภท';
+          var mealsPart = foodInfo.mealsPerDay ? (foodInfo.mealsPerDay + ' มื้อ/วัน') : 'ไม่ระบุมื้อ';
+          foodLine = foodPart + ' · ' + mealsPart;
+        }
         cardsHtml.push(
           '<div class="dog-visit-card">'
+            + '<div style="font-size:0.7rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.3rem;">'+b.type+'</div>'
             + '<div class="dvc-name">'+d.name+'</div>'
             + '<div class="dvc-meta">'+metaParts.join(' · ')+'</div>'
+            + (timeLabel ? '<div class="dvc-meta">'+timeLabel+'</div>' : '')
+            + '<div class="dvc-meta">🍖 '+foodLine+'</div>'
           + '</div>'
         );
       });
