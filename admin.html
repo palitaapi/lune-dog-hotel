@@ -976,7 +976,7 @@ async function renderDogVisits() {
           foodLine = 'ไม่ระบุ';
         } else {
           var foodPart = foodInfo.foodType || 'ไม่ระบุประเภท';
-          var mealsPart = foodInfo.mealsPerDay ? (foodInfo.mealsPerDay + ' มื้อ/วัน') : 'ไม่ระบุมื้อ';
+          var mealsPart = foodInfo.mealsPerDay ? foodInfo.mealsPerDay : 'ไม่ระบุมื้อ';
           foodLine = foodPart + ' · ' + mealsPart;
         }
         cardsHtml.push(
