@@ -675,6 +675,16 @@ function debouncedPaymentSearch() {
   paymentSearchDebounceTimer = setTimeout(searchBookingsForPayment, 350);
 }
 
+function parseGvizDate(val) {
+  if (!val) return '';
+  var m = String(val).match(/^Date\((\d+),(\d+),(\d+)/);
+  if (m) {
+    var y = m[1], mo = String(parseInt(m[2],10)+1).padStart(2,'0'), d = String(parseInt(m[3],10)).padStart(2,'0');
+    return y+'-'+mo+'-'+d;
+  }
+  return String(val);
+}
+
 async function loadAllBookingsGrouped() {
   if (allBookingsCache) return allBookingsCache;
   var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Booking');
@@ -691,9 +701,9 @@ async function loadAllBookingsGrouped() {
       size:        c[12]? String(c[12].v || '').trim() : '',
       price:       c[13]? String(c[13].v || '').trim() : '',
       type:        c[14]? String(c[14].v || '').trim() : '',
-      checkIn:     c[15]? String(c[15].v || '').trim() : '',
+      checkIn:     c[15]? parseGvizDate(c[15].v) : '',
       dropOffTime: c[16]? String(c[16].v || '').trim() : '',
-      checkOut:    c[17]? String(c[17].v || '').trim() : '',
+      checkOut:    c[17]? parseGvizDate(c[17].v) : '',
       pickUpTime:  c[18]? String(c[18].v || '').trim() : '',
       totalPrice:  c[20]? String(c[20].v || '').trim() : '',
       allDates:    c[21]? String(c[21].v || '').trim() : '',
@@ -806,6 +816,10 @@ async function updateBookingStatus(bookingId, newStatus) {
 }
 
 // ── REPORTS: REVENUE ──────────────────────────────────
+function formatMoney(n) {
+  return (n||0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
 async function renderRevenue() {
   var contentEl = document.getElementById('revenue_content');
   contentEl.innerHTML = '<p class="empty-note">⏳ กำลังโหลด...</p>';
@@ -813,12 +827,8 @@ async function renderRevenue() {
   try {
     var bookings = await loadAllBookingsGrouped();
 
-    // ── รายได้รวมทั้งหมด: เฉพาะ deposit_paid + fully_paid ──
-    var totalRevenue = 0;
     var monthSet = {};
     bookings.forEach(function(b) {
-      var amount = parseFloat(String(b.totalPrice).replace(/[^0-9.]/g,'')) || 0;
-      if (b.status === 'deposit_paid' || b.status === 'fully_paid') totalRevenue += amount;
       var monthKey = String(b.checkIn||'').slice(0,7); // YYYY-MM
       if (monthKey) monthSet[monthKey] = true;
     });
@@ -828,34 +838,47 @@ async function renderRevenue() {
     var selectedMonth = document.getElementById('revenue_month_select') ? document.getElementById('revenue_month_select').value : (monthKeys.indexOf(currentMonth)>-1 ? currentMonth : (monthKeys[0]||currentMonth));
     if (monthKeys.indexOf(selectedMonth) === -1) monthKeys.unshift(selectedMonth);
 
+    var THAI_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    function monthLabel(m) {
+      var parts = m.split('-');
+      var y = parseInt(parts[0],10), mo = parseInt(parts[1],10);
+      return THAI_MONTHS[mo-1] + ' ' + y;
+    }
+
     var monthOptionsHtml = monthKeys.map(function(m) {
-      return '<option value="'+m+'"'+(m===selectedMonth?' selected':'')+'>'+m+'</option>';
+      return '<option value="'+m+'"'+(m===selectedMonth?' selected':'')+'>'+monthLabel(m)+'</option>';
     }).join('');
 
-    // ── รายได้เดือนที่เลือก: แจกแจงจ่ายแล้ว/คงค้าง ──
-    var monthPaid = 0, monthPending = 0;
+    // ── นับจำนวนคน(booking) + ยอดเต็มของแต่ละ booking ใส่ตามสถานะปัจจุบัน ──
+    // cancelled ไม่ถูกนับเลย เพราะยกเลิกแล้วไม่ต้องจ่าย
+    // ผลรวม 3 คอลัมน์ = grandTotal เสมอ เพราะแต่ละ booking ถูกนับเข้าคอลัมน์เดียวเท่านั้นตาม status ปัจจุบัน
+    var pendingCount=0, pendingAmt=0;
+    var depositCount=0, depositAmt=0;
+    var fullyCount=0, fullyAmt=0;
+
     bookings.forEach(function(b) {
       var monthKey = String(b.checkIn||'').slice(0,7);
       if (monthKey !== selectedMonth) return;
+      if (b.status === 'cancelled') return;
       var amount = parseFloat(String(b.totalPrice).replace(/[^0-9.]/g,'')) || 0;
-      if (b.status === 'deposit_paid' || b.status === 'fully_paid') monthPaid += amount;
-      else if (b.status === 'pending_deposit') monthPending += amount;
+      if (b.status === 'pending_deposit') { pendingCount++; pendingAmt += amount; }
+      else if (b.status === 'deposit_paid') { depositCount++; depositAmt += amount; }
+      else if (b.status === 'fully_paid') { fullyCount++; fullyAmt += amount; }
     });
-    var monthTotal = monthPaid + monthPending;
+
+    var grandCount = pendingCount + depositCount + fullyCount;
+    var grandTotal = pendingAmt + depositAmt + fullyAmt;
 
     contentEl.innerHTML =
       '<div class="revenue-card">'
-        + '<div class="revenue-label">รายได้รวมทั้งหมด</div>'
-        + '<div class="revenue-amount">฿'+totalRevenue.toLocaleString()+'</div>'
-      + '</div>'
-      + '<div class="revenue-card">'
-        + '<div class="revenue-label">รายได้เดือน'
+        + '<div class="revenue-label">สรุปการจ่ายเงิน เดือน'
           + '<select id="revenue_month_select" onchange="renderRevenue()">'+monthOptionsHtml+'</select>'
         + '</div>'
-        + '<div class="revenue-amount">฿'+monthTotal.toLocaleString()+'</div>'
-        + '<div class="revenue-breakdown">'
-          + '✓ จ่ายแล้ว: ฿'+monthPaid.toLocaleString()+'<br>'
-          + '⏳ คงค้าง: ฿'+monthPending.toLocaleString()
+        + '<div class="revenue-breakdown" style="font-size:0.85rem;">'
+          + '<div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px dashed var(--gray-line);"><span>⏳ ยังไม่จ่ายมัดจำ · '+pendingCount+' คน</span><span style="font-weight:600;">฿'+formatMoney(pendingAmt)+'</span></div>'
+          + '<div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px dashed var(--gray-line);"><span>✓ จ่ายมัดจำแล้ว · '+depositCount+' คน</span><span style="font-weight:600;">฿'+formatMoney(depositAmt)+'</span></div>'
+          + '<div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px dashed var(--gray-line);"><span>✅ จ่ายเต็มแล้ว · '+fullyCount+' คน</span><span style="font-weight:600;">฿'+formatMoney(fullyAmt)+'</span></div>'
+          + '<div style="display:flex;justify-content:space-between;padding:0.6rem 0 0;font-weight:700;"><span>รวมทั้งหมด · '+grandCount+' คน</span><span>฿'+formatMoney(grandTotal)+'</span></div>'
         + '</div>'
       + '</div>';
   } catch(e) {
