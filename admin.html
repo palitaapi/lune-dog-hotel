@@ -685,6 +685,26 @@ function parseGvizDate(val) {
   return String(val);
 }
 
+function parseGvizTime(val) {
+  if (!val) return '';
+  var m = String(val).match(/^Date\(\d+,\d+,\d+,(\d+),(\d+)/);
+  if (m) {
+    var h = String(parseInt(m[1],10)).padStart(2,'0'), min = String(parseInt(m[2],10)).padStart(2,'0');
+    return h+':'+min;
+  }
+  return String(val);
+}
+
+function parseAllDates(val) {
+  if (!val) return '';
+  var raw = String(val);
+  // ถ้ามี comma และไม่มี "Date(" แปลว่าเป็น string หลายวันคั่นด้วย comma อยู่แล้ว (รูปแบบปกติ)
+  if (raw.indexOf(',') > -1 && raw.indexOf('Date(') === -1) return raw;
+  // ถ้าเป็น gviz Date object เดี่ยว (พบจริงในข้อมูล — booking บางรายการ Apps Script เก็บมาเป็น Date เดี่ยว)
+  if (raw.indexOf('Date(') === 0) return parseGvizDate(raw);
+  return raw;
+}
+
 async function loadAllBookingsGrouped() {
   if (allBookingsCache) return allBookingsCache;
   var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Booking');
@@ -702,11 +722,11 @@ async function loadAllBookingsGrouped() {
       price:       c[13]? String(c[13].v || '').trim() : '',
       type:        c[14]? String(c[14].v || '').trim() : '',
       checkIn:     c[15]? parseGvizDate(c[15].v) : '',
-      dropOffTime: c[16]? String(c[16].v || '').trim() : '',
+      dropOffTime: c[16]? parseGvizTime(c[16].v) : '',
       checkOut:    c[17]? parseGvizDate(c[17].v) : '',
-      pickUpTime:  c[18]? String(c[18].v || '').trim() : '',
+      pickUpTime:  c[18]? parseGvizTime(c[18].v) : '',
       totalPrice:  c[20]? String(c[20].v || '').trim() : '',
-      allDates:    c[21]? String(c[21].v || '').trim() : '',
+      allDates:    c[21]? parseAllDates(c[21].v) : '',
       status:      c[22]? String(c[22].v || '').trim() : '',
     };
   }).filter(function(r){ return r.bookingId; });
