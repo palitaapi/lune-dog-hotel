@@ -141,6 +141,7 @@
       <div class="mode-tab active" id="tab-existing" onclick="switchMode('existing')">ลูกค้าเก่า</div>
       <div class="mode-tab" id="tab-new" onclick="switchMode('new')">ลงทะเบียนใหม่</div>
       <div class="mode-tab" id="tab-payment" onclick="switchMode('payment')">สถานะจ่ายเงิน</div>
+      <div class="mode-tab" id="tab-dashboard" onclick="switchMode('dashboard')">แดชบอร์ด</div>
     </div>
 
     <!-- EXISTING OWNER SEARCH -->
@@ -213,6 +214,15 @@
       </div>
       <div id="payment_search_results"></div>
       <div id="payment_search_msg"></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="mode-dashboard" style="display:none;">
+      <div class="form-group">
+        <label>ดูลูกค้าที่มาพักวันที่</label>
+        <input type="date" id="dashboard_date" onchange="renderDashboard()"/>
+      </div>
+      <div id="dashboard_content"></div>
     </div>
   </div>
 
@@ -522,9 +532,12 @@ function switchMode(mode) {
   document.getElementById('tab-existing').classList.toggle('active', mode==='existing');
   document.getElementById('tab-new').classList.toggle('active', mode==='new');
   document.getElementById('tab-payment').classList.toggle('active', mode==='payment');
+  document.getElementById('tab-dashboard').classList.toggle('active', mode==='dashboard');
   document.getElementById('mode-existing').style.display = mode==='existing' ? 'block' : 'none';
   document.getElementById('mode-new').style.display = mode==='new' ? 'block' : 'none';
   document.getElementById('mode-payment').style.display = mode==='payment' ? 'block' : 'none';
+  document.getElementById('mode-dashboard').style.display = mode==='dashboard' ? 'block' : 'none';
+  if (mode==='dashboard') renderDashboard();
 }
 
 // ── OWNER SEARCH (existing) ──────────────────────────
@@ -630,6 +643,7 @@ async function loadAllBookingsGrouped() {
       checkIn:    c[15]? String(c[15].v || '').trim() : '',
       checkOut:   c[17]? String(c[17].v || '').trim() : '',
       totalPrice: c[20]? String(c[20].v || '').trim() : '',
+      allDates:   c[21]? String(c[21].v || '').trim() : '',
       status:     c[22]? String(c[22].v || '').trim() : '',
     };
   }).filter(function(r){ return r.bookingId; });
@@ -646,6 +660,7 @@ async function loadAllBookingsGrouped() {
         checkIn: r.checkIn,
         checkOut: r.checkOut,
         totalPrice: r.totalPrice,
+        allDates: r.allDates,
         status: r.status || 'pending_deposit',
         dogNames: []
       };
@@ -732,6 +747,69 @@ async function updateBookingStatus(bookingId, newStatus) {
     searchBookingsForPayment();
   } catch(e) {
     showMsg(msgId, 'อัปเดตไม่สำเร็จ: '+e.message, 'error');
+  }
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+async function renderDashboard() {
+  var dateInput = document.getElementById('dashboard_date');
+  if (!dateInput.value) {
+    var today = new Date();
+    dateInput.value = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  }
+  var selectedDate = dateInput.value;
+  var contentEl = document.getElementById('dashboard_content');
+  contentEl.innerHTML = '<p class="empty-note">⏳ กำลังโหลด...</p>';
+
+  try {
+    var bookings = await loadAllBookingsGrouped();
+
+    // ── รายได้: นับเฉพาะ deposit_paid + fully_paid ──
+    var revenueByMonth = {};
+    var totalRevenue = 0;
+    var pendingDepositTotal = 0;
+
+    bookings.forEach(function(b) {
+      var amount = parseFloat(String(b.totalPrice).replace(/[^0-9.]/g,'')) || 0;
+      if (b.status === 'deposit_paid' || b.status === 'fully_paid') {
+        totalRevenue += amount;
+        var monthKey = String(b.checkIn||'').slice(0,7); // YYYY-MM
+        if (monthKey) revenueByMonth[monthKey] = (revenueByMonth[monthKey]||0) + amount;
+      } else if (b.status === 'pending_deposit') {
+        pendingDepositTotal += Math.round(amount * 0.5);
+      }
+    });
+
+    var monthKeys = Object.keys(revenueByMonth).sort();
+    var monthRowsHtml = monthKeys.map(function(m) {
+      return '<div class="bpc-status-row"><span>'+m+'</span><span style="font-weight:600;">฿'+revenueByMonth[m].toLocaleString()+'</span></div>';
+    }).join('') || '<p class="empty-note">ยังไม่มีข้อมูลรายได้</p>';
+
+    // ── ลูกค้าที่มาพักวันที่เลือก ──
+    var todaysBookings = bookings.filter(function(b) {
+      return b.status !== 'cancelled' && (b.allDates||'').indexOf(selectedDate) > -1;
+    });
+
+    var todaysHtml = todaysBookings.map(function(b) {
+      return '<div class="booking-payment-card">'
+        + '<div class="bpc-id">'+b.bookingId+'</div>'
+        + '<div class="bpc-meta">'+b.ownerName+' · '+(b.phone||'-')+'<br>'+b.type+'</div>'
+        + '<div class="bpc-dogs">🐶 '+(b.dogNames.join(', ')||'-')+'</div>'
+        + '<span class="status-badge status-'+(STATUS_LABEL[b.status]?b.status:'pending_deposit')+'">'+(STATUS_LABEL[b.status]||b.status)+'</span>'
+        + '</div>';
+    }).join('') || '<p class="empty-note">ไม่มีลูกค้ามาพักวันนี้</p>';
+
+    contentEl.innerHTML =
+      '<div class="booking-payment-card">'
+        + '<div class="bpc-header"><span class="bpc-id">💰 รายได้รวม (มัดจำ+จ่ายครบ)</span></div>'
+        + '<div class="bpc-price" style="font-size:1.1rem;">฿'+totalRevenue.toLocaleString()+'</div>'
+        + '<div class="bpc-meta">มัดจำที่ยังไม่ได้รับ (pending_deposit): ฿'+pendingDepositTotal.toLocaleString()+'</div>'
+      + '</div>'
+      + '<div class="booking-payment-card"><div class="bpc-header"><span class="bpc-id">รายได้แยกตามเดือน</span></div>'+monthRowsHtml+'</div>'
+      + '<h3 style="margin:1.2rem 0 0.6rem;font-size:0.9rem;">🐶 ลูกค้าที่มาพักวันที่ '+selectedDate+'</h3>'
+      + todaysHtml;
+  } catch(e) {
+    contentEl.innerHTML = '<p class="empty-note">โหลดข้อมูลไม่สำเร็จ: '+e.message+'</p>';
   }
 }
 
