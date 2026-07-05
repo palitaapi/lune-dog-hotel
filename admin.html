@@ -594,7 +594,7 @@ function switchReportTab(tab) {
 // ── OWNER SEARCH (existing) ──────────────────────────
 async function loadAllOwners() {
   if (allOwnersCache) return allOwnersCache;
-  var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Owners');
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Owners&_cb='+Date.now());
   var raw = await res.text();
   var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
   var rows = (json.table ? json.table.rows || [] : []).map(function(row) {
@@ -710,7 +710,7 @@ function parseAllDates(val) {
 var dogsFoodMapCache = null;
 async function loadDogsFoodMap() {
   if (dogsFoodMapCache) return dogsFoodMapCache;
-  var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs');
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs&_cb='+Date.now());
   var raw = await res.text();
   var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
   var map = {};
@@ -729,7 +729,7 @@ async function loadDogsFoodMap() {
 
 async function loadAllBookingsGrouped() {
   if (allBookingsCache) return allBookingsCache;
-  var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Booking');
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Booking&_cb='+Date.now());
   var raw = await res.text();
   var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
   var rows = (json.table ? json.table.rows || [] : []).map(function(row) {
@@ -1165,7 +1165,7 @@ async function registerOwner() {
 async function loadAvailability() {
   availData={};
   try {
-    var res=await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Calendar');
+    var res=await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Calendar&_cb='+Date.now());
     var raw=await res.text();
     var json=JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table?json.table.rows||[]:[]).forEach(function(row){
@@ -1186,7 +1186,7 @@ async function loadSavedDogs() {
   savedDogs = [];
   pendingNewDogs = []; editingPendingIdx = null;
   try {
-    var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs');
+    var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs&_cb='+Date.now());
     var raw = await res.text();
     var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table ? json.table.rows || [] : []).forEach(function(row) {

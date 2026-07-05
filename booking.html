@@ -463,7 +463,7 @@ async function handleLineCallback() {
 async function checkOwner(profile) {
   currentOwner = {lineId:profile.userId, lineName:profile.displayName};
   try {
-    var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Owners');
+    var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Owners&_cb='+Date.now());
     var raw = await res.text();
     var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table?json.table.rows||[]:[]).forEach(function(row) {
@@ -490,7 +490,7 @@ async function loadSavedDogs() {
   editingPendingIdx = null;
   try {
     // Read from Dogs sheet in the same Owners spreadsheet
-    var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs');
+    var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs&_cb='+Date.now());
     var raw = await res.text();
     var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table ? json.table.rows || [] : []).forEach(function(row) {
@@ -676,7 +676,7 @@ function closeDropdown(type) {
 // ── OWNER LOOKUP (สำหรับเช็คเบอร์ซ้ำ) ─────────────────
 async function loadAllOwners() {
   if (allOwnersCache) return allOwnersCache;
-  var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Owners');
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Owners&_cb='+Date.now());
   var raw = await res.text();
   var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
   var rows = (json.table ? json.table.rows || [] : []).map(function(row) {
@@ -742,7 +742,7 @@ async function registerAndBook() {
 async function loadAvailability() {
   availData={};
   try {
-    var res=await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Calendar');
+    var res=await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Calendar&_cb='+Date.now());
     var raw=await res.text();
     var json=JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table?json.table.rows||[]:[]).forEach(function(row){
