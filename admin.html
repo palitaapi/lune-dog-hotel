@@ -812,9 +812,13 @@ function renderPaymentResults(bookings) {
     var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
     var discountedTotal = parseFloat(String(b.discountedTotal||'').replace(/[^0-9.]/g,'')) || 0;
     var hasDiscount = discountedTotal > 0;
-    var effectivePrice = hasDiscount ? discountedTotal : totalPrice;
-    var deposit = Math.ceil(effectivePrice * 0.5);
-    var remaining = effectivePrice - deposit;
+    // มัดจำ 50% แรก คิดจากราคาเต็มเสมอ ไม่ถูกลด เพราะลูกค้าจ่ายมัดจำก่อนที่ admin จะให้ส่วนลด
+    var deposit = Math.ceil(totalPrice * 0.5);
+    // ยอดคงเหลือ (50% หลัง): ถ้ามีส่วนลด = ราคาที่ลดแล้ว - มัดจำที่จ่ายไปแล้ว (กันติดลบด้วย Math.max)
+    //                        ถ้าไม่มีส่วนลด = ราคาเต็ม - มัดจำตามปกติ
+    var remaining = hasDiscount
+      ? Math.max(0, discountedTotal - deposit)
+      : (totalPrice - deposit);
     var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_deposit';
     var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
     var actionsHtml = Object.keys(STATUS_LABEL).map(function(s) {
@@ -824,8 +828,8 @@ function renderPaymentResults(bookings) {
     }).join('');
 
     var priceLine = hasDiscount
-      ? 'ยอดเต็ม ฿'+totalPrice.toLocaleString()+' · <span style="color:var(--green,#2e7d32);">ลดโปรแล้ว ฿'+effectivePrice.toLocaleString()+'</span> · มัดจำ 50% = ฿'+deposit.toLocaleString()+' · คงเหลือ ฿'+remaining.toLocaleString()
-      : 'ยอดรวม ฿'+effectivePrice.toLocaleString()+' · มัดจำ 50% = ฿'+deposit.toLocaleString()+' · คงเหลือ ฿'+remaining.toLocaleString();
+      ? 'ยอดเต็ม ฿'+totalPrice.toLocaleString()+' · มัดจำ 50% = ฿'+deposit.toLocaleString()+' (จ่ายเต็มราคา)<br><span style="color:var(--green,#2e7d32);">ลดโปรแล้ว ฿'+discountedTotal.toLocaleString()+'</span> · คงเหลือหลังลด = ฿'+remaining.toLocaleString()
+      : 'ยอดรวม ฿'+totalPrice.toLocaleString()+' · มัดจำ 50% = ฿'+deposit.toLocaleString()+' · คงเหลือ ฿'+remaining.toLocaleString();
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
@@ -837,7 +841,7 @@ function renderPaymentResults(bookings) {
       + '<div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed var(--gray-line);">'
         + '<label style="font-size:0.72rem;color:var(--gray-dark);display:block;margin-bottom:0.3rem;">ราคาที่ลดแล้ว (ถ้ามีโปร เช่น First-Time 25%)</label>'
         + '<div style="display:flex;gap:0.4rem;">'
-          + '<input type="number" id="discount_input_'+b.bookingId+'" placeholder="เช่น 701" value="'+(hasDiscount?effectivePrice:'')+'" style="flex:1;font-size:0.8rem;padding:0.4rem 0.6rem;"/>'
+          + '<input type="number" id="discount_input_'+b.bookingId+'" placeholder="เช่น 701" value="'+(hasDiscount?discountedTotal:'')+'" style="flex:1;font-size:0.8rem;padding:0.4rem 0.6rem;"/>'
           + '<button class="bpc-action-btn" style="flex:0 0 auto;" onclick="saveDiscountedTotal(\''+b.bookingId+'\')">บันทึก</button>'
         + '</div>'
       + '</div>'
