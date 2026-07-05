@@ -814,11 +814,12 @@ function renderPaymentResults(bookings) {
     var hasDiscount = discountedTotal > 0;
     // มัดจำ 50% แรก คิดจากราคาเต็มเสมอ ไม่ถูกลด เพราะลูกค้าจ่ายมัดจำก่อนที่ admin จะให้ส่วนลด
     var deposit = Math.ceil(totalPrice * 0.5);
-    // ยอดคงเหลือ (50% หลัง): ถ้ามีส่วนลด = ราคาที่ลดแล้ว - มัดจำที่จ่ายไปแล้ว (กันติดลบด้วย Math.max)
-    //                        ถ้าไม่มีส่วนลด = ราคาเต็ม - มัดจำตามปกติ
+    var fullRemaining = totalPrice - deposit; // 50% หลัง ก่อนหักส่วนลด (ใช้แสดงผลเสมอ)
+    // ยอดคงเหลือ (50% หลัง) หลังหักส่วนลด: ถ้ามีส่วนลด = ราคาที่ลดแล้ว - มัดจำที่จ่ายไปแล้ว (กันติดลบด้วย Math.max)
+    //                                      ถ้าไม่มีส่วนลด = เท่ากับ fullRemaining
     var remaining = hasDiscount
       ? Math.max(0, discountedTotal - deposit)
-      : (totalPrice - deposit);
+      : fullRemaining;
     var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_deposit';
     var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
     var actionsHtml = Object.keys(STATUS_LABEL).map(function(s) {
@@ -827,9 +828,14 @@ function renderPaymentResults(bookings) {
       return '<button class="bpc-action-btn'+danger+'" onclick="confirmUpdateStatus(\''+b.bookingId+'\',\''+s+'\')">→ '+STATUS_LABEL[s]+'</button>';
     }).join('');
 
-    var priceLine = hasDiscount
-      ? 'ยอดเต็ม ฿'+totalPrice.toLocaleString()+' · มัดจำ 50% = ฿'+deposit.toLocaleString()+' (จ่ายเต็มราคา)<br><span style="color:var(--green,#2e7d32);">ลดโปรแล้ว ฿'+discountedTotal.toLocaleString()+'</span> · คงเหลือหลังลด = ฿'+remaining.toLocaleString()
-      : 'ยอดรวม ฿'+totalPrice.toLocaleString()+' · มัดจำ 50% = ฿'+deposit.toLocaleString()+' · คงเหลือ ฿'+remaining.toLocaleString();
+    var depositPaid = (b.status === 'deposit_paid' || b.status === 'fully_paid');
+    var remainingPaid = (b.status === 'fully_paid');
+
+    var priceLine = 'Total = ฿'+totalPrice.toLocaleString()+'<br>'
+      + 'มัดจำ 50% แรก = ฿'+deposit.toLocaleString()+(depositPaid?' (Paid)':'')+'<br><br>'
+      + (hasDiscount
+          ? 'มัดจำ 50% หลัง = ฿'+fullRemaining.toLocaleString()+(remainingPaid?' (Paid)':'')+'<br><span style="color:var(--green,#2e7d32);">ลดโปรแล้วเหลือ ฿'+remaining.toLocaleString()+'</span>'
+          : 'มัดจำ 50% หลัง = ฿'+fullRemaining.toLocaleString()+(remainingPaid?' (Paid)':''));
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
