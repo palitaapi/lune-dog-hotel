@@ -66,7 +66,20 @@
   .bpc-id{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:0.78rem;font-weight:700;color:var(--black);}
   .bpc-meta{font-size:0.8rem;color:var(--gray-dark);line-height:1.6;margin-bottom:0.6rem;}
   .bpc-dogs{font-size:0.78rem;color:var(--gray-dark);margin-bottom:0.6rem;}
-  .bpc-price{font-size:0.76rem;font-weight:600;color:var(--gold);margin-bottom:0.8rem;line-height:1.6;}
+  .price-summary{background:var(--bg2);border-radius:8px;padding:0.9rem 1rem;margin-bottom:0.8rem;}
+  .price-row{display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0;font-size:0.82rem;color:var(--text);}
+  .price-row.total-row{font-weight:700;border-bottom:1px dashed var(--gray-line);padding-bottom:0.6rem;margin-bottom:0.3rem;}
+  .price-row .price-label{color:var(--gray-dark);}
+  .price-row .price-amount{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-weight:700;color:var(--black);}
+  .price-row.total-row .price-amount{color:var(--gold);font-size:0.9rem;}
+  .adjustment-block{margin-top:0.7rem;padding-top:0.7rem;border-top:1px dashed var(--gray-line);}
+  .adjustment-title{font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray-dark);font-weight:700;margin-bottom:0.4rem;}
+  .adjustment-row{display:flex;justify-content:space-between;align-items:center;padding:0.25rem 0;font-size:0.8rem;}
+  .adjustment-row.promo .price-amount{color:#2e7d32;}
+  .adjustment-row.extra .price-amount{color:#b3550a;}
+  .grand-total-box{margin-top:0.7rem;background:var(--yellow);border-radius:8px;padding:0.7rem 1rem;display:flex;justify-content:space-between;align-items:center;}
+  .grand-total-box .price-label{font-size:0.78rem;font-weight:700;color:var(--black);}
+  .grand-total-box .price-amount{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:1.05rem;font-weight:700;color:var(--black);}
   .status-badge{display:inline-block;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.65rem;border-radius:999px;font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-weight:700;}
   .status-pending_deposit{background:#FDF4E3;color:#8a6d1f;border:0.5px solid var(--yellow);}
   .status-deposit_paid{background:#e8f5e9;color:#2e7d32;border:0.5px solid #a5d6a7;}
@@ -76,7 +89,7 @@
   .bpc-actions{display:flex;flex-wrap:wrap;gap:0.5rem;}
   .bpc-action-btn{flex:1;min-width:120px;padding:0.55rem 0.7rem;font-size:0.74rem;border-radius:6px;border:0.5px solid var(--gray-line);background:var(--white);color:var(--black);cursor:pointer;transition:all .15s;}
   .bpc-action-btn.current-status{background:var(--gold);color:#fff;border-color:var(--gold);cursor:default;}
-  .paid-tag{color:var(--green,#2e7d32);font-weight:700;}
+  .paid-tag{display:inline-block;background:#e8f5e9;color:#2e7d32;font-size:0.65rem;font-weight:700;letter-spacing:0.04em;padding:0.1rem 0.4rem;border-radius:999px;margin-left:0.3rem;vertical-align:middle;}
   .bpc-action-btn:hover{border-color:#422F25;}
   .bpc-action-btn.danger:hover{border-color:#b3261e;color:#b3261e;}
 
@@ -842,22 +855,27 @@ function renderPaymentResults(bookings) {
     var deposit1stPaid = (b.status === 'deposit_paid' || b.status === 'fully_paid');
     var deposit2ndPaid = (b.status === 'fully_paid');
 
-    var priceLine = 'Total = ฿'+totalPrice.toLocaleString()+'<br>'
-      + '+ 1st Deposit 50% = ฿'+deposit1st.toLocaleString()+(deposit1stPaid?' <span class="paid-tag">(Paid)</span>':'')+'<br>'
-      + '+ 2nd Deposit 50% = ฿'+deposit2nd.toLocaleString()+(deposit2ndPaid && !hasAdjustment ?' <span class="paid-tag">(Paid)</span>':'');
+    var priceHtml = '<div class="price-summary">'
+      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+'</span></div>'
+      + '<div class="price-row"><span class="price-label">1st Deposit 50%</span><span class="price-amount">฿'+deposit1st.toLocaleString()+(deposit1stPaid?' <span class="paid-tag">Paid</span>':'')+'</span></div>'
+      + '<div class="price-row"><span class="price-label">2nd Deposit 50%</span><span class="price-amount">฿'+deposit2nd.toLocaleString()+(deposit2ndPaid && !hasAdjustment?' <span class="paid-tag">Paid</span>':'')+'</span></div>';
 
     if (hasAdjustment) {
-      priceLine += '<br><br><strong>Promotion &amp; Extra</strong><br>';
-      if (promoAmount > 0) priceLine += '- ส่วนลดโปรโมชั่น = ฿'+promoAmount.toLocaleString()+'<br>';
-      if (extraAmount > 0) priceLine += '+ ค่าใช้จ่ายเพิ่ม = ฿'+extraAmount.toLocaleString()+'<br>';
-      priceLine += '<br><strong>Grand Total = ฿'+grandTotal.toLocaleString()+'</strong>'+(deposit2ndPaid?' <span class="paid-tag">(Paid)</span>':'');
+      priceHtml += '<div class="adjustment-block">'
+        + '<div class="adjustment-title">Promotion &amp; Extra</div>';
+      if (promoAmount > 0) priceHtml += '<div class="adjustment-row promo"><span class="price-label">− ส่วนลดโปรโมชั่น</span><span class="price-amount">฿'+promoAmount.toLocaleString()+'</span></div>';
+      if (extraAmount > 0) priceHtml += '<div class="adjustment-row extra"><span class="price-label">+ ค่าใช้จ่ายเพิ่ม</span><span class="price-amount">฿'+extraAmount.toLocaleString()+'</span></div>';
+      priceHtml += '</div>'
+        + '<div class="grand-total-box"><span class="price-label">Grand Total'+(deposit2ndPaid?' <span class="paid-tag" style="color:var(--black);">· Paid</span>':'')+'</span><span class="price-amount">฿'+grandTotal.toLocaleString()+'</span></div>';
     }
+
+    priceHtml += '</div>';
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
       + '<div class="bpc-meta">'+b.ownerName+' · '+(b.phone||'-')+'<br>'+b.type+' · '+dateLabel+'</div>'
       + '<div class="bpc-dogs">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
-      + '<div class="bpc-price">'+priceLine+'</div>'
+      + priceHtml
       + '<div class="bpc-status-row"><span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span></div>'
       + '<div class="bpc-actions">'+actionsHtml+'</div>'
       + '<div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed var(--gray-line);">'
