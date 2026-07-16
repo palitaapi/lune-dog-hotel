@@ -48,7 +48,7 @@
   .btn-ghost:hover{border-color:#422F25;color:#422F25;}
 
   .mode-tabs{display:flex;gap:0.6rem;margin-bottom:1.8rem;}
-  .mode-tab{flex:1;padding:0.7rem;text-align:center;font-size:0.78rem;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--white);transition:all .15s;}
+  .mode-tab{flex:1;padding:0.6rem 0.3rem;text-align:center;font-size:0.72rem;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--white);transition:all .15s;}
   .mode-tab.active{background:#422F25;color:#FFF7EF;border-color:#422F25;}
   .sub-tabs{display:flex;gap:0.5rem;margin-bottom:1.4rem;}
   .sub-tab{flex:1;padding:0.55rem;text-align:center;font-size:0.74rem;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--bg2);transition:all .15s;}
@@ -118,6 +118,25 @@
   .dog-badge{display:inline-block;font-size:0.62rem;letter-spacing:0.06em;padding:0.15rem 0.5rem;border-radius:20px;margin-right:0.3rem;}
   .badge-neutered{background:#e8f5e9;color:#2e7d32;border:0.5px solid #a5d6a7;}
   .badge-intact{background:#fff3e0;color:#e65100;border:0.5px solid #ffcc80;}
+
+  .db-owner-card{border:0.5px solid var(--gray-line);border-radius:4px;margin-bottom:0.7rem;overflow:hidden;transition:border-color .15s;}
+  .db-owner-card.open{border-color:var(--gold);}
+  .db-owner-head{padding:1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:0.6rem;}
+  .db-owner-head:hover{background:var(--bg2);}
+  .db-owner-head .db-chevron{font-size:0.7rem;color:var(--gray-dark);flex:none;margin-top:0.2rem;}
+  .db-owner-body{padding:0 1rem 1rem;border-top:0.5px solid var(--gray-line);}
+  .db-owner-card:not(.open) .db-owner-body{display:none;}
+  .db-id-tag{display:inline-block;font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:0.68rem;color:var(--gray-dark);margin-top:0.3rem;}
+  .db-subhead{font-size:0.64rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;font-family:'Space Mono','IBM Plex Sans Thai',monospace;margin:0.9rem 0 0.5rem;}
+  .db-contact-block{font-size:0.82rem;color:var(--text);line-height:1.7;}
+  .db-dog-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+  .db-dog-mini{background:var(--bg2);border-radius:6px;padding:0.6rem 0.7rem;}
+  .db-dog-mini-name{font-weight:600;font-size:0.82rem;color:var(--black);}
+  .db-dog-mini-meta{font-size:0.72rem;color:var(--gray-dark);margin-top:0.1rem;}
+  .db-booking-row{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:0.5px solid var(--gray-line);cursor:pointer;}
+  .db-booking-row:last-of-type{border-bottom:none;}
+  .db-booking-row:hover .db-id-tag{color:var(--gold);}
+  @media(max-width:420px){.db-dog-grid{grid-template-columns:1fr;}}
   .dog-card-note{font-size:0.72rem;color:var(--gray-dark);margin-top:0.3rem;font-style:italic;}
   .dog-card-price{margin-top:0.6rem;font-size:0.8rem;font-weight:600;color:var(--gold);}
 
@@ -152,21 +171,22 @@
     <svg viewBox="0 0 100 100" width="18" height="18" style="flex:none;" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="currentColor"/></svg>
     Lune &amp; Co. <span>Dog Hotel</span>
   </a>
-  <span class="admin-badge">Admin · จองแทนลูกค้า</span>
+  <span class="admin-badge">แอดมิน · จองแทนลูกค้า</span>
 </header>
 <div class="container">
 
   <!-- SCREEN: SOURCE -->
   <div id="screen-source" class="card">
     <div class="mode-tabs">
-      <div class="mode-tab active" id="top-tab-entry" onclick="switchTopTab('entry')">Manual Entry</div>
+      <div class="mode-tab active" id="top-tab-entry" onclick="switchTopTab('entry')">ลงทะเบียน</div>
       <div class="mode-tab" id="top-tab-payment" onclick="switchTopTab('payment')">สถานะการจ่ายเงิน</div>
       <div class="mode-tab" id="top-tab-reports" onclick="switchTopTab('reports')">รายงาน</div>
+      <div class="mode-tab" id="top-tab-database" onclick="switchTopTab('database')">ฐานข้อมูล</div>
     </div>
 
     <!-- ═══ TOP TAB: MANUAL ENTRY ═══ -->
     <div id="top-panel-entry">
-      <div class="section-label">Manual Entry · บันทึกจองแทนลูกค้า</div>
+      <div class="section-label">ลงทะเบียน · บันทึกจองแทนลูกค้า</div>
       <div class="divider"></div>
 
       <div class="sub-tabs">
@@ -236,7 +256,7 @@
 
     <!-- ═══ TOP TAB: PAYMENT STATUS ═══ -->
     <div id="top-panel-payment" style="display:none;">
-      <div class="section-label">Payment Tracking · ติดตามการจ่ายเงิน</div>
+      <div class="section-label">ติดตามการจ่ายเงิน</div>
       <div class="divider"></div>
       <div class="form-group">
         <label>ค้นหาด้วย Booking ID หรือชื่อลูกค้า</label>
@@ -251,7 +271,7 @@
 
     <!-- ═══ TOP TAB: REPORTS ═══ -->
     <div id="top-panel-reports" style="display:none;">
-      <div class="section-label">Reports · รายงาน</div>
+      <div class="section-label">รายงาน</div>
       <div class="divider"></div>
 
       <div class="sub-tabs">
@@ -273,29 +293,66 @@
         <div id="dashboard_content"></div>
       </div>
     </div>
+
+    <!-- ═══ TOP TAB: DATABASE ═══ -->
+    <div id="top-panel-database" style="display:none;">
+      <div class="section-label">ฐานข้อมูล</div>
+      <div class="divider"></div>
+
+      <div class="sub-tabs">
+        <div class="sub-tab active" id="tab-db-owners" onclick="switchDbTab('owners')">เจ้าของ</div>
+        <div class="sub-tab" id="tab-db-dogs" onclick="switchDbTab('dogs')">น้องหมา</div>
+      </div>
+
+      <!-- DB: OWNERS -->
+      <div id="db-panel-owners">
+        <div class="form-group">
+          <label>ค้นหาชื่อ เบอร์โทร หรือ LINE</label>
+          <div class="search-row">
+            <input type="text" id="db_owner_search_input" placeholder="เช่น คุณแพร หรือ 0812345678" oninput="debouncedDbOwnerSearch()"/>
+            <button onclick="renderDbOwners()">ค้นหา</button>
+          </div>
+        </div>
+        <div id="db_owner_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
+        <div id="db_owner_results"></div>
+      </div>
+
+      <!-- DB: DOGS -->
+      <div id="db-panel-dogs" style="display:none;">
+        <div class="form-group">
+          <label>ค้นหาชื่อน้องหมา สายพันธุ์ หรือชื่อเจ้าของ</label>
+          <div class="search-row">
+            <input type="text" id="db_dog_search_input" placeholder="เช่น มะลิ หรือ Poodle" oninput="debouncedDbDogSearch()"/>
+            <button onclick="renderDbDogs()">ค้นหา</button>
+          </div>
+        </div>
+        <div id="db_dog_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
+        <div id="db_dog_results"></div>
+      </div>
+    </div>
   </div>
 
   <!-- STEP 1: DATE -->
   <div id="screen-step1" style="display:none;">
-    <div class="steps"><div class="step active">1. Dates · วันที่</div><div class="step">2. Dogs · น้องหมา</div><div class="step">3. Summary · สรุป</div></div>
+    <div class="steps"><div class="step active">1. วันที่</div><div class="step">2. น้องหมา</div><div class="step">3. สรุป</div></div>
     <div class="card">
-      <div class="section-label">Step 1 · ขั้นตอนที่ 1</div>
-      <h2 id="step1_owner_label">Select Dates · เลือกวันที่</h2>
+      <div class="section-label">ขั้นตอนที่ 1</div>
+      <h2 id="step1_owner_label">เลือกวันที่</h2>
       <div class="divider"></div>
       <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
-        <strong style="font-size:.76rem;">Hours</strong><br>
+        <strong style="font-size:.76rem;">เวลาทำการ</strong><br>
         · Drop-off &amp; Pick-up: 8:00–20:00 น.<br>
         · มารับหลัง 20:00 น. มีค่า after-hours เพิ่ม ฿100/ชม.<br><br>
-        <strong style="font-size:.76rem;">Daycare</strong><br>
+        <strong style="font-size:.76rem;">ฝากรายวัน</strong><br>
         · ฝาก-รับภายในวันเดียวกัน ไม่ค้างคืน<br><br>
-        <strong style="font-size:.76rem;">Overnight</strong><br>
+        <strong style="font-size:.76rem;">ค้างคืน</strong><br>
         · 24 ชม. นับเป็นราคา 1 คืน<br>
         · เกินกำหนดเช็คเอาท์ คิดราคา Daycare เพิ่ม (ถ้ามารับก่อน 20:00 น.)
       </div>
       <div class="form-group"><label>ประเภทการฝาก</label>
         <div class="mode-tabs">
-          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">Overnight Care<br><span style="font-size:0.7rem;opacity:0.8;">ค้างคืน</span></div>
-          <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">Daycare<br><span style="font-size:0.7rem;opacity:0.8;">ฝากรายวัน</span></div>
+          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">ค้างคืน</div>
+          <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">ฝากรายวัน</div>
         </div>
       </div>
       <div id="overnight_fields">
@@ -327,10 +384,10 @@
 
   <!-- STEP 2: DOGS -->
   <div id="screen-step2" style="display:none;">
-    <div class="steps"><div class="step done">1. Dates · วันที่</div><div class="step active">2. Dogs · น้องหมา</div><div class="step">3. Summary · สรุป</div></div>
+    <div class="steps"><div class="step done">1. วันที่</div><div class="step active">2. น้องหมา</div><div class="step">3. สรุป</div></div>
     <div class="card">
-      <div class="section-label">Step 2 · ขั้นตอนที่ 2</div>
-      <h2>Your Dogs · น้องหมาของลูกค้า</h2>
+      <div class="section-label">ขั้นตอนที่ 2</div>
+      <h2>น้องหมาของลูกค้า</h2>
       <div class="divider"></div>
       <div style="display:flex;gap:0.7rem;margin-bottom:1.5rem;flex-wrap:wrap;">
         <div style="flex:1;min-width:150px;background:var(--bg);border:1px solid var(--honey);border-radius:8px;padding:0.75rem 0.9rem;">
@@ -384,10 +441,10 @@
 
   <!-- STEP 3: SUMMARY -->
   <div id="screen-step3" style="display:none;">
-    <div class="steps"><div class="step done">1. Dates · วันที่</div><div class="step done">2. Dogs · น้องหมา</div><div class="step active">3. Summary · สรุป</div></div>
+    <div class="steps"><div class="step done">1. วันที่</div><div class="step done">2. น้องหมา</div><div class="step active">3. สรุป</div></div>
     <div class="card">
-      <div class="section-label">Step 3 · ขั้นตอนที่ 3</div>
-      <h2>Booking Summary · สรุปการจอง</h2>
+      <div class="section-label">ขั้นตอนที่ 3</div>
+      <h2>สรุปการจอง</h2>
       <div class="divider"></div>
       <div id="summary_content"></div>
       <div id="confirm_msg"></div>
@@ -401,7 +458,7 @@
   <!-- EDIT DOG -->
   <div id="screen-editdog" style="display:none;">
     <div class="card">
-      <div class="section-label">Edit Dog · แก้ไขข้อมูล</div>
+      <div class="section-label">แก้ไขข้อมูลน้องหมา</div>
       <h2 id="editdog_title">แก้ไขข้อมูลน้องหมา</h2>
       <div class="divider"></div>
       <div id="editdog_fields"></div>
@@ -416,7 +473,7 @@
   <!-- TERMS -->
   <div id="screen-terms" style="display:none;">
     <div class="card">
-      <div class="section-label">Terms · เงื่อนไขการรับฝาก</div>
+      <div class="section-label">เงื่อนไขการรับฝาก</div>
       <h2>เงื่อนไขการรับฝากน้องหมา</h2>
       <div class="divider"></div>
       <div style="font-size:0.85rem;line-height:1.9;color:var(--text);">
@@ -447,7 +504,7 @@
   <div id="screen-success" class="card" style="display:none;">
     <div class="success-screen">
       <div class="success-icon">🐾</div>
-      <div class="section-label">Booking Saved · บันทึกแล้ว</div>
+      <div class="section-label">บันทึกการจองแล้ว</div>
       <h2>เรียบร้อย!</h2>
       <p style="font-family:'Instrument Serif',serif;font-style:italic;font-size:1.1rem;color:var(--gold);margin:.2rem 0 .8rem;">บันทึกเข้า Sheet เดียวกับลูกค้าจองเองแล้ว</p>
       <div class="divider" style="margin:0.8rem auto 1.5rem;"></div>
@@ -581,11 +638,15 @@ function switchTopTab(tab) {
   document.getElementById('top-tab-entry').classList.toggle('active', tab==='entry');
   document.getElementById('top-tab-payment').classList.toggle('active', tab==='payment');
   document.getElementById('top-tab-reports').classList.toggle('active', tab==='reports');
+  document.getElementById('top-tab-database').classList.toggle('active', tab==='database');
   document.getElementById('top-panel-entry').style.display = tab==='entry' ? 'block' : 'none';
   document.getElementById('top-panel-payment').style.display = tab==='payment' ? 'block' : 'none';
   document.getElementById('top-panel-reports').style.display = tab==='reports' ? 'block' : 'none';
+  document.getElementById('top-panel-database').style.display = tab==='database' ? 'block' : 'none';
   if (tab==='payment' || tab==='reports') { allBookingsCache = null; dogsFoodMapCache = null; } // โหลดข้อมูลใหม่เสมอ ไม่ใช้ cache ค้าง
+  if (tab==='database') { dbOwnersFullCache = null; dbDogsFullCache = null; allBookingsCache = null; } // ฐานข้อมูลต้องสดเสมอเช่นกัน
   if (tab==='reports') switchReportTab('revenue');
+  if (tab==='database') switchDbTab('owners');
 }
 
 function switchMode(mode) {
@@ -679,10 +740,10 @@ var paymentSearchDebounceTimer = null;
 var allBookingsCache = null; // raw rows from Booking sheet, grouped by bookingId
 
 var STATUS_LABEL = {
-  pending_deposit: 'Pending Deposit · รอมัดจำ',
-  deposit_paid:    'Deposit Paid · รับมัดจำแล้ว',
-  fully_paid:      'Fully Paid · จ่ายครบแล้ว',
-  cancelled:       'Cancelled · ยกเลิก'
+  pending_deposit: 'รอมัดจำ',
+  deposit_paid:    'รับมัดจำแล้ว',
+  fully_paid:      'จ่ายครบแล้ว',
+  cancelled:       'ยกเลิก'
 };
 
 function debouncedPaymentSearch() {
@@ -749,6 +810,7 @@ async function loadAllBookingsGrouped() {
     var c = row.c || [];
     return {
       bookingId:   c[1] ? String(c[1].v || '').trim() : '',
+      ownerId:     c[2] ? String(c[2].v || '').trim() : '',
       ownerName:   c[3] ? String(c[3].v || '').trim() : '',
       phone:       c[4] ? String(c[4].v || '').trim() : '',
       dogId:       c[6] ? String(c[6].v || '').trim() : '',
@@ -776,6 +838,7 @@ async function loadAllBookingsGrouped() {
     if (!grouped[r.bookingId]) {
       grouped[r.bookingId] = {
         bookingId: r.bookingId,
+        ownerId: r.ownerId,
         ownerName: r.ownerName,
         phone: r.phone,
         type: r.type,
@@ -798,6 +861,229 @@ async function loadAllBookingsGrouped() {
   var list = Object.keys(grouped).map(function(k){ return grouped[k]; });
   allBookingsCache = list;
   return list;
+}
+
+// ── DATABASE TAB (เจ้าของ / น้องหมา) ──────────────────
+var dbOwnersFullCache = null;   // Owners sheet ทุกคอลัมน์
+var dbDogsFullCache = null;     // Dogs sheet ทุกคอลัมน์
+var dbExpandedOwnerId = null;   // ownerId ของการ์ดที่กำลังขยายอยู่ (มีได้ทีละ 1)
+var dbOwnerSearchDebounceTimer = null;
+var dbDogSearchDebounceTimer = null;
+
+function switchDbTab(tab) {
+  document.getElementById('tab-db-owners').classList.toggle('active', tab==='owners');
+  document.getElementById('tab-db-dogs').classList.toggle('active', tab==='dogs');
+  document.getElementById('db-panel-owners').style.display = tab==='owners' ? 'block' : 'none';
+  document.getElementById('db-panel-dogs').style.display = tab==='dogs' ? 'block' : 'none';
+  if (tab==='owners') renderDbOwners();
+  if (tab==='dogs') renderDbDogs();
+}
+
+async function loadAllOwnersFull() {
+  if (dbOwnersFullCache) return dbOwnersFullCache;
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Owners&_cb='+Date.now());
+  var raw = await res.text();
+  var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
+  var rows = (json.table ? json.table.rows || [] : []).map(function(row) {
+    var c = row.c || [];
+    return {
+      ownerId:  c[1] ? String(c[1].v || '').trim() : '',
+      name:     c[2] ? String(c[2].v || '').trim() : '',
+      phone:    c[3] ? String(c[3].v || '').trim() : '',
+      email:    c[4] ? String(c[4].v || '').trim() : '',
+      address:  c[5] ? String(c[5].v || '').trim() : '',
+      province: c[6] ? String(c[6].v || '').trim() : '',
+      district: c[7] ? String(c[7].v || '').trim() : '',
+      lineId:   c[8] ? String(c[8].v || '').trim() : '',
+      lineName: c[9] ? String(c[9].v || '').trim() : '',
+    };
+  }).filter(function(o){ return o.ownerId; });
+  dbOwnersFullCache = rows;
+  return rows;
+}
+
+async function loadAllDogsFull() {
+  if (dbDogsFullCache) return dbDogsFullCache;
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+OWNER_SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Dogs&_cb='+Date.now());
+  var raw = await res.text();
+  var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
+  var rows = (json.table ? json.table.rows || [] : []).map(function(row) {
+    var c = row.c || [];
+    return {
+      dogId:       c[1] ? String(c[1].v || '').trim() : '',
+      ownerId:     c[2] ? String(c[2].v || '').trim() : '',
+      name:        c[3] ? String(c[3].v || '').trim() : '',
+      breed:       c[4] ? String(c[4].v || '').trim() : '',
+      gender:      c[5] ? String(c[5].v || '').trim() : '',
+      neutered:    c[6] ? String(c[6].v || '').trim() : '',
+      weight:      c[7] ? String(c[7].v || '').trim() : '',
+      age:         c[8] ? String(c[8].v || '').trim() : '',
+      foodType:    c[9] ? String(c[9].v || '').trim() : '',
+      mealsPerDay: c[10]? String(c[10].v || '').trim() : '',
+      tickControl: c[11]? String(c[11].v || '').trim() : '',
+      likes:       c[12]? String(c[12].v || '').trim() : '',
+      dislikes:    c[13]? String(c[13].v || '').trim() : '',
+      allergy:     c[14]? String(c[14].v || '').trim() : '',
+      note:        c[15]? String(c[15].v || '').trim() : '',
+    };
+  }).filter(function(d){ return d.dogId; });
+  dbDogsFullCache = rows;
+  return rows;
+}
+
+function debouncedDbOwnerSearch() {
+  clearTimeout(dbOwnerSearchDebounceTimer);
+  dbOwnerSearchDebounceTimer = setTimeout(renderDbOwners, 350);
+}
+
+function debouncedDbDogSearch() {
+  clearTimeout(dbDogSearchDebounceTimer);
+  dbDogSearchDebounceTimer = setTimeout(renderDbDogs, 350);
+}
+
+async function renderDbOwners() {
+  var q = document.getElementById('db_owner_search_input').value.trim();
+  var qNorm = q.replace(/\D/g,'');
+  var resultsEl = document.getElementById('db_owner_results');
+  resultsEl.innerHTML = '<p class="empty-note">⏳ กำลังโหลดข้อมูล...</p>';
+  try {
+    var owners = await loadAllOwnersFull();
+    var results = !q ? owners : owners.filter(function(o) {
+      var nameMatch = o.name && o.name.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+      var phoneMatch = qNorm.length >= 3 && o.phone && o.phone.replace(/\D/g,'').indexOf(qNorm) !== -1;
+      var lineMatch = o.lineName && o.lineName.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+      return nameMatch || phoneMatch || lineMatch;
+    });
+    document.getElementById('db_owner_count').textContent = 'ทั้งหมด ' + results.length + ' คน';
+    if (results.length === 0) {
+      resultsEl.innerHTML = '<p class="empty-note">ไม่พบเจ้าของที่ค้นหา</p>';
+      return;
+    }
+    resultsEl.innerHTML = results.map(function(o) {
+      var isOpen = dbExpandedOwnerId === o.ownerId;
+      return '<div class="db-owner-card'+(isOpen?' open':'')+'" id="dbo_'+o.ownerId+'">'
+        + '<div class="db-owner-head" onclick="toggleDbOwner(\''+o.ownerId+'\')">'
+          + '<div>'
+            + '<div class="o-name">'+escapeHtml(o.name)+'</div>'
+            + '<div class="o-meta">'+(o.phone||'-')+(o.lineName?' · LINE: '+escapeHtml(o.lineName):'')+'</div>'
+            + '<div class="db-id-tag">'+o.ownerId+'</div>'
+          + '</div>'
+          + '<span class="db-chevron">'+(isOpen?'▲':'▼')+'</span>'
+        + '</div>'
+        + '<div class="db-owner-body" id="dbob_'+o.ownerId+'"></div>'
+      + '</div>';
+    }).join('');
+    if (dbExpandedOwnerId) renderDbOwnerProfile(dbExpandedOwnerId);
+  } catch(e) {
+    resultsEl.innerHTML = '<p class="empty-note">โหลดไม่สำเร็จ: '+e.message+'</p>';
+  }
+}
+
+function toggleDbOwner(ownerId) {
+  dbExpandedOwnerId = (dbExpandedOwnerId === ownerId) ? null : ownerId;
+  renderDbOwners();
+}
+
+async function renderDbOwnerProfile(ownerId) {
+  var body = document.getElementById('dbob_'+ownerId);
+  if (!body) return;
+  body.innerHTML = '<p class="empty-note">⏳ กำลังโหลด...</p>';
+  try {
+    var owners = await loadAllOwnersFull();
+    var owner = owners.find(function(o){ return o.ownerId === ownerId; }) || {};
+    var dogs = (await loadAllDogsFull()).filter(function(d){ return d.ownerId === ownerId; });
+    var bookings = (await loadAllBookingsGrouped())
+      .filter(function(b){ return b.ownerId === ownerId; })
+      .sort(function(a,b2){ return (b2.checkIn||'').localeCompare(a.checkIn||''); });
+
+    var addressLine = [owner.address, owner.district, owner.province].filter(Boolean).join(' ');
+    var html = '';
+
+    if (owner.email || addressLine) {
+      html += '<div class="db-subhead">ข้อมูลติดต่อ</div><div class="db-contact-block">';
+      if (owner.email) html += '<div>'+escapeHtml(owner.email)+'</div>';
+      if (addressLine) html += '<div>'+escapeHtml(addressLine)+'</div>';
+      html += '</div>';
+    }
+
+    html += '<div class="db-subhead">น้องหมา ('+dogs.length+')</div>';
+    if (dogs.length) {
+      html += '<div class="db-dog-grid">' + dogs.map(function(d) {
+        var w = parseFloat(d.weight) || 0;
+        return '<div class="db-dog-mini">'
+          + '<div class="db-dog-mini-name">'+escapeHtml(d.name)+'</div>'
+          + '<div class="db-dog-mini-meta">'+escapeHtml(d.breed||'ไม่ระบุสายพันธุ์')+' · '+w+' กก.</div>'
+          + '<div class="db-id-tag">'+d.dogId+'</div>'
+        + '</div>';
+      }).join('') + '</div>';
+    } else {
+      html += '<p class="empty-note">ยังไม่มีข้อมูลน้องหมา</p>';
+    }
+
+    html += '<div class="db-subhead">ประวัติการจอง ('+bookings.length+')</div>';
+    if (bookings.length) {
+      html += bookings.map(function(b) {
+        var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_deposit';
+        return '<div class="db-booking-row" onclick="jumpToPaymentSearch(\''+b.bookingId+'\')">'
+          + '<span class="db-id-tag">'+b.bookingId+'</span>'
+          + '<span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span>'
+        + '</div>';
+      }).join('');
+    } else {
+      html += '<p class="empty-note">ยังไม่มีประวัติการจอง</p>';
+    }
+
+    body.innerHTML = html;
+  } catch(e) {
+    body.innerHTML = '<p class="empty-note">โหลดไม่สำเร็จ: '+e.message+'</p>';
+  }
+}
+
+function jumpToPaymentSearch(bookingId) {
+  switchTopTab('payment');
+  document.getElementById('payment_search_input').value = bookingId;
+  searchBookingsForPayment();
+}
+
+async function renderDbDogs() {
+  var q = document.getElementById('db_dog_search_input').value.trim().toLowerCase();
+  var resultsEl = document.getElementById('db_dog_results');
+  resultsEl.innerHTML = '<p class="empty-note">⏳ กำลังโหลดข้อมูล...</p>';
+  try {
+    var dogs = await loadAllDogsFull();
+    var owners = await loadAllOwnersFull();
+    var ownerMap = {};
+    owners.forEach(function(o){ ownerMap[o.ownerId] = o; });
+
+    var results = !q ? dogs : dogs.filter(function(d) {
+      var owner = ownerMap[d.ownerId];
+      return (d.name && d.name.toLowerCase().indexOf(q) !== -1)
+        || (d.breed && d.breed.toLowerCase().indexOf(q) !== -1)
+        || (owner && owner.name && owner.name.toLowerCase().indexOf(q) !== -1);
+    });
+    document.getElementById('db_dog_count').textContent = 'ทั้งหมด ' + results.length + ' ตัว';
+    if (results.length === 0) {
+      resultsEl.innerHTML = '<p class="empty-note">ไม่พบน้องหมาที่ค้นหา</p>';
+      return;
+    }
+    resultsEl.innerHTML = results.map(function(d) {
+      var owner = ownerMap[d.ownerId] || {};
+      var w = parseFloat(d.weight) || 0;
+      var genderIcon = d.gender === 'ตัวผู้' ? '♂' : (d.gender === 'ตัวเมีย' ? '♀' : '');
+      return '<div class="db-owner-card">'
+        + '<div class="db-owner-head" style="cursor:default;">'
+          + '<div>'
+            + '<div class="o-name">'+escapeHtml(d.name)+(genderIcon?' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>':'')+'</div>'
+            + '<div class="o-meta">'+escapeHtml(d.breed||'ไม่ระบุสายพันธุ์')+' · '+w+' กก.'+(d.age?' · อายุ '+escapeHtml(d.age):'')+'</div>'
+            + '<div class="o-meta">เจ้าของ: '+escapeHtml(owner.name||'-')+(owner.phone?' · '+owner.phone:'')+'</div>'
+            + '<div class="db-id-tag">'+d.dogId+'</div>'
+          + '</div>'
+        + '</div>'
+      + '</div>';
+    }).join('');
+  } catch(e) {
+    resultsEl.innerHTML = '<p class="empty-note">โหลดไม่สำเร็จ: '+e.message+'</p>';
+  }
 }
 
 async function searchBookingsForPayment() {
