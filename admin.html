@@ -136,6 +136,8 @@
   .db-booking-row{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:0.5px solid var(--gray-line);cursor:pointer;}
   .db-booking-row:last-of-type{border-bottom:none;}
   .db-booking-row:hover .db-id-tag{color:var(--gold);}
+  .bpc-collapsed{cursor:pointer;}
+  .bpc-collapsed:hover{background:var(--bg2);}
   .db-card-line{font-size:0.74rem;line-height:1.6;color:var(--text);}
   .db-card-line.strong{font-weight:700;color:var(--black);}
   .db-card-line.muted{color:var(--gray-dark);}
@@ -185,7 +187,7 @@
     <div class="mode-tabs">
       <div class="mode-tab active" id="top-tab-entry" onclick="switchTopTab('entry')">ลงทะเบียน</div>
       <div class="mode-tab" id="top-tab-payment" onclick="switchTopTab('payment')">การจ่ายเงิน</div>
-      <div class="mode-tab" id="top-tab-reports" onclick="switchTopTab('reports')">รายงาน</div>
+      <div class="mode-tab" id="top-tab-reports" onclick="switchTopTab('reports')">รายงานประจำวัน</div>
       <div class="mode-tab" id="top-tab-database" onclick="switchTopTab('database')">ฐานข้อมูล</div>
     </div>
 
@@ -278,21 +280,10 @@
 
     <!-- ═══ TOP TAB: REPORTS ═══ -->
     <div id="top-panel-reports" style="display:none;">
-      <div class="section-label">รายงาน</div>
+      <div class="section-label">รายงานประจำวัน</div>
       <div class="divider"></div>
 
-      <div class="sub-tabs">
-        <div class="sub-tab active" id="tab-revenue" onclick="switchReportTab('revenue')">รายได้</div>
-        <div class="sub-tab" id="tab-dogvisits" onclick="switchReportTab('dogvisits')">น้องหมาที่มาพัก</div>
-      </div>
-
-      <!-- REVENUE -->
-      <div id="report-revenue">
-        <div id="revenue_content"></div>
-      </div>
-
-      <!-- DOG VISITS -->
-      <div id="report-dogvisits" style="display:none;">
+      <div id="report-dogvisits">
         <div class="form-group">
           <label>เลือกวันที่</label>
           <input type="date" id="dashboard_date" onchange="renderDogVisits()"/>
@@ -652,7 +643,7 @@ function switchTopTab(tab, skipAutoLoad) {
   document.getElementById('top-panel-database').style.display = tab==='database' ? 'block' : 'none';
   if (tab==='payment' || tab==='reports') { allBookingsCache = null; dogsFoodMapCache = null; } // โหลดข้อมูลใหม่เสมอ ไม่ใช้ cache ค้าง
   if (tab==='database') { dbOwnersFullCache = null; dbDogsFullCache = null; allBookingsCache = null; } // ฐานข้อมูลต้องสดเสมอเช่นกัน
-  if (tab==='reports') switchReportTab('revenue');
+  if (tab==='reports') renderDogVisits();
   if (tab==='database') switchDbTab('owners');
   if (tab==='payment') { renderPaymentMonthSummary(); if (!skipAutoLoad) searchBookingsForPayment(); } // โชว์ booking ทั้งหมดทันทีเหมือนแท็บฐานข้อมูล + สรุปยอดรายเดือน
 }
@@ -662,15 +653,6 @@ function switchMode(mode) {
   document.getElementById('tab-new').classList.toggle('active', mode==='new');
   document.getElementById('mode-existing').style.display = mode==='existing' ? 'block' : 'none';
   document.getElementById('mode-new').style.display = mode==='new' ? 'block' : 'none';
-}
-
-function switchReportTab(tab) {
-  document.getElementById('tab-revenue').classList.toggle('active', tab==='revenue');
-  document.getElementById('tab-dogvisits').classList.toggle('active', tab==='dogvisits');
-  document.getElementById('report-revenue').style.display = tab==='revenue' ? 'block' : 'none';
-  document.getElementById('report-dogvisits').style.display = tab==='dogvisits' ? 'block' : 'none';
-  if (tab==='revenue') renderRevenue();
-  if (tab==='dogvisits') renderDogVisits();
 }
 
 // ── OWNER SEARCH (existing) ──────────────────────────
@@ -821,6 +803,7 @@ async function loadAllBookingsGrouped() {
       ownerId:     c[2] ? String(c[2].v || '').trim() : '',
       ownerName:   c[3] ? String(c[3].v || '').trim() : '',
       phone:       c[4] ? String(c[4].v || '').trim() : '',
+      lineName:    c[5] ? String(c[5].v || '').trim() : '',
       dogId:       c[6] ? String(c[6].v || '').trim() : '',
       dogName:     c[7] ? String(c[7].v || '').trim() : '',
       breed:       c[8] ? String(c[8].v || '').trim() : '',
@@ -849,6 +832,7 @@ async function loadAllBookingsGrouped() {
         ownerId: r.ownerId,
         ownerName: r.ownerName,
         phone: r.phone,
+        lineName: r.lineName,
         type: r.type,
         checkIn: r.checkIn,
         checkOut: r.checkOut,
@@ -1049,6 +1033,7 @@ async function renderDbOwnerProfile(ownerId) {
 function jumpToPaymentSearch(bookingId) {
   switchTopTab('payment', true);
   document.getElementById('payment_search_input').value = bookingId;
+  bpExpandedIds[bookingId] = true;
   searchBookingsForPayment();
 }
 
@@ -1200,7 +1185,16 @@ async function searchBookingsForPayment() {
   }
 }
 
+var lastPaymentResults = [];
+var bpExpandedIds = {};
+
+function toggleBpc(bookingId) {
+  bpExpandedIds[bookingId] = !bpExpandedIds[bookingId];
+  renderPaymentResults(lastPaymentResults);
+}
+
 function renderPaymentResults(bookings) {
+  lastPaymentResults = bookings;
   document.getElementById('payment_search_results').innerHTML = bookings.map(function(b) {
     var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
     // มัดจำที่แสดง: ใช้ depositPaidAmount ที่บันทึกไว้แบบ fix ค่า (ไม่เปลี่ยนตาม totalPrice ที่แก้ทีหลัง)
@@ -1217,6 +1211,19 @@ function renderPaymentResults(bookings) {
 
     var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_deposit';
     var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
+    var isOpen = !!bpExpandedIds[b.bookingId];
+
+    var collapsedHtml = '<div class="bpc-collapsed" onclick="toggleBpc(\''+b.bookingId+'\')">'
+      + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span><span class="db-chevron">'+(isOpen?'▲':'▼')+'</span></div>'
+      + '<div class="bpc-meta">'+b.ownerName+' · '+(b.phone||'-')+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
+      + '<div class="bpc-meta">'+b.type+' · '+dateLabel+'</div>'
+      + '<div class="bpc-dogs">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
+    + '</div>';
+
+    if (!isOpen) {
+      return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'+collapsedHtml+'</div>';
+    }
+
     var actionsHtml = Object.keys(STATUS_LABEL).map(function(s) {
       var isCurrent = (s === statusKey);
       var danger = (s === 'cancelled' && !isCurrent) ? ' danger' : '';
@@ -1246,11 +1253,10 @@ function renderPaymentResults(bookings) {
     priceHtml += '</div>';
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
-      + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
-      + '<div class="bpc-meta">'+b.ownerName+' · '+(b.phone||'-')+'<br>'+b.type+' · '+dateLabel+'</div>'
-      + '<div class="bpc-dogs">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
-      + priceHtml
+      + collapsedHtml
+      + '<div style="margin-top:0.8rem;padding-top:0.8rem;border-top:0.5px solid var(--gray-line);">'
       + '<div class="bpc-status-row"><span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span></div>'
+      + priceHtml
       + '<div class="bpc-actions">'+actionsHtml+'</div>'
       + '<div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed var(--gray-line);">'
         + '<label style="font-size:0.72rem;color:var(--gray-dark);display:block;margin-bottom:0.3rem;">ส่วนลดโปรโมชั่น (บาท) เช่น First-Time 25%</label>'
@@ -1269,6 +1275,7 @@ function renderPaymentResults(bookings) {
         + '</div>'
       + '</div>'
       + '<div id="bpc_msg_'+b.bookingId+'"></div>'
+      + '</div>'
       + '</div>';
   }).join('');
 }
@@ -1367,72 +1374,6 @@ async function updateBookingStatus(bookingId, newStatus) {
 // ── REPORTS: REVENUE ──────────────────────────────────
 function formatMoney(n) {
   return (n||0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-}
-
-async function renderRevenue() {
-  var contentEl = document.getElementById('revenue_content');
-  contentEl.innerHTML = '<p class="empty-note">⏳ กำลังโหลด...</p>';
-
-  try {
-    var bookings = await loadAllBookingsGrouped();
-
-    var monthSet = {};
-    bookings.forEach(function(b) {
-      var monthKey = String(b.checkIn||'').slice(0,7); // YYYY-MM
-      if (monthKey) monthSet[monthKey] = true;
-    });
-
-    var monthKeys = Object.keys(monthSet).sort().reverse();
-    var currentMonth = new Date().toISOString().slice(0,7);
-    var selectedMonth = document.getElementById('revenue_month_select') ? document.getElementById('revenue_month_select').value : (monthKeys.indexOf(currentMonth)>-1 ? currentMonth : (monthKeys[0]||currentMonth));
-    if (monthKeys.indexOf(selectedMonth) === -1) monthKeys.unshift(selectedMonth);
-
-    var THAI_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-    function monthLabel(m) {
-      var parts = m.split('-');
-      var y = parseInt(parts[0],10), mo = parseInt(parts[1],10);
-      return THAI_MONTHS[mo-1] + ' ' + y;
-    }
-
-    var monthOptionsHtml = monthKeys.map(function(m) {
-      return '<option value="'+m+'"'+(m===selectedMonth?' selected':'')+'>'+monthLabel(m)+'</option>';
-    }).join('');
-
-    // ── นับจำนวนคน(booking) + ยอดเต็มของแต่ละ booking ใส่ตามสถานะปัจจุบัน ──
-    // cancelled ไม่ถูกนับเลย เพราะยกเลิกแล้วไม่ต้องจ่าย
-    // ผลรวม 3 คอลัมน์ = grandTotal เสมอ เพราะแต่ละ booking ถูกนับเข้าคอลัมน์เดียวเท่านั้นตาม status ปัจจุบัน
-    var pendingCount=0, pendingAmt=0;
-    var depositCount=0, depositAmt=0;
-    var fullyCount=0, fullyAmt=0;
-
-    bookings.forEach(function(b) {
-      var monthKey = String(b.checkIn||'').slice(0,7);
-      if (monthKey !== selectedMonth) return;
-      if (b.status === 'cancelled') return;
-      var amount = parseFloat(String(b.totalPrice).replace(/[^0-9.]/g,'')) || 0;
-      if (b.status === 'pending_deposit') { pendingCount++; pendingAmt += amount; }
-      else if (b.status === 'deposit_paid') { depositCount++; depositAmt += amount; }
-      else if (b.status === 'fully_paid') { fullyCount++; fullyAmt += amount; }
-    });
-
-    var grandCount = pendingCount + depositCount + fullyCount;
-    var grandTotal = pendingAmt + depositAmt + fullyAmt;
-
-    contentEl.innerHTML =
-      '<div class="revenue-card">'
-        + '<div class="revenue-label">สรุปการจ่ายเงิน เดือน'
-          + '<select id="revenue_month_select" onchange="renderRevenue()">'+monthOptionsHtml+'</select>'
-        + '</div>'
-        + '<div class="revenue-breakdown" style="font-size:0.85rem;">'
-          + '<div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px dashed var(--gray-line);"><span>⏳ ยังไม่จ่ายมัดจำ · '+pendingCount+' คน</span><span style="font-weight:600;">฿'+formatMoney(pendingAmt)+'</span></div>'
-          + '<div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px dashed var(--gray-line);"><span>✓ จ่ายมัดจำแล้ว · '+depositCount+' คน</span><span style="font-weight:600;">฿'+formatMoney(depositAmt)+'</span></div>'
-          + '<div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px dashed var(--gray-line);"><span>✅ จ่ายเต็มแล้ว · '+fullyCount+' คน</span><span style="font-weight:600;">฿'+formatMoney(fullyAmt)+'</span></div>'
-          + '<div style="display:flex;justify-content:space-between;padding:0.6rem 0 0;font-weight:700;"><span>รวมทั้งหมด · '+grandCount+' คน</span><span>฿'+formatMoney(grandTotal)+'</span></div>'
-        + '</div>'
-      + '</div>';
-  } catch(e) {
-    contentEl.innerHTML = '<p class="empty-note">โหลดข้อมูลไม่สำเร็จ: '+e.message+'</p>';
-  }
 }
 
 // ── REPORTS: DOG VISITS ───────────────────────────────
