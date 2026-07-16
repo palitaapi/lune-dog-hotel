@@ -17,7 +17,7 @@
   .logo *{font-family:'Ranchers',sans-serif;}
   .logo span{color:var(--bg);}
   .admin-badge{font-size:0.65rem;letter-spacing:0.18em;color:var(--bg2);background:rgba(255,247,239,.12);padding:0.35rem 0.7rem;border-radius:999px;text-transform:uppercase;font-family:'Space Mono','IBM Plex Sans Thai',monospace;}
-  .container{max-width:560px;margin:2rem auto;padding:0 1.5rem 4rem;width:100%;}
+  .container{max-width:720px;margin:2rem auto;padding:0 1.5rem 4rem;width:100%;}
   .card{background:var(--white);border:0.5px solid var(--gray-line);border-top:3px solid var(--yellow);padding:2.2rem;}
   .section-label{font-size:0.68rem;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:0.5rem;font-family:'Space Mono','IBM Plex Sans Thai',monospace;}
   h2{font-size:1.4rem;font-weight:400;color:var(--black);margin-bottom:0.5rem;font-family:'Instrument Serif',serif;}
@@ -48,7 +48,7 @@
   .btn-ghost:hover{border-color:#422F25;color:#422F25;}
 
   .mode-tabs{display:flex;gap:0.6rem;margin-bottom:1.8rem;}
-  .mode-tab{flex:1;padding:0.6rem 0.3rem;text-align:center;font-size:0.72rem;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--white);transition:all .15s;}
+  .mode-tab{flex:1;min-height:2.4rem;padding:0.4rem 0.3rem;display:flex;align-items:center;justify-content:center;text-align:center;font-size:0.72rem;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--white);transition:all .15s;}
   .mode-tab.active{background:#422F25;color:#FFF7EF;border-color:#422F25;}
   .sub-tabs{display:flex;gap:0.5rem;margin-bottom:1.4rem;}
   .sub-tab{flex:1;padding:0.55rem;text-align:center;font-size:0.74rem;font-weight:500;border:0.5px solid var(--gray-line);border-radius:6px;cursor:pointer;color:var(--gray-dark);background:var(--bg2);transition:all .15s;}
@@ -136,6 +136,8 @@
   .db-booking-row{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:0.5px solid var(--gray-line);cursor:pointer;}
   .db-booking-row:last-of-type{border-bottom:none;}
   .db-booking-row:hover .db-id-tag{color:var(--gold);}
+  .db-owner-card .o-name{font-size:0.72rem;font-weight:700;}
+
   @media(max-width:420px){.db-dog-grid{grid-template-columns:1fr;}}
   .dog-card-note{font-size:0.72rem;color:var(--gray-dark);margin-top:0.3rem;font-style:italic;}
   .dog-card-price{margin-top:0.6rem;font-size:0.8rem;font-weight:600;color:var(--gold);}
@@ -179,7 +181,7 @@
   <div id="screen-source" class="card">
     <div class="mode-tabs">
       <div class="mode-tab active" id="top-tab-entry" onclick="switchTopTab('entry')">ลงทะเบียน</div>
-      <div class="mode-tab" id="top-tab-payment" onclick="switchTopTab('payment')">สถานะการจ่ายเงิน</div>
+      <div class="mode-tab" id="top-tab-payment" onclick="switchTopTab('payment')">การจ่ายเงิน</div>
       <div class="mode-tab" id="top-tab-reports" onclick="switchTopTab('reports')">รายงาน</div>
       <div class="mode-tab" id="top-tab-database" onclick="switchTopTab('database')">ฐานข้อมูล</div>
     </div>
