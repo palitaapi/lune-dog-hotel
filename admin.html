@@ -136,7 +136,10 @@
   .db-booking-row{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:0.5px solid var(--gray-line);cursor:pointer;}
   .db-booking-row:last-of-type{border-bottom:none;}
   .db-booking-row:hover .db-id-tag{color:var(--gold);}
-  .db-owner-card .o-name{font-size:0.72rem;font-weight:700;}
+  .db-card-line{font-size:0.74rem;line-height:1.6;color:var(--text);}
+  .db-card-line.strong{font-weight:700;color:var(--black);}
+  .db-card-line.muted{color:var(--gray-dark);}
+  .db-card-line.mono{font-family:'Space Mono','IBM Plex Sans Thai',monospace;color:var(--gray-dark);letter-spacing:0.02em;}
 
   @media(max-width:420px){.db-dog-grid{grid-template-columns:1fr;}}
   .dog-card-note{font-size:0.72rem;color:var(--gray-dark);margin-top:0.3rem;font-style:italic;}
@@ -966,9 +969,8 @@ async function renderDbOwners() {
       return '<div class="db-owner-card'+(isOpen?' open':'')+'" id="dbo_'+o.ownerId+'">'
         + '<div class="db-owner-head" onclick="toggleDbOwner(\''+o.ownerId+'\')">'
           + '<div>'
-            + '<div class="o-name">'+escapeHtml(o.name)+'</div>'
-            + '<div class="o-meta">'+(o.phone||'-')+(o.lineName?' · LINE: '+escapeHtml(o.lineName):'')+'</div>'
-            + '<div class="db-id-tag">'+o.ownerId+'</div>'
+            + '<div class="db-card-line mono">'+o.ownerId+'</div>'
+            + '<div class="db-card-line strong">'+escapeHtml(o.name)+(o.phone?' · '+o.phone:'')+(o.lineName?' · LINE: '+escapeHtml(o.lineName):'')+'</div>'
           + '</div>'
           + '<span class="db-chevron">'+(isOpen?'▲':'▼')+'</span>'
         + '</div>'
@@ -1075,10 +1077,10 @@ async function renderDbDogs() {
       return '<div class="db-owner-card">'
         + '<div class="db-owner-head" style="cursor:default;">'
           + '<div>'
-            + '<div class="o-name">'+escapeHtml(d.name)+(genderIcon?' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>':'')+'</div>'
-            + '<div class="o-meta">'+escapeHtml(d.breed||'ไม่ระบุสายพันธุ์')+' · '+w+' กก.'+(d.age?' · อายุ '+escapeHtml(d.age):'')+'</div>'
-            + '<div class="o-meta">เจ้าของ: '+escapeHtml(owner.name||'-')+(owner.phone?' · '+owner.phone:'')+'</div>'
-            + '<div class="db-id-tag">'+d.dogId+'</div>'
+            + '<div class="db-card-line mono">'+d.dogId+'</div>'
+            + '<div class="db-card-line strong">'+escapeHtml(d.name)+(genderIcon?' <span style="color:var(--gray-dark);font-weight:400;">'+genderIcon+'</span>':'')+'</div>'
+            + '<div class="db-card-line">'+escapeHtml(d.breed||'ไม่ระบุสายพันธุ์')+' · '+w+' กก.'+(d.age?' · อายุ '+escapeHtml(d.age):'')+'</div>'
+            + '<div class="db-card-line muted">เจ้าของ: '+escapeHtml(owner.name||'-')+(owner.phone?' · '+owner.phone:'')+'</div>'
           + '</div>'
         + '</div>'
       + '</div>';
