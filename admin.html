@@ -263,6 +263,7 @@
     <div id="top-panel-payment" style="display:none;">
       <div class="section-label">ติดตามการจ่ายเงิน</div>
       <div class="divider"></div>
+      <div id="payment_month_summary"></div>
       <div class="form-group">
         <label>ค้นหาด้วย Booking ID หรือชื่อลูกค้า</label>
         <div class="search-row">
@@ -270,6 +271,7 @@
           <button onclick="searchBookingsForPayment()">ค้นหา</button>
         </div>
       </div>
+      <div id="payment_search_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
       <div id="payment_search_results"></div>
       <div id="payment_search_msg"></div>
     </div>
@@ -639,7 +641,7 @@ function onDropoffTimeChange() {
 }
 
 // ── MODE TABS ─────────────────────────────────────────
-function switchTopTab(tab) {
+function switchTopTab(tab, skipAutoLoad) {
   document.getElementById('top-tab-entry').classList.toggle('active', tab==='entry');
   document.getElementById('top-tab-payment').classList.toggle('active', tab==='payment');
   document.getElementById('top-tab-reports').classList.toggle('active', tab==='reports');
@@ -652,6 +654,7 @@ function switchTopTab(tab) {
   if (tab==='database') { dbOwnersFullCache = null; dbDogsFullCache = null; allBookingsCache = null; } // ฐานข้อมูลต้องสดเสมอเช่นกัน
   if (tab==='reports') switchReportTab('revenue');
   if (tab==='database') switchDbTab('owners');
+  if (tab==='payment') { renderPaymentMonthSummary(); if (!skipAutoLoad) searchBookingsForPayment(); } // โชว์ booking ทั้งหมดทันทีเหมือนแท็บฐานข้อมูล + สรุปยอดรายเดือน
 }
 
 function switchMode(mode) {
@@ -1044,7 +1047,7 @@ async function renderDbOwnerProfile(ownerId) {
 }
 
 function jumpToPaymentSearch(bookingId) {
-  switchTopTab('payment');
+  switchTopTab('payment', true);
   document.getElementById('payment_search_input').value = bookingId;
   searchBookingsForPayment();
 }
@@ -1090,21 +1093,102 @@ async function renderDbDogs() {
   }
 }
 
+async function renderPaymentMonthSummary() {
+  var el = document.getElementById('payment_month_summary');
+  if (!el) return;
+  el.innerHTML = '<p class="empty-note">⏳ กำลังโหลด...</p>';
+  try {
+    var bookings = await loadAllBookingsGrouped();
+
+    var monthSet = {};
+    bookings.forEach(function(b) {
+      var monthKey = String(b.checkIn||'').slice(0,7); // YYYY-MM
+      if (monthKey) monthSet[monthKey] = true;
+    });
+    var monthKeys = Object.keys(monthSet).sort().reverse();
+    var currentMonth = new Date().toISOString().slice(0,7);
+    var selectedMonth = document.getElementById('payment_month_select') ? document.getElementById('payment_month_select').value : (monthKeys.indexOf(currentMonth)>-1 ? currentMonth : (monthKeys[0]||currentMonth));
+    if (monthKeys.indexOf(selectedMonth) === -1) monthKeys.unshift(selectedMonth);
+
+    var THAI_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    function monthLabel(m) {
+      var parts = m.split('-');
+      var y = parseInt(parts[0],10), mo = parseInt(parts[1],10);
+      return THAI_MONTHS[mo-1] + ' ' + y;
+    }
+    var monthOptionsHtml = monthKeys.map(function(m) {
+      return '<option value="'+m+'"'+(m===selectedMonth?' selected':'')+'>'+monthLabel(m)+'</option>';
+    }).join('');
+
+    // ── สรุปยอด: cancelled ไม่นับเลย ──
+    // ยอดเต็มจริงของแต่ละ booking = deposit1st + finalDue (ปรับด้วย promo/extra ที่ 2nd deposit แล้ว)
+    var incompleteCount=0, incompletePaid=0, incompleteRemaining=0;
+    var fullyCount=0, fullyAmt=0;
+
+    bookings.forEach(function(b) {
+      var monthKey = String(b.checkIn||'').slice(0,7);
+      if (monthKey !== selectedMonth) return;
+      if (b.status === 'cancelled') return;
+
+      var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
+      var depositPaidAmount = parseFloat(String(b.depositPaidAmount||'').replace(/[^0-9.]/g,'')) || 0;
+      var deposit1st = depositPaidAmount > 0 ? depositPaidAmount : Math.ceil(totalPrice * 0.5);
+      var promoAmount = parseFloat(String(b.promoAmount||'').replace(/[^0-9.]/g,'')) || 0;
+      var extraAmount = parseFloat(String(b.extraAmount||'').replace(/[^0-9.]/g,'')) || 0;
+      var deposit2nd = totalPrice - deposit1st;
+      var finalDue = Math.max(0, deposit2nd - promoAmount + extraAmount);
+      var fullAmount = deposit1st + finalDue; // ยอดเต็มจริงหลังหักโปร/บวกค่าใช้จ่ายเพิ่มแล้ว
+
+      if (b.status === 'fully_paid') {
+        fullyCount++;
+        fullyAmt += fullAmount;
+      } else {
+        incompleteCount++;
+        var paidSoFar = (b.status === 'deposit_paid') ? deposit1st : 0;
+        incompletePaid += paidSoFar;
+        incompleteRemaining += (fullAmount - paidSoFar);
+      }
+    });
+
+    var totalCount = incompleteCount + fullyCount;
+    var totalAmt = incompletePaid + incompleteRemaining + fullyAmt;
+
+    el.innerHTML =
+      '<div class="revenue-card" style="margin-bottom:1.2rem;">'
+        + '<div class="revenue-label">สรุปยอดจ่ายเงิน เดือน'
+          + '<select id="payment_month_select" onchange="renderPaymentMonthSummary()">'+monthOptionsHtml+'</select>'
+        + '</div>'
+        + '<div class="revenue-breakdown" style="font-size:0.85rem;">'
+          + '<div style="display:flex;justify-content:space-between;padding:0.5rem 0;font-weight:700;border-bottom:1px dashed var(--gray-line);"><span>ลูกค้าทั้งหมด · '+totalCount+' ราย</span><span>฿'+formatMoney(totalAmt)+'</span></div>'
+          + '<div style="padding:0.5rem 0;border-bottom:1px dashed var(--gray-line);">'
+            + '<div style="display:flex;justify-content:space-between;"><span>⏳ ยังไม่จ่ายครบ · '+incompleteCount+' ราย</span><span style="font-weight:600;">฿'+formatMoney(incompletePaid+incompleteRemaining)+'</span></div>'
+            + '<div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--gray-dark);padding-top:0.25rem;"><span>　จ่ายมัดจำแล้ว</span><span>฿'+formatMoney(incompletePaid)+'</span></div>'
+            + '<div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--gray-dark);"><span>　เหลือค้างชำระ</span><span>฿'+formatMoney(incompleteRemaining)+'</span></div>'
+          + '</div>'
+          + '<div style="display:flex;justify-content:space-between;padding:0.5rem 0;"><span>✅ จ่ายครบแล้ว · '+fullyCount+' ราย</span><span style="font-weight:600;">฿'+formatMoney(fullyAmt)+'</span></div>'
+        + '</div>'
+      + '</div>';
+  } catch(e) {
+    el.innerHTML = '<p class="empty-note">โหลดข้อมูลไม่สำเร็จ: '+e.message+'</p>';
+  }
+}
+
 async function searchBookingsForPayment() {
   var q = document.getElementById('payment_search_input').value.trim();
   document.getElementById('payment_search_msg').innerHTML = '';
-  if (!q) { document.getElementById('payment_search_results').innerHTML = ''; return; }
-  document.getElementById('payment_search_results').innerHTML = '<p class="empty-note">⏳ กำลังค้นหา...</p>';
+  document.getElementById('payment_search_results').innerHTML = '<p class="empty-note">⏳ กำลังโหลดข้อมูล...</p>';
   try {
     var bookings = await loadAllBookingsGrouped();
     var qLower = q.toLowerCase();
     var qNorm = q.replace(/\D/g,'');
-    var results = bookings.filter(function(b) {
+    var results = !q ? bookings : bookings.filter(function(b) {
       var idMatch = b.bookingId.toLowerCase().indexOf(qLower) !== -1;
       var nameMatch = b.ownerName && b.ownerName.toLowerCase().indexOf(qLower) !== -1;
       var phoneMatch = qNorm.length >= 3 && b.phone && b.phone.replace(/\D/g,'').indexOf(qNorm) !== -1;
       return idMatch || nameMatch || phoneMatch;
     });
+    results = results.slice().sort(function(a,b2){ return (b2.checkIn||'').localeCompare(a.checkIn||''); });
+    document.getElementById('payment_search_count').textContent = 'ทั้งหมด ' + results.length + ' รายการ';
     if (results.length === 0) {
       document.getElementById('payment_search_results').innerHTML = '<p class="empty-note">ไม่พบ booking ที่ตรงกับ "'+q+'"</p>';
       return;
