@@ -155,7 +155,7 @@
   .dog-entry-title{font-size:0.78rem;font-weight:500;color:var(--gold);letter-spacing:0.08em;margin-bottom:1rem;font-family:'Space Mono','IBM Plex Sans Thai',monospace;}
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
-  .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.88rem;}
+  .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.80rem;}
   .summary-row-dog{padding:0.6rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.78rem;}
   .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .summary-row-dog .row-line{font-size:0.74rem;color:var(--gray-dark);padding-left:0.8rem;margin-top:0.3rem;}
@@ -336,25 +336,15 @@
 
   <!-- STEP 1: DATE -->
   <div id="screen-step1" style="display:none;">
-    <div class="steps"><div class="step active">1. วันที่</div><div class="step">2. น้องหมา</div><div class="step">3. สรุป</div></div>
+    <div class="steps"><div class="step active">1. Dates<br><span style="font-size:0.65rem;opacity:0.8;">วันที่</span></div><div class="step">2. Dogs<br><span style="font-size:0.65rem;opacity:0.8;">น้องหมา</span></div><div class="step">3. Summary<br><span style="font-size:0.65rem;opacity:0.8;">สรุป</span></div></div>
     <div class="card">
       <div class="section-label">ขั้นตอนที่ 1</div>
-      <h2 id="step1_owner_label">เลือกวันที่</h2>
+      <h2 id="step1_owner_label" style="font-family:'Space Mono','IBM Plex Sans Thai',monospace;">เลือกวันที่</h2>
       <div class="divider"></div>
-      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
-        <strong style="font-size:.76rem;">เวลาทำการ</strong><br>
-        · Drop-off &amp; Pick-up: 8:00–20:00 น.<br>
-        · มารับหลัง 20:00 น. มีค่า after-hours เพิ่ม ฿100/ชม.<br><br>
-        <strong style="font-size:.76rem;">ฝากรายวัน</strong><br>
-        · ฝาก-รับภายในวันเดียวกัน ไม่ค้างคืน<br><br>
-        <strong style="font-size:.76rem;">ค้างคืน</strong><br>
-        · 24 ชม. นับเป็นราคา 1 คืน<br>
-        · เกินกำหนดเช็คเอาท์ คิดราคา Daycare เพิ่ม (ถ้ามารับก่อน 20:00 น.)
-      </div>
       <div class="form-group"><label>ประเภทการฝาก</label>
         <div class="mode-tabs">
-          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">ค้างคืน</div>
-          <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">ฝากรายวัน</div>
+          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">Overnight Care | ค้างคืน</div>
+          <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">Daycare | รายวัน</div>
         </div>
       </div>
       <div id="overnight_fields">
@@ -377,6 +367,16 @@
       </div>
       <div id="date_summary" style="display:none;background:var(--bg2);padding:0.9rem 1rem;font-size:0.85rem;margin-bottom:1rem;border:0.5px solid var(--gray-line);"></div>
       <div id="date_msg"></div>
+      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;margin-top:1.5rem;">
+        <strong style="font-size:.76rem;">เวลา · Hours</strong><br>
+        · Drop-off &amp; Pick-up: 8:00–20:00 น.<br>
+        · มารับหลังหรือก่อนเวลาทำการ มีค่า after-hours เพิ่ม ฿100/ชม.<br><br>
+        <strong style="font-size:.76rem;">ฝากรายวัน · Daycare</strong><br>
+        · ฝาก-รับภายในวันเดียวกัน ไม่ค้างคืน<br><br>
+        <strong style="font-size:.76rem;">ค้างคืน · Overnight</strong><br>
+        · 24 ชม. นับเป็นราคา 1 คืน<br>
+        · เกินกำหนดเช็คเอาท์ คิดราคา Daycare เพิ่ม (ถ้ามารับก่อน 20:00 น.)
+      </div>
       <div class="btn-row">
         <button class="btn-secondary" onclick="showScreen('source')">← Back · ย้อนกลับ</button>
         <button class="btn-primary" onclick="goStep2()">Next → ถัดไป</button>
@@ -1658,9 +1658,6 @@ function renderSavedDogs() {
       + '<div class="dog-card-name">'+d.name+(genderIcon ? ' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>' : '')+'</div>'
       + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+(d.age ? ' · อายุ '+d.age : '')+'</div>'
       + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
-      + (neuteredBadge ? '<div class="dog-card-badges">'+neuteredBadge+'</div>' : '')
-      + (d.note ? '<div class="dog-card-note">📝 '+d.note+'</div>' : '')
-      + (d.tickControl ? '<div class="dog-card-note">🦟 '+d.tickControl+'</div>' : '')
       + '<div class="dog-card-price">฿'+totalPrice.toLocaleString()+(bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน')+'</div>'
       + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="event.stopPropagation();openEditDog(\''+d.dogId+'\')">✎ แก้ไขข้อมูล</button>'
       + '</div>';
@@ -2288,10 +2285,11 @@ function resetAll() {
 window.addEventListener('load', function() {
   document.documentElement.lang='th';
   var today=new Date().toISOString().slice(0,10);
-  document.getElementById('bk_checkin').min=today;
-  document.getElementById('bk_checkout').min=today;
+  var tomorrow=new Date(Date.now()+86400000).toISOString().slice(0,10);
+  document.getElementById('bk_checkin').min=tomorrow;
+  document.getElementById('bk_checkout').min=tomorrow;
   document.getElementById('bk_checkout').disabled=true;
-  document.getElementById('bk_daycare_date').min=today;
+  document.getElementById('bk_daycare_date').min=tomorrow;
   fillTimeSelect('bk_checkin_time','');
   document.getElementById('bk_checkout_time').innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
   document.getElementById('bk_checkout_time').disabled = true;
