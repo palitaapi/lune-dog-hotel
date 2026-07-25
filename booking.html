@@ -83,10 +83,16 @@
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
   .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.80rem;}
-  .summary-row-dog{padding:0.6rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.78rem;}
-  .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .summary-row-dog .row-line{font-size:0.74rem;color:var(--gray-dark);padding-left:0.8rem;margin-top:0.3rem;}
-  .summary-row-dog .row-total{font-weight:700;color:var(--gold);margin-top:0.4rem;font-size:0.8rem;}
+  .summary-row-dog{padding:0.7rem 0.9rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.78rem;}
+  .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:0.45rem;}
+  .summary-row-dog .dog-price-breakdown{display:table;width:100%;border-collapse:collapse;}
+  .summary-row-dog .row-line{display:table-row;}
+  .summary-row-dog .row-line .dpl-label{display:table-cell;padding:0.08rem 0;color:var(--gray-dark);font-size:0.73rem;white-space:nowrap;}
+  .summary-row-dog .row-line .dpl-amt{display:table-cell;padding:0.08rem 0;text-align:right;font-size:0.73rem;white-space:nowrap;}
+  .summary-row-dog .row-line.discount .dpl-amt{color:var(--green);}
+  .summary-row-dog .row-total{display:table-row;}
+  .summary-row-dog .row-total .dpl-label{display:table-cell;padding-top:0.35rem;font-weight:700;color:var(--black);font-size:0.8rem;border-top:1px solid var(--gray-line);}
+  .summary-row-dog .row-total .dpl-amt{display:table-cell;padding-top:0.35rem;text-align:right;font-weight:700;color:var(--gold);font-size:0.8rem;border-top:1px solid var(--gray-line);}
   .summary-row:last-child{border-bottom:none;}
   .summary-label{color:var(--gray-dark);font-weight:300;}
   .summary-val{font-weight:500;}
@@ -363,6 +369,14 @@
       <p style="font-size:0.85rem;color:var(--gray-dark);line-height:1.8;margin-bottom:1rem;">เราจะยืนยันการจองภายใน 24 ชั่วโมงทาง LINE<br><span style="font-size:.85em;opacity:.7;">We'll confirm your booking within 24 hours via LINE.</span></p>
       <div class="booking-id-badge" id="success_bookingid">BK-0000</div>
       <p style="font-size:0.78rem;color:var(--gray-dark);margin-top:0.5rem;margin-bottom:1.5rem;">กรุณาเก็บ Booking ID ไว้เป็นหลักฐาน · Please keep this as your reference.</p>
+      <div style="background:#F0FAF0;border:1px solid #a5d6a7;border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.5rem;text-align:left;">
+        <p style="font-size:0.8rem;font-weight:600;color:#2e7d32;margin-bottom:0.35rem;">📲 เพิ่ม LINE OA เพื่อรับการยืนยันการจอง</p>
+        <p style="font-size:0.75rem;color:var(--gray-dark);line-height:1.7;margin-bottom:0.8rem;">แอดมินจะแจ้งยืนยันการจองและรายละเอียดการโอนมัดจำผ่าน LINE<br><span style="opacity:.75;">We'll send booking confirmation and deposit details via LINE.</span></p>
+        <a href="https://line.me/R/ti/p/@798pcbh" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;background:#06C755;color:#fff;text-decoration:none;font-size:0.82rem;font-weight:600;border-radius:999px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.15 2 11.243c0 3.213 1.74 6.065 4.467 7.862l-.572 2.895 3.14-1.638A10.93 10.93 0 0012 20.486c5.523 0 10-4.15 10-9.243C22 6.15 17.523 2 12 2z"/></svg>
+          เพิ่มเพื่อน · Add LINE @luneandco
+        </a>
+      </div>
       <a href="index.html" style="display:inline-block;padding:0.8rem 2rem;background:#422F25;color:#FFF7EF;text-decoration:none;font-size:0.85rem;border-radius:999px;">Back to Home · กลับหน้าหลัก</a>
     </div>
   </div>
@@ -782,11 +796,12 @@ function updateType() {
 }
 
 function calcOvernightExtra() {
-  // ส่วนที่เกิน = ชั่วโมงที่ pick-up เกิน drop-off ในวันสุดท้าย
-  var dropMins   = timeToMins(checkInTime);
-  var pickMins   = timeToMins(checkOutTime);
-  var diffMins   = pickMins - dropMins; // บวก = pick-up หลัง drop-off, ลบ = ก่อน
-  return diffMins; // หน่วย นาที
+  // ส่วนที่เกิน = เวลา pick-up เทียบกับ drop-off คืนแรก
+  // กฎ: ทุก 24 ชม. นับเป็น 1 คืน — ถ้า pick-up เกิน drop-off เดิมแม้แต่ 1 นาที → daycare เพิ่ม
+  var dropMins = timeToMins(checkInTime);
+  var pickMins = timeToMins(checkOutTime);
+  var diffMins = pickMins - dropMins; // บวก = pick-up หลัง drop-off, ลบ/ศูนย์ = พอดีหรือก่อน
+  return diffMins > 0 ? diffMins : 0;
 }
 
 function fillTimeSelect(id, defaultVal, minTime) {
@@ -855,9 +870,10 @@ function updateDates() {
     var extraText = '';
     extraChargeType = '';
     if (extraMins > 0) {
-      // เกินกำหนดเช็คเอาท์ ไม่ว่ากี่ชม. → คิด daycare เต็มราคา (ถ้ามารับหลัง 20:00 จะมี after-hours surcharge เพิ่มแยกอัตโนมัติ)
+      // pick-up หลัง drop-off เดิม → เกิน 24 ชม. → คิด daycare เพิ่ม 1 วัน
       extraChargeType = 'daycare';
-      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Daycare rate (ถ้ามารับหลัง 20:00 จะมีค่า after-hours เพิ่มตามจริง)';
+      var extraHrs = Math.round(extraMins / 60 * 10) / 10;
+      extraText = '⏱ Pick-up หลัง Drop-off ' + extraHrs + ' ชม. → บวก Daycare 1 วัน (ถ้ามารับหลัง 20:00 จะมีค่า after-hours เพิ่มตามจริง)';
     }
     var extraBox = document.getElementById('overnight_extra');
     extraBox.style.display = extraText ? 'block' : 'none';
@@ -1281,20 +1297,24 @@ function goStep3() {
     if (bookingType === 'overnight') {
       var nightlyRate = PRICES.overnight[d.size];
       var nightlyTotal = nightlyRate * nights;
-      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' '+(nights===1?'Day':'Days')+' x ฿'+nightlyRate.toLocaleString());
+      lines.push('<div class="row-line"><span class="dpl-label">Overnight '+nights+' '+(nights===1?'day':'days')+' × ฿'+nightlyRate.toLocaleString()+'</span><span class="dpl-amt">฿'+nightlyTotal.toLocaleString()+'</span></div>');
       if (extraChargeType === 'daycare') {
-        lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day x ฿'+PRICES.daycare[d.size].toLocaleString());
+        var extraAmt = PRICES.daycare[d.size];
+        lines.push('<div class="row-line"><span class="dpl-label">Daycare 1 day × ฿'+extraAmt.toLocaleString()+'</span><span class="dpl-amt">฿'+extraAmt.toLocaleString()+'</span></div>');
       }
     } else {
-      lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day');
+      var daycareAmt = PRICES.daycare[d.size];
+      lines.push('<div class="row-line"><span class="dpl-label">Daycare 1 day</span><span class="dpl-amt">฿'+daycareAmt.toLocaleString()+'</span></div>');
     }
     if (d.finalPrice < d.price) {
-      lines.push('- ฿'+(d.price-d.finalPrice).toLocaleString()+' = Discount 10%');
+      lines.push('<div class="row-line discount"><span class="dpl-label">Discount 10%</span><span class="dpl-amt">-฿'+(d.price-d.finalPrice).toLocaleString()+'</span></div>');
     }
     return '<div class="summary-row-dog">'
       + '<div class="row-header">'+headerName+'</div>'
-      + lines.map(function(l){ return '<div class="row-line">'+l+'</div>'; }).join('')
-      + '<div class="row-total">Total = ฿'+d.finalPrice.toLocaleString()+'</div>'
+      + '<div class="dog-price-breakdown">'
+      + lines.join('')
+      + '<div class="row-total"><span class="dpl-label">Total</span><span class="dpl-amt">฿'+d.finalPrice.toLocaleString()+'</span></div>'
+      + '</div>'
       + '</div>';
   }).join('');
 
