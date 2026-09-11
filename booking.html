@@ -124,7 +124,7 @@
 <div class="container">
 
   <!-- SERVICE SELECT -->
-  <div id="screen-service" class="card">
+  <div id="screen-service" class="card" style="display:none;">
     <div class="section-label">Book a Stay</div>
     <h2>เลือกบริการ</h2>
     <div class="divider"></div>
@@ -442,6 +442,7 @@ const DISTRICTS = {
 
 let currentOwner = null;
 let serviceType = 'hotel'; // 'hotel' | 'park'
+let servicePreset = false; // true ถ้ารู้ service มาก่อนแล้ว (จาก URL param หรือ sessionStorage) ไม่ต้องถามซ้ำหลัง login
 let parkDate = '';
 let allOwnersCache = null;
 let bookingType = 'overnight';
@@ -480,10 +481,14 @@ function selectService(type) {
 }
 function confirmServiceSelect() {
   try { sessionStorage.setItem('lune_service_type', serviceType); } catch(e) {}
-  showScreen('login');
+  goToServiceStep1();
 }
 function goToServiceStep1() {
   showScreen(serviceType === 'park' ? 'park-step1' : 'step1');
+}
+function goAfterLogin() {
+  if (servicePreset) goToServiceStep1();
+  else showScreen('service');
 }
 function isWeekend(dateStr) {
   var d = new Date(dateStr+'T00:00:00');
@@ -555,7 +560,7 @@ async function checkOwner(profile) {
   await loadAvailability();
   if (currentOwner.ownerId) {
     await loadSavedDogs();
-    goToServiceStep1();
+    goAfterLogin();
   } else {
     document.getElementById('own_name').value = '';
     showScreen('newuser');
@@ -812,7 +817,7 @@ async function registerAndBook() {
     currentOwner=Object.assign({},currentOwner,{ownerId:result.ownerId,name,phone,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt});
     allOwnersCache = null; // invalidate cache เพราะมี owner ใหม่เพิ่มเข้ามา
   } catch(e) { currentOwner=Object.assign({},currentOwner,{name,phone}); }
-  goToServiceStep1();
+  goAfterLogin();
 }
 
 // ── AVAILABILITY ──────────────────────────────────────
@@ -1516,12 +1521,11 @@ window.addEventListener('load', async function() {
   document.getElementById('bk_pickup').disabled = true;
   updateType(); // set initial show/hide state
 
-  // ── กำหนด serviceType จาก URL param (มาจาก index.html) หรือ sessionStorage (กลับจาก LINE redirect) ──
+  // ── กำหนด serviceType จาก URL param (มาจาก index.html) หรือ sessionStorage (กลับจาก LINE redirect) — ใช้ข้ามหน้าเลือกบริการหลัง login ถ้ารู้อยู่แล้ว ──
   var urlParams = new URLSearchParams(window.location.search);
   var serviceParam = urlParams.get('service');
   var storedService = null;
   try { storedService = sessionStorage.getItem('lune_service_type'); } catch(e) {}
-  var servicePreset = false;
   if (serviceParam === 'park' || serviceParam === 'hotel') {
     serviceType = serviceParam;
     try { sessionStorage.setItem('lune_service_type', serviceType); } catch(e) {}
@@ -1532,7 +1536,7 @@ window.addEventListener('load', async function() {
   }
 
   var hasCallback=await handleLineCallback();
-  if(!hasCallback) showScreen(servicePreset ? 'login' : 'service');
+  if(!hasCallback) showScreen('login'); // login ก่อนเสมอ แล้วค่อยเลือกบริการทีหลัง (ยกเว้นรู้ service อยู่แล้ว)
 });
 </script>
 </body>
