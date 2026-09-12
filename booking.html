@@ -641,6 +641,21 @@ function toggleNewDogForm() {
   if (showingNewDogForm) renderNewDogForm();
 }
 
+function toggleTickOther(prefix) {
+  var sel = document.getElementById(prefix+'_dog_tick_control');
+  var other = document.getElementById(prefix+'_dog_tick_control_other');
+  if (sel && other) other.style.display = (sel.value === 'อื่นๆ') ? 'block' : 'none';
+}
+function getTickControlValue(prefix) {
+  var sel = document.getElementById(prefix+'_dog_tick_control');
+  if (!sel) return '';
+  if (sel.value === 'อื่นๆ') {
+    var other = document.getElementById(prefix+'_dog_tick_control_other');
+    return other ? other.value.trim() : '';
+  }
+  return sel.value;
+}
+
 function renderNewDogForm() {
   document.getElementById('dog_entries').innerHTML =
     '<div class="dog-entry">'
@@ -658,13 +673,17 @@ function renderNewDogForm() {
     + '<div class="form-group"><label>อายุ *</label><div class="form-row" style="gap:0.6rem;"><input type="text" id="new_dog_age_years" placeholder="ปี" inputmode="numeric" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\'\')"/><input type="text" id="new_dog_age_months" placeholder="เดือน" inputmode="numeric" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\'\').slice(0,2);if(parseInt(this.value)>11)this.value=\'11\';"/></div></div>'
     + '</div>'
     + '<div class="form-row">'
-    + '<div class="form-group"><label>ประเภทอาหารที่กิน *</label><select id="new_dog_food_type"><option value="">เลือก</option><option value="เม็ด">เม็ด (Dry food)</option><option value="เปียก">เปียก (Wet food)</option><option value="เม็ด + เปียก">เม็ด + เปียก</option><option value="โฮมคุก">โฮมคุก (Home cooked)</option><option value="บาร์ฟ">บาร์ฟ (BARF)</option><option value="อื่นๆ">อื่นๆ</option></select></div>'
-    + '<div class="form-group"><label>จำนวนมื้อต่อวัน *</label><select id="new_dog_meals_per_day"><option value="">เลือก</option><option value="1 มื้อ/วัน">1 มื้อ/วัน</option><option value="2 มื้อ/วัน">2 มื้อ/วัน</option><option value="3 มื้อ/วัน">3 มื้อ/วัน</option><option value="มากกว่า 3 มื้อ/วัน">มากกว่า 3 มื้อ/วัน</option></select></div>'
+    + '<div class="form-group"><label>ประเภทอาหารที่กิน</label><select id="new_dog_food_type"><option value="">เลือก (ถ้ามี)</option><option value="เม็ด">เม็ด (Dry food)</option><option value="เปียก">เปียก (Wet food)</option><option value="เม็ด + เปียก">เม็ด + เปียก</option><option value="โฮมคุก">โฮมคุก (Home cooked)</option><option value="บาร์ฟ">บาร์ฟ (BARF)</option><option value="อื่นๆ">อื่นๆ</option></select></div>'
+    + '<div class="form-group"><label>จำนวนมื้อต่อวัน</label><select id="new_dog_meals_per_day"><option value="">เลือก (ถ้ามี)</option><option value="1 มื้อ/วัน">1 มื้อ/วัน</option><option value="2 มื้อ/วัน">2 มื้อ/วัน</option><option value="3 มื้อ/วัน">3 มื้อ/วัน</option><option value="มากกว่า 3 มื้อ/วัน">มากกว่า 3 มื้อ/วัน</option></select></div>'
     + '</div>'
-    + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด *</label><input type="text" id="new_dog_tick_control" placeholder="เช่น หยดหลัง Frontline ทุกเดือน"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ชอบ</label><input type="text" id="new_dog_likes" placeholder="เช่น เล่นน้ำ ชอบกอด ชอบนอนโซฟา"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง</label><input type="text" id="new_dog_dislikes" placeholder="เช่น กลัวเสียงดัง ไม่ชอบสุนัขตัวใหญ่"/></div>'
-    + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="new_dog_allergy" placeholder="เช่น แพ้ไก่ เป็นโรคหัวใจ ไม่มี"/></div>'
+    + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด *</label><select id="new_dog_tick_control" onchange="toggleTickOther(\'new\')">'
+      + '<option value="">เลือก</option>'
+      + '<option value="ยาแบบกิน">ยาแบบกิน</option>'
+      + '<option value="ยาหยดหลัง">ยาหยดหลัง</option>'
+      + '<option value="แชมพูกำจัดเห็บหมัด">แชมพูกำจัดเห็บหมัด</option>'
+      + '<option value="อื่นๆ">อื่นๆ โปรดระบุ</option>'
+    + '</select>'
+    + '<input type="text" id="new_dog_tick_control_other" placeholder="ระบุวิธีกำจัดเห็บหมัด" style="display:none;margin-top:0.5rem;"/></div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
     + '<button type="button" class="add-new-dog-btn" onclick="saveDogAndAddAnother()">'+(editingPendingIdx!==null?'💾 บันทึกการแก้ไข':'✓ บันทึก')+'</button>'
     + '</div>';
@@ -1054,14 +1073,9 @@ function buildNewDogFromForm() {
   var ageMonths = document.getElementById('new_dog_age_months').value.trim();
   if (!ageYears && !ageMonths) { showMsg('dog_msg','กรุณากรอกอายุ (ปีหรือเดือน อย่างน้อย 1 ช่อง)','error'); return false; }
   var foodType = document.getElementById('new_dog_food_type').value;
-  if (!foodType) { showMsg('dog_msg','กรุณาเลือกประเภทอาหารที่กิน','error'); return false; }
   var mealsPerDay = document.getElementById('new_dog_meals_per_day').value;
-  if (!mealsPerDay) { showMsg('dog_msg','กรุณาเลือกจำนวนมื้อต่อวัน','error'); return false; }
-  var tickControl = document.getElementById('new_dog_tick_control').value.trim();
-  if (!tickControl) { showMsg('dog_msg','กรุณากรอกวิธีกำจัดเห็บหมัด','error'); return false; }
-  var likes = document.getElementById('new_dog_likes').value.trim();
-  var dislikes = document.getElementById('new_dog_dislikes').value.trim();
-  var allergy = document.getElementById('new_dog_allergy').value.trim();
+  var tickControl = getTickControlValue('new');
+  if (!tickControl) { showMsg('dog_msg','กรุณาเลือกวิธีกำจัดเห็บหมัด','error'); return false; }
   var note = document.getElementById('new_dog_note').value.trim();
   var size = getSizeFromWeight(w);
   var price = calcDogPrice(size);
@@ -1081,9 +1095,9 @@ function buildNewDogFromForm() {
     foodType: foodType,
     mealsPerDay: mealsPerDay,
     tickControl: tickControl,
-    likes: likes,
-    dislikes: dislikes,
-    allergy: allergy,
+    likes: '',
+    dislikes: '',
+    allergy: '',
     note: note,
     size: size,
     price: price,
@@ -1117,10 +1131,16 @@ function fillFormFromDog(dog) {
   document.getElementById('new_dog_age_months').value = ageParsed.months;
   document.getElementById('new_dog_food_type').value = dog.foodType || '';
   document.getElementById('new_dog_meals_per_day').value = dog.mealsPerDay || '';
-  document.getElementById('new_dog_tick_control').value = dog.tickControl || '';
-  document.getElementById('new_dog_likes').value = dog.likes || '';
-  document.getElementById('new_dog_dislikes').value = dog.dislikes || '';
-  document.getElementById('new_dog_allergy').value = dog.allergy || '';
+  var TICK_PRESETS = ['ยาแบบกิน','ยาหยดหลัง','แชมพูกำจัดเห็บหมัด'];
+  var tickSel = document.getElementById('new_dog_tick_control');
+  if (dog.tickControl && TICK_PRESETS.indexOf(dog.tickControl) === -1) {
+    tickSel.value = 'อื่นๆ';
+    document.getElementById('new_dog_tick_control_other').value = dog.tickControl;
+  } else {
+    tickSel.value = dog.tickControl || '';
+    document.getElementById('new_dog_tick_control_other').value = '';
+  }
+  toggleTickOther('new');
   document.getElementById('new_dog_note').value = dog.note || '';
   updateNewDogPrice();
 }
@@ -1228,10 +1248,14 @@ function renderEditDogForm(dog) {
     + mealOptions.map(function(o){ return '<option value="'+o+'"'+(dog.mealsPerDay===o||(!dog.mealsPerDay&&o==='')?' selected':'')+'>'+(o===''?'เลือก':o)+'</option>'; }).join('')
     + '</select></div>'
     + '</div>'
-    + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด</label><input type="text" id="edit_dog_tick_control" value="'+escapeHtml(dog.tickControl)+'"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ชอบ</label><input type="text" id="edit_dog_likes" value="'+escapeHtml(dog.likes)+'"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง</label><input type="text" id="edit_dog_dislikes" value="'+escapeHtml(dog.dislikes)+'"/></div>'
-    + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="edit_dog_allergy" value="'+escapeHtml(dog.allergy)+'"/></div>'
+    + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด</label><select id="edit_dog_tick_control" onchange="toggleTickOther(\'edit\')">'
+      + '<option value="">เลือก</option>'
+      + '<option value="ยาแบบกิน"'+(dog.tickControl==='ยาแบบกิน'?' selected':'')+'>ยาแบบกิน</option>'
+      + '<option value="ยาหยดหลัง"'+(dog.tickControl==='ยาหยดหลัง'?' selected':'')+'>ยาหยดหลัง</option>'
+      + '<option value="แชมพูกำจัดเห็บหมัด"'+(dog.tickControl==='แชมพูกำจัดเห็บหมัด'?' selected':'')+'>แชมพูกำจัดเห็บหมัด</option>'
+      + '<option value="อื่นๆ"'+(dog.tickControl && ['ยาแบบกิน','ยาหยดหลัง','แชมพูกำจัดเห็บหมัด'].indexOf(dog.tickControl)===-1 ? ' selected':'')+'>อื่นๆ โปรดระบุ</option>'
+    + '</select>'
+    + '<input type="text" id="edit_dog_tick_control_other" placeholder="ระบุวิธีกำจัดเห็บหมัด" value="'+(dog.tickControl && ['ยาแบบกิน','ยาหยดหลัง','แชมพูกำจัดเห็บหมัด'].indexOf(dog.tickControl)===-1 ? escapeHtml(dog.tickControl) : '')+'" style="display:'+(dog.tickControl && ['ยาแบบกิน','ยาหยดหลัง','แชมพูกำจัดเห็บหมัด'].indexOf(dog.tickControl)===-1 ? 'block':'none')+';margin-top:0.5rem;"/></div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="edit_dog_note" value="'+escapeHtml(dog.note)+'"/></div>';
 }
 
@@ -1248,6 +1272,7 @@ async function saveDogEdit() {
     if (ageMonths) parts.push(ageMonths + ' เดือน');
     return parts.join(' ');
   })();
+  var existingDog = savedDogs.find(function(d){ return d.dogId === editingDogId; }) || {};
   var data = {
     action: 'updateDog',
     dogId: editingDogId,
@@ -1259,10 +1284,10 @@ async function saveDogEdit() {
     age: age,
     foodType: document.getElementById('edit_dog_food_type').value,
     mealsPerDay: document.getElementById('edit_dog_meals_per_day').value,
-    tickControl: document.getElementById('edit_dog_tick_control').value.trim(),
-    likes: document.getElementById('edit_dog_likes').value.trim(),
-    dislikes: document.getElementById('edit_dog_dislikes').value.trim(),
-    allergy: document.getElementById('edit_dog_allergy').value.trim(),
+    tickControl: getTickControlValue('edit'),
+    likes: existingDog.likes || '',
+    dislikes: existingDog.dislikes || '',
+    allergy: existingDog.allergy || '',
     note: document.getElementById('edit_dog_note').value.trim()
   };
   var btn = document.getElementById('editdog_save_btn');
