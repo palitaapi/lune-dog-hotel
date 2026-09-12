@@ -155,17 +155,11 @@
   .dog-entry-title{font-size:0.78rem;font-weight:500;color:var(--gold);letter-spacing:0.08em;margin-bottom:1rem;font-family:'Space Mono','IBM Plex Sans Thai',monospace;}
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
-  .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.80rem;}
-  .summary-row-dog{padding:0.7rem 0.9rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.78rem;}
-  .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:0.45rem;}
-  .summary-row-dog .dog-price-breakdown{display:table;width:100%;border-collapse:collapse;}
-  .summary-row-dog .row-line{display:table-row;}
-  .summary-row-dog .row-line .dpl-label{display:table-cell;padding:0.08rem 0;color:var(--gray-dark);font-size:0.73rem;white-space:nowrap;}
-  .summary-row-dog .row-line .dpl-amt{display:table-cell;padding:0.08rem 0;text-align:right;font-size:0.73rem;white-space:nowrap;}
-  .summary-row-dog .row-line.discount .dpl-amt{color:var(--green);}
-  .summary-row-dog .row-total{display:table-row;}
-  .summary-row-dog .row-total .dpl-label{display:table-cell;padding-top:0.35rem;font-weight:700;color:var(--black);font-size:0.8rem;border-top:1px solid var(--gray-line);}
-  .summary-row-dog .row-total .dpl-amt{display:table-cell;padding-top:0.35rem;text-align:right;font-weight:700;color:var(--gold);font-size:0.8rem;border-top:1px solid var(--gray-line);}
+  .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.88rem;}
+  .summary-row-dog{padding:0.6rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.78rem;}
+  .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .summary-row-dog .row-line{font-size:0.74rem;color:var(--gray-dark);padding-left:0.8rem;margin-top:0.3rem;}
+  .summary-row-dog .row-total{font-weight:700;color:var(--gold);margin-top:0.4rem;font-size:0.8rem;}
   .summary-row:last-child{border-bottom:none;}
   .summary-label{color:var(--gray-dark);font-weight:300;}
   .summary-val{font-weight:500;}
@@ -342,15 +336,25 @@
 
   <!-- STEP 1: DATE -->
   <div id="screen-step1" style="display:none;">
-    <div class="steps"><div class="step active">1. Dates<br><span style="font-size:0.65rem;opacity:0.8;">วันที่</span></div><div class="step">2. Dogs<br><span style="font-size:0.65rem;opacity:0.8;">น้องหมา</span></div><div class="step">3. Summary<br><span style="font-size:0.65rem;opacity:0.8;">สรุป</span></div></div>
+    <div class="steps"><div class="step active">1. วันที่</div><div class="step">2. น้องหมา</div><div class="step">3. สรุป</div></div>
     <div class="card">
       <div class="section-label">ขั้นตอนที่ 1</div>
-      <h2 id="step1_owner_label" style="font-family:'Space Mono','IBM Plex Sans Thai',monospace;">เลือกวันที่</h2>
+      <h2 id="step1_owner_label">เลือกวันที่</h2>
       <div class="divider"></div>
+      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;">
+        <strong style="font-size:.76rem;">เวลาทำการ</strong><br>
+        · Drop-off &amp; Pick-up: 8:00–20:00 น.<br>
+        · มารับหลัง 20:00 น. มีค่า after-hours เพิ่ม ฿100/ชม.<br><br>
+        <strong style="font-size:.76rem;">ฝากรายวัน</strong><br>
+        · ฝาก-รับภายในวันเดียวกัน ไม่ค้างคืน<br><br>
+        <strong style="font-size:.76rem;">ค้างคืน</strong><br>
+        · 24 ชม. นับเป็นราคา 1 คืน<br>
+        · เกินกำหนดเช็คเอาท์ คิดราคา Daycare เพิ่ม (ถ้ามารับก่อน 20:00 น.)
+      </div>
       <div class="form-group"><label>ประเภทการฝาก</label>
         <div class="mode-tabs">
-          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">Overnight Care | ค้างคืน</div>
-          <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">Daycare | รายวัน</div>
+          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">ค้างคืน</div>
+          <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">ฝากรายวัน</div>
         </div>
       </div>
       <div id="overnight_fields">
@@ -373,16 +377,6 @@
       </div>
       <div id="date_summary" style="display:none;background:var(--bg2);padding:0.9rem 1rem;font-size:0.85rem;margin-bottom:1rem;border:0.5px solid var(--gray-line);"></div>
       <div id="date_msg"></div>
-      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;margin-top:1.5rem;">
-        <strong style="font-size:.76rem;">เวลา · Hours</strong><br>
-        · Drop-off &amp; Pick-up: 8:00–20:00 น.<br>
-        · มารับหลังหรือก่อนเวลาทำการ มีค่า after-hours เพิ่ม ฿100/ชม.<br><br>
-        <strong style="font-size:.76rem;">ฝากรายวัน · Daycare</strong><br>
-        · ฝาก-รับภายในวันเดียวกัน ไม่ค้างคืน<br><br>
-        <strong style="font-size:.76rem;">ค้างคืน · Overnight</strong><br>
-        · 24 ชม. นับเป็นราคา 1 คืน<br>
-        · เกินกำหนดเช็คเอาท์ คิดราคา Daycare เพิ่ม (ถ้ามารับก่อน 20:00 น.)
-      </div>
       <div class="btn-row">
         <button class="btn-secondary" onclick="showScreen('source')">← Back · ย้อนกลับ</button>
         <button class="btn-primary" onclick="goStep2()">Next → ถัดไป</button>
@@ -1126,20 +1120,29 @@ async function renderPaymentMonthSummary() {
       if (b.status === 'cancelled') return;
 
       var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
-      var depositPaidAmount = parseFloat(String(b.depositPaidAmount||'').replace(/[^0-9.]/g,'')) || 0;
-      var deposit1st = depositPaidAmount > 0 ? depositPaidAmount : Math.ceil(totalPrice * 0.5);
-      var promoAmount = parseFloat(String(b.promoAmount||'').replace(/[^0-9.]/g,'')) || 0;
-      var extraAmount = parseFloat(String(b.extraAmount||'').replace(/[^0-9.]/g,'')) || 0;
-      var deposit2nd = totalPrice - deposit1st;
-      var finalDue = Math.max(0, deposit2nd - promoAmount + extraAmount);
-      var fullAmount = deposit1st + finalDue; // ยอดเต็มจริงหลังหักโปร/บวกค่าใช้จ่ายเพิ่มแล้ว
+      var isPark = (b.type === 'Dog Park Day Pass');
+      var fullAmount, paidSoFar;
+
+      if (isPark) {
+        // Dog Park: จ่ายเต็มจำนวนทีเดียว ไม่มีมัดจำ/โปร/ค่าใช้จ่ายเพิ่ม
+        fullAmount = totalPrice;
+        paidSoFar = (b.status === 'fully_paid') ? totalPrice : 0;
+      } else {
+        var depositPaidAmount = parseFloat(String(b.depositPaidAmount||'').replace(/[^0-9.]/g,'')) || 0;
+        var deposit1st = depositPaidAmount > 0 ? depositPaidAmount : Math.ceil(totalPrice * 0.5);
+        var promoAmount = parseFloat(String(b.promoAmount||'').replace(/[^0-9.]/g,'')) || 0;
+        var extraAmount = parseFloat(String(b.extraAmount||'').replace(/[^0-9.]/g,'')) || 0;
+        var deposit2nd = totalPrice - deposit1st;
+        var finalDue = Math.max(0, deposit2nd - promoAmount + extraAmount);
+        fullAmount = deposit1st + finalDue; // ยอดเต็มจริงหลังหักโปร/บวกค่าใช้จ่ายเพิ่มแล้ว
+        paidSoFar = (b.status === 'deposit_paid') ? deposit1st : 0;
+      }
 
       if (b.status === 'fully_paid') {
         fullyCount++;
         fullyAmt += fullAmount;
       } else {
         incompleteCount++;
-        var paidSoFar = (b.status === 'deposit_paid') ? deposit1st : 0;
         incompletePaid += paidSoFar;
         incompleteRemaining += (fullAmount - paidSoFar);
       }
@@ -1222,6 +1225,7 @@ function renderPaymentResults(bookings) {
     var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_deposit';
     var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
     var isOpen = !!bpExpandedIds[b.bookingId];
+    var isPark = (b.type === 'Dog Park Day Pass');
 
     var collapsedHtml = '<div class="bpc-collapsed" onclick="toggleBpc(\''+b.bookingId+'\')">'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span><span class="db-chevron">'+(isOpen?'▲':'▼')+'</span></div>'
@@ -1234,7 +1238,9 @@ function renderPaymentResults(bookings) {
       return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'+collapsedHtml+'</div>';
     }
 
-    var actionsHtml = Object.keys(STATUS_LABEL).map(function(s) {
+    // Dog Park จ่ายเต็มจำนวนทีเดียว ไม่มีมัดจำ 2 งวด เลยไม่มีสถานะ "รับมัดจำแล้ว" ให้เลือก
+    var statusKeysForThis = isPark ? Object.keys(STATUS_LABEL).filter(function(s){ return s !== 'deposit_paid'; }) : Object.keys(STATUS_LABEL);
+    var actionsHtml = statusKeysForThis.map(function(s) {
       var isCurrent = (s === statusKey);
       var danger = (s === 'cancelled' && !isCurrent) ? ' danger' : '';
       var currentClass = isCurrent ? ' current-status' : '';
@@ -1242,6 +1248,26 @@ function renderPaymentResults(bookings) {
       var icon = isCurrent ? '✓ ' : '→ ';
       return '<button class="bpc-action-btn'+danger+currentClass+'"'+onclick+'>'+icon+STATUS_LABEL[s]+'</button>';
     }).join('');
+
+    var priceHtml;
+    if (isPark) {
+      // Dog Park: ยอดเดียว จ่ายเต็มจำนวน ไม่มีมัดจำ/โปรโมชั่น/ค่าใช้จ่ายเพิ่ม
+      var parkPaid = (b.status === 'fully_paid');
+      priceHtml = '<div class="price-summary">'
+        + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(parkPaid?' <span class="paid-tag">Paid</span>':'')+'</span></div>'
+      + '</div>';
+
+      return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
+        + collapsedHtml
+        + '<div style="margin-top:0.8rem;padding-top:0.8rem;border-top:0.5px solid var(--gray-line);">'
+        + '<div class="bpc-status-row"><span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span></div>'
+        + priceHtml
+        + '<div class="bpc-actions">'+actionsHtml+'</div>'
+        + '<div id="bpc_msg_'+b.bookingId+'"></div>'
+        + '</div>'
+        + '</div>';
+    }
+
 
     var deposit1stPaid = (b.status === 'deposit_paid' || b.status === 'fully_paid');
     var deposit2ndPaid = (b.status === 'fully_paid');
@@ -1664,6 +1690,9 @@ function renderSavedDogs() {
       + '<div class="dog-card-name">'+d.name+(genderIcon ? ' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>' : '')+'</div>'
       + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+(d.age ? ' · อายุ '+d.age : '')+'</div>'
       + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
+      + (neuteredBadge ? '<div class="dog-card-badges">'+neuteredBadge+'</div>' : '')
+      + (d.note ? '<div class="dog-card-note">📝 '+d.note+'</div>' : '')
+      + (d.tickControl ? '<div class="dog-card-note">🦟 '+d.tickControl+'</div>' : '')
       + '<div class="dog-card-price">฿'+totalPrice.toLocaleString()+(bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน')+'</div>'
       + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="event.stopPropagation();openEditDog(\''+d.dogId+'\')">✎ แก้ไขข้อมูล</button>'
       + '</div>';
@@ -1750,8 +1779,7 @@ function updateType() {
 function calcOvernightExtra() {
   var dropMins = timeToMins(checkInTime);
   var pickMins = timeToMins(checkOutTime);
-  var diffMins = pickMins - dropMins;
-  return diffMins > 0 ? diffMins : 0;
+  return pickMins - dropMins;
 }
 
 function updateDates() {
@@ -1772,8 +1800,7 @@ function updateDates() {
     extraChargeType = '';
     if (extraMins > 0) {
       extraChargeType = 'daycare';
-      var extraHrs = Math.round(extraMins / 60 * 10) / 10;
-      extraText = '⏱ Pick-up หลัง Drop-off ' + extraHrs + ' ชม. → บวก Daycare 1 วัน (ถ้ามารับหลัง 20:00 จะมีค่า after-hours เพิ่มตามจริง)';
+      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Daycare rate (ถ้ามารับหลัง 20:00 จะมีค่า after-hours เพิ่มตามจริง)';
     }
     var extraBox = document.getElementById('overnight_extra');
     extraBox.style.display = extraText ? 'block' : 'none';
@@ -2179,24 +2206,20 @@ function goStep3() {
     if (bookingType === 'overnight') {
       var nightlyRate = PRICES.overnight[d.size];
       var nightlyTotal = nightlyRate * nights;
-      lines.push('<div class="row-line"><span class="dpl-label">Overnight '+nights+' '+(nights===1?'day':'days')+' × ฿'+nightlyRate.toLocaleString()+'</span><span class="dpl-amt">฿'+nightlyTotal.toLocaleString()+'</span></div>');
+      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' '+(nights===1?'Day':'Days')+' x ฿'+nightlyRate.toLocaleString());
       if (extraChargeType === 'daycare') {
-        var extraAmt = PRICES.daycare[d.size];
-        lines.push('<div class="row-line"><span class="dpl-label">Daycare 1 day × ฿'+extraAmt.toLocaleString()+'</span><span class="dpl-amt">฿'+extraAmt.toLocaleString()+'</span></div>');
+        lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day x ฿'+PRICES.daycare[d.size].toLocaleString());
       }
     } else {
-      var daycareAmt = PRICES.daycare[d.size];
-      lines.push('<div class="row-line"><span class="dpl-label">Daycare 1 day</span><span class="dpl-amt">฿'+daycareAmt.toLocaleString()+'</span></div>');
+      lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day');
     }
     if (d.finalPrice < d.price) {
-      lines.push('<div class="row-line discount"><span class="dpl-label">Discount 10%</span><span class="dpl-amt">-฿'+(d.price-d.finalPrice).toLocaleString()+'</span></div>');
+      lines.push('- ฿'+(d.price-d.finalPrice).toLocaleString()+' = Discount 10%');
     }
     return '<div class="summary-row-dog">'
       + '<div class="row-header">'+headerName+'</div>'
-      + '<div class="dog-price-breakdown">'
-      + lines.join('')
-      + '<div class="row-total"><span class="dpl-label">Total</span><span class="dpl-amt">฿'+d.finalPrice.toLocaleString()+'</span></div>'
-      + '</div>'
+      + lines.map(function(l){ return '<div class="row-line">'+l+'</div>'; }).join('')
+      + '<div class="row-total">Total = ฿'+d.finalPrice.toLocaleString()+'</div>'
       + '</div>';
   }).join('');
 
@@ -2297,11 +2320,10 @@ function resetAll() {
 window.addEventListener('load', function() {
   document.documentElement.lang='th';
   var today=new Date().toISOString().slice(0,10);
-  var tomorrow=new Date(Date.now()+86400000).toISOString().slice(0,10);
-  document.getElementById('bk_checkin').min=tomorrow;
-  document.getElementById('bk_checkout').min=tomorrow;
+  document.getElementById('bk_checkin').min=today;
+  document.getElementById('bk_checkout').min=today;
   document.getElementById('bk_checkout').disabled=true;
-  document.getElementById('bk_daycare_date').min=tomorrow;
+  document.getElementById('bk_daycare_date').min=today;
   fillTimeSelect('bk_checkin_time','');
   document.getElementById('bk_checkout_time').innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
   document.getElementById('bk_checkout_time').disabled = true;
