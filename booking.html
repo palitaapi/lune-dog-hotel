@@ -1567,6 +1567,24 @@ window.addEventListener('load', async function() {
   var hasCallback=await handleLineCallback();
   if(!hasCallback) showScreen('login'); // login ก่อนเสมอ แล้วค่อยเลือกบริการทีหลัง (ยกเว้นรู้ service อยู่แล้ว)
 });
+
+// เบราว์เซอร์บางครั้งดึงหน้าเก่าคืนจาก cache ตอนกด back/forward (bfcache) โดยไม่รัน 'load' ใหม่เลย
+// ทำให้ serviceType เก่า (เช่น 'park') กับปุ่มที่ติ๊กไว้ค้างอยู่ ไม่ถูกรีเซ็ต — ดักจับกรณีนี้แล้วเคลียร์กลับเป็นค่าเริ่มต้น
+window.addEventListener('pageshow', function(event) {
+  if (event.persisted) {
+    serviceType = 'hotel';
+    parkPassType = 'single';
+    var svcHotel = document.getElementById('svc_hotel');
+    var svcPark = document.getElementById('svc_park');
+    if (svcHotel && svcPark) {
+      svcHotel.classList.add('selected');
+      svcPark.classList.remove('selected');
+    }
+    try { sessionStorage.removeItem('lune_service_type'); } catch(e) {}
+    showScreen('service');
+  }
+});
+
 </script>
 </body>
 </html>
