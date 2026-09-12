@@ -132,7 +132,7 @@
     <div class="service-option selected" id="svc_hotel" onclick="selectService('hotel')">
       <div class="service-icon">🏡</div>
       <div class="service-info">
-        <div class="service-name">Dog Hotel</div>
+        <div class="service-name">Dog Hotel - โรงแรมน้องหมา</div>
         <div class="service-desc">ค้างคืน · รายวัน</div>
       </div>
       <div class="service-check">✓</div>
@@ -140,8 +140,8 @@
     <div class="service-option" id="svc_park" onclick="selectService('park')">
       <div class="service-icon">🐕</div>
       <div class="service-info">
-        <div class="service-name">Dog Park</div>
-        <div class="service-desc">Day Pass · เสาร์-อาทิตย์</div>
+        <div class="service-name">Dog Park - สนามวิ่งเล่น</div>
+        <div class="service-desc">รายครั้ง · รายเดือน</div>
       </div>
       <div class="service-check">✓</div>
     </div>
@@ -347,6 +347,11 @@
       <p style="font-size:0.85rem;color:var(--gray-dark);line-height:1.8;margin-bottom:1rem;">เราจะยืนยันการจองภายใน 24 ชั่วโมงทาง LINE<br><span style="font-size:.85em;opacity:.7;">We'll confirm your booking within 24 hours via LINE.</span></p>
       <div class="booking-id-badge" id="success_bookingid">BK-0000</div>
       <p style="font-size:0.78rem;color:var(--gray-dark);margin-top:0.5rem;margin-bottom:1.5rem;">กรุณาเก็บ Booking ID ไว้เป็นหลักฐาน · Please keep this as your reference.</p>
+      <div style="background:var(--bg);border:1px solid var(--gray-line);border-radius:12px;padding:1.2rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.85rem;font-weight:600;color:var(--black);margin-bottom:0.8rem;">สแกน QR เพื่อชำระเงิน</div>
+        <img src="assets/payment-qr.png" alt="QR Code ชำระเงิน" style="width:180px;height:180px;object-fit:contain;margin:0 auto 0.8rem;display:block;"/>
+        <p style="font-size:0.78rem;color:var(--gray-dark);line-height:1.7;">โอนแล้วรบกวนส่งสลิปยืนยันทาง LINE <a href="https://line.me/R/ti/p/@luneandco" target="_blank" style="color:var(--gold);font-weight:600;">@luneandco</a> เพื่อยืนยันการจองค่ะ</p>
+      </div>
       <a href="index.html" style="display:inline-block;padding:0.8rem 2rem;background:#422F25;color:#FFF7EF;text-decoration:none;font-size:0.85rem;border-radius:999px;">Back to Home · กลับหน้าหลัก</a>
     </div>
   </div>
@@ -509,7 +514,7 @@ async function checkOwner(profile) {
     var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table?json.table.rows||[]:[]).forEach(function(row) {
       if (String(row.c&&row.c[8]?row.c[8].v||'':'').trim()===profile.userId) {
-        currentOwner = Object.assign({},currentOwner,{ownerId:row.c[1]?row.c[1].v:'',name:row.c[2]?row.c[2].v:'',phone:row.c[3]?row.c[3].v:'',termsVersion:row.c[11]?String(row.c[11].v||'').trim():'',termsAcceptedAt:row.c[12]?String(row.c[12].v||'').trim():''});
+        currentOwner = Object.assign({},currentOwner,{ownerId:row.c[1]?row.c[1].v:'',name:row.c[2]?row.c[2].v:'',phone:row.c[3]?row.c[3].v:''});
       }
     });
   } catch(e) {}
@@ -550,10 +555,7 @@ async function loadSavedDogs() {
           foodType: c[9] ? String(c[9].v || '').trim() : '',
           mealsPerDay: c[10] ? String(c[10].v || '').trim() : '',
           tickControl: c[11] ? String(c[11].v || '').trim() : '',
-          likes:    c[12] ? String(c[12].v || '').trim() : '',
-          dislikes: c[13] ? String(c[13].v || '').trim() : '',
-          allergy:  c[14] ? String(c[14].v || '').trim() : '',
-          note:     c[15] ? String(c[15].v || '').trim() : '',
+          note:     c[12] ? String(c[12].v || '').trim() : '',
         });
       }
     });
@@ -582,14 +584,15 @@ function renderSavedDogs() {
     return '<div class="saved-dog-card" id="sdc_'+d.dogId+'" onclick="toggleSavedDog(\''+d.dogId+'\')">'
       + '<div class="check">✓</div>'
       + '<div class="dog-card-name">'+d.name+(genderIcon ? ' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>' : '')+'</div>'
-      + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
-      + '<div class="dog-card-meta" onclick="event.stopPropagation();" style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;">'
-        + '<span>อายุปัจจุบัน:</span>'
+      + '<div class="dog-card-meta">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
+      + '<div class="dog-card-meta">'+(d.age?'อายุ '+d.age:'ไม่ระบุอายุ')+'</div>'
+      + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
+      + '<div class="dog-card-meta" onclick="event.stopPropagation();" style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;margin-top:0.3rem;">'
+        + '<span style="font-size:0.72rem;color:var(--gray-dark);">อัปเดตอายุ:</span>'
         + '<input type="text" id="age_input_'+d.dogId+'" value="'+escapeHtml(d.age||'')+'" placeholder="เช่น 2 ปี" style="width:80px;font-size:0.78rem;padding:2px 6px;border:0.5px solid var(--gray-line);border-radius:4px;"/>'
         + '<button type="button" style="font-size:0.7rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0 0 0 2px;text-decoration:underline;" onclick="saveQuickAge(\''+d.dogId+'\')">อัปเดต</button>'
         + '<span id="age_saved_'+d.dogId+'" style="font-size:0.7rem;color:#2e7d32;"></span>'
       + '</div>'
-      + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
       + '<div class="dog-card-price">฿'+totalPrice.toLocaleString()+(serviceType==='park' ? (parkPassType==='monthly'?'/เดือน':'/ครั้ง') : (bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน'))+'</div>'
       + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="event.stopPropagation();openEditDog(\''+d.dogId+'\')">✎ แก้ไขข้อมูลอื่นๆ</button>'
       + '</div>';
@@ -621,8 +624,7 @@ async function saveQuickAge(dogId) {
     action:'updateDog', dogId: dogId,
     name: dog.name, breed: dog.breed, gender: dog.gender, neutered: dog.neutered,
     weight: dog.weight, age: newAge, foodType: dog.foodType||'', mealsPerDay: dog.mealsPerDay||'',
-    tickControl: dog.tickControl||'', likes: dog.likes||'', dislikes: dog.dislikes||'',
-    allergy: dog.allergy||'', note: dog.note||''
+    tickControl: dog.tickControl||'', note: dog.note||''
   };
   var savedTag = document.getElementById('age_saved_'+dogId);
   try {
@@ -766,8 +768,6 @@ async function loadAllOwners() {
       phone:    c[3] ? String(c[3].v || '').trim() : '',
       lineId:   c[8] ? String(c[8].v || '').trim() : '',
       lineName: c[9] ? String(c[9].v || '').trim() : '',
-      termsVersion:     c[11] ? String(c[11].v || '').trim() : '',
-      termsAcceptedAt:  c[12] ? String(c[12].v || '').trim() : '',
     };
   }).filter(function(o){ return o.ownerId; });
   allOwnersCache = rows;
@@ -805,12 +805,12 @@ async function registerAndBook() {
     }
   } catch(e) { /* ถ้าเช็คไม่ได้ ปล่อยให้บันทึกต่อไป ดีกว่าบล็อกเพราะปัญหาเครือข่าย */ }
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
-  var regTermsAcceptedAt = new Date().toLocaleString('th-TH');
-  var data={action:'addOwner',name,phone,province,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+province,timestamp:regTermsAcceptedAt,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt,email:email||'',acquisitionSource:acquisitionSource||''};
+  var nowTimestamp = new Date().toLocaleString('th-TH');
+  var data={action:'addOwner',name,phone,province,district,lineId:currentOwner.lineId||'',lineName:currentOwner.lineName||'',address:addr+', '+district+', '+province,timestamp:nowTimestamp,email:email||'',acquisitionSource:acquisitionSource||''};
   try {
     var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
-    currentOwner=Object.assign({},currentOwner,{ownerId:result.ownerId,name,phone,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt});
+    currentOwner=Object.assign({},currentOwner,{ownerId:result.ownerId,name,phone});
     allOwnersCache = null; // invalidate cache เพราะมี owner ใหม่เพิ่มเข้ามา
   } catch(e) { currentOwner=Object.assign({},currentOwner,{name,phone}); }
   goAfterLogin();
@@ -1095,9 +1095,6 @@ function buildNewDogFromForm() {
     foodType: foodType,
     mealsPerDay: mealsPerDay,
     tickControl: tickControl,
-    likes: '',
-    dislikes: '',
-    allergy: '',
     note: note,
     size: size,
     price: price,
@@ -1272,7 +1269,6 @@ async function saveDogEdit() {
     if (ageMonths) parts.push(ageMonths + ' เดือน');
     return parts.join(' ');
   })();
-  var existingDog = savedDogs.find(function(d){ return d.dogId === editingDogId; }) || {};
   var data = {
     action: 'updateDog',
     dogId: editingDogId,
@@ -1285,9 +1281,6 @@ async function saveDogEdit() {
     foodType: document.getElementById('edit_dog_food_type').value,
     mealsPerDay: document.getElementById('edit_dog_meals_per_day').value,
     tickControl: getTickControlValue('edit'),
-    likes: existingDog.likes || '',
-    dislikes: existingDog.dislikes || '',
-    allergy: existingDog.allergy || '',
     note: document.getElementById('edit_dog_note').value.trim()
   };
   var btn = document.getElementById('editdog_save_btn');
@@ -1444,7 +1437,7 @@ async function confirmBooking() {
   for (var i=0; i<dogs.length; i++) {
     if (dogs[i].isNew && currentOwner.ownerId) {
       try {
-        var dogData = {action:'addDog', ownerId:currentOwner.ownerId, dogName:dogs[i].name, breed:dogs[i].breed, gender:dogs[i].gender, neutered:dogs[i].neutered, weight:dogs[i].weight, age:dogs[i].age||'', foodType:dogs[i].foodType||'', mealsPerDay:dogs[i].mealsPerDay||'', tickControl:dogs[i].tickControl||'', likes:dogs[i].likes||'', dislikes:dogs[i].dislikes||'', allergy:dogs[i].allergy||'', note:dogs[i].note||'', timestamp:new Date().toLocaleString('th-TH')};
+        var dogData = {action:'addDog', ownerId:currentOwner.ownerId, dogName:dogs[i].name, breed:dogs[i].breed, gender:dogs[i].gender, neutered:dogs[i].neutered, weight:dogs[i].weight, age:dogs[i].age||'', foodType:dogs[i].foodType||'', mealsPerDay:dogs[i].mealsPerDay||'', tickControl:dogs[i].tickControl||'', note:dogs[i].note||'', timestamp:new Date().toLocaleString('th-TH')};
         var res = await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(dogData)});
         var result = await res.json();
         dogs[i].dogId = result.dogId || '';

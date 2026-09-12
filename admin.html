@@ -247,19 +247,6 @@
             <option value="อื่นๆ">อื่นๆ</option>
           </select>
         </div>
-        <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1rem 0;">
-          <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
-          · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
-          · วัคซีนครบ + ป้องกันเห็บหมัดสม่ำเสมอ · งดรับหมาป่วย<br>
-          · มัดจำ 50% ไม่สามารถขอคืนได้ (เลื่อนวันได้ 1 ครั้ง)<br>
-          <a href="#" onclick="event.preventDefault();openTerms('source');" style="color:var(--gold);text-decoration:underline;font-weight:600;">อ่านเงื่อนไขทั้งหมด (12 ข้อ) →</a>
-        </div>
-        <div style="margin-bottom:1rem;">
-          <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:var(--gray-dark);cursor:pointer;">
-            <input type="checkbox" id="reg_terms_accept_checkbox" style="margin-top:0.2rem;flex-shrink:0;width:16px;height:16px;cursor:pointer;"/>
-            <span>ลูกค้าได้อ่านและยอมรับเงื่อนไขการรับฝากข้างต้นแล้ว</span>
-          </label>
-        </div>
         <button class="btn-primary" id="regBtn" onclick="registerOwner()">บันทึกและไปต่อ → ถัดไป</button>
         <div id="newuser_msg"></div>
       </div>
@@ -418,22 +405,6 @@
 
       <div id="dog_msg"></div>
 
-      <div id="step2_terms_section">
-        <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1.2rem 0;">
-          <strong style="font-size:.76rem;">ข้อกำหนดการรับฝาก (สรุป)</strong><br>
-          · รับน้องหมาทุกขนาด/สายพันธุ์ที่เข้าสังคมได้ดี อายุตั้งแต่ 90 วันขึ้นไป<br>
-          · วัคซีนครบ + ป้องกันเห็บหมัดสม่ำเสมอ · งดรับหมาป่วย<br>
-          · มัดจำ 50% ไม่สามารถขอคืนได้ (เลื่อนวันได้ 1 ครั้ง)<br>
-          <a href="#" onclick="event.preventDefault();openTerms('step2');" style="color:var(--gold);text-decoration:underline;font-weight:600;">อ่านเงื่อนไขทั้งหมด (12 ข้อ) →</a>
-        </div>
-        <div style="margin-bottom:1.2rem;">
-          <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:var(--gray-dark);cursor:pointer;">
-            <input type="checkbox" id="terms_accept_checkbox" style="margin-top:0.2rem;flex-shrink:0;width:16px;height:16px;cursor:pointer;"/>
-            <span>ฉันได้อ่านและยอมรับเงื่อนไขการรับฝากข้างต้นแล้ว</span>
-          </label>
-        </div>
-      </div>
-
       <div class="btn-row">
         <button class="btn-secondary" onclick="showScreen('step1')">← Back · ย้อนกลับ</button>
         <button class="btn-primary" onclick="goStep3()">Review Booking → ดูสรุป</button>
@@ -473,35 +444,6 @@
   </div>
 
   <!-- TERMS -->
-  <div id="screen-terms" style="display:none;">
-    <div class="card">
-      <div class="section-label">เงื่อนไขการรับฝาก</div>
-      <h2>เงื่อนไขการรับฝากน้องหมา</h2>
-      <div class="divider"></div>
-      <div style="font-size:0.85rem;line-height:1.9;color:var(--text);">
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การรับฝาก</strong><br><br>
-        1. ทางร้านยินดีรับน้องหมาทุกขนาดและทุกสายพันธุ์ ที่เข้าสังคมได้ดีกับเพื่อนๆและพี่เลี้ยง เพราะน้องๆทุกตัวจะใช้พื้นที่ร่วมกันแบบไม่ขังกรง<br><br>
-        2. น้องหมาทุกตัวต้องมีอายุตั้งแต่ 90 วัน (3 เดือน) ขึ้นไป<br><br>
-        3. น้องหมาทุกตัวต้องได้รับวัคซีนครบตามอายุแล้วเท่านั้น<br><br>
-        4. น้องหมาทุกตัวต้องมีการป้องกันเห็บหมัดอย่างสม่ำเสมอ<br><br>
-        5. ทางร้านขอสงวนสิทธิ์ไม่รับฝากน้องหมาที่ป่วย มีโรคติดต่อ หรือมีอาการที่ต้องการการดูแลเป็นพิเศษเกินกว่าที่ทางร้านจะดูแลได้อย่างปลอดภัย<br><br>
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">ความรับผิดชอบระหว่างการพัก</strong><br><br>
-        6. หากน้องหมามีพฤติกรรมก้าวร้าวหรือทำร้ายน้องหมาตัวอื่นระหว่างการพัก อันมิได้เกิดจากความบกพร่องในการดูแลของทางร้าน เจ้าของยินดีรับผิดชอบค่ารักษาพยาบาลของอีกฝ่ายตามจริง<br><br>
-        7. ในทางกลับกัน หากเกิดอุบัติเหตุหรือความเสียหายใดๆขึ้นจากความบกพร่องในการดูแลของทางร้านเอง ทางร้านจะเป็นผู้รับผิดชอบค่าใช้จ่ายที่เกี่ยวข้องทั้งหมด<br><br>
-        8. หากน้องหมาทำให้ทรัพย์สินของทางร้านเสียหาย เจ้าของยินดีรับผิดชอบค่าเสียหายตามมูลค่าจริงที่ทางร้านแจ้งให้ทราบ<br><br>
-        9. กรณีน้องหมาเจ็บป่วยหรือเกิดอุบัติเหตุกะทันหันจากเหตุสุดวิสัยระหว่างพัก หากทางร้านไม่สามารถติดต่อเจ้าของได้ในทันที เจ้าของยินยอมให้ทางร้านนำส่งน้องหมาเข้ารับการรักษาที่โรงพยาบาลสัตว์ที่ใกล้ที่สุดได้ทันที โดยเจ้าของเป็นผู้รับผิดชอบค่าใช้จ่ายในการรักษาทั้งหมด<br><br>
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">การจองและการชำระเงิน</strong><br><br>
-        10. การจองจะยืนยันสมบูรณ์เมื่อชำระมัดจำ 50% ของยอดรวมแล้วเท่านั้น<br><br>
-        11. มัดจำที่ชำระแล้วไม่สามารถขอคืนได้ แต่สามารถขอเลื่อนวันเข้าพักได้ 1 ครั้ง<br><br>
-        <strong style="color:var(--gold);font-size:0.78rem;letter-spacing:0.05em;">กรณีติดต่อเจ้าของไม่ได้</strong><br><br>
-        12. กรณีที่เจ้าของทิ้งน้องหมาไว้และทางร้านไม่สามารถติดต่อได้ภายใน 7 วัน ทางร้านจะดำเนินการตามกฎหมายที่เกี่ยวข้องต่อไป
-      </div>
-      <div class="btn-row">
-        <button class="btn-primary" onclick="showScreen(termsReturnScreen||'step2')" style="margin:0 auto;max-width:280px;">← กลับ</button>
-      </div>
-    </div>
-  </div>
-
   <!-- SUCCESS -->
   <div id="screen-success" class="card" style="display:none;">
     <div class="success-screen">
@@ -552,7 +494,6 @@ let savedDogs = [];
 let pendingNewDogs = [];
 let editingPendingIdx = null;
 let termsAcceptedAt = null;
-let termsReturnScreen = null;
 let selectedSavedDogs = [];
 let showingNewDogForm = false;
 let checkInTime  = '14:00', checkOutTime = '20:00';
@@ -562,7 +503,7 @@ let searchDebounceTimer = null;
 
 // ── UTILS ─────────────────────────────────────────────
 function showScreen(name) {
-  ['source','step1','step2','step3','success','editdog','terms'].forEach(function(s) {
+  ['source','step1','step2','step3','success','editdog'].forEach(function(s) {
     var el = document.getElementById('screen-'+s);
     if (el) el.style.display = 'none';
   });
@@ -571,10 +512,6 @@ function showScreen(name) {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function openTerms(fromScreen) {
-  termsReturnScreen = fromScreen;
-  showScreen('terms');
-}
 function showMsg(id, msg, type) {
   var el = document.getElementById(id);
   if (el) el.innerHTML = '<div class="msg-box msg-'+type+'">'+msg+'</div>';
@@ -673,8 +610,6 @@ async function loadAllOwners() {
       phone:    c[3] ? String(c[3].v || '').trim() : '',
       lineId:   c[8] ? String(c[8].v || '').trim() : '',
       lineName: c[9] ? String(c[9].v || '').trim() : '',
-      termsVersion:     c[11] ? String(c[11].v || '').trim() : '',
-      termsAcceptedAt:  c[12] ? String(c[12].v || '').trim() : '',
     };
   }).filter(function(o){ return o.ownerId; });
   allOwnersCache = rows;
@@ -722,7 +657,7 @@ async function selectOwner(ownerId) {
   var owners = await loadAllOwners();
   var o = owners.find(function(x){ return x.ownerId === ownerId; });
   if (!o) return;
-  currentOwner = {ownerId:o.ownerId, name:o.name, phone:o.phone, lineName:o.lineName, termsVersion:o.termsVersion, termsAcceptedAt:o.termsAcceptedAt};
+  currentOwner = {ownerId:o.ownerId, name:o.name, phone:o.phone, lineName:o.lineName};
   await loadAvailability();
   await loadSavedDogs();
   document.getElementById('step1_owner_label').textContent = 'จองให้: ' + currentOwner.name;
@@ -917,10 +852,7 @@ async function loadAllDogsFull() {
       foodType:    c[9] ? String(c[9].v || '').trim() : '',
       mealsPerDay: c[10]? String(c[10].v || '').trim() : '',
       tickControl: c[11]? String(c[11].v || '').trim() : '',
-      likes:       c[12]? String(c[12].v || '').trim() : '',
-      dislikes:    c[13]? String(c[13].v || '').trim() : '',
-      allergy:     c[14]? String(c[14].v || '').trim() : '',
-      note:        c[15]? String(c[15].v || '').trim() : '',
+      note:        c[12]? String(c[12].v || '').trim() : '',
     };
   }).filter(function(d){ return d.dogId; });
   dbDogsFullCache = rows;
@@ -1469,9 +1401,6 @@ async function renderDogVisits() {
         }
         var fullInfo = dogsFullMap[d.dogId] || {};
         var genderSymbol = fullInfo.gender === 'ตัวผู้' ? ' ♂' : (fullInfo.gender === 'ตัวเมีย' ? ' ♀' : '');
-        var likesVal = fullInfo.likes || 'ไม่ระบุ';
-        var dislikesVal = fullInfo.dislikes || 'ไม่ระบุ';
-        var allergyVal = fullInfo.allergy || 'ไม่ระบุ';
         var noteVal = fullInfo.note || 'ไม่ระบุ';
         cardsHtml.push(
           '<div class="dog-visit-card">'
@@ -1484,8 +1413,6 @@ async function renderDogVisits() {
                 + '<div class="dvc-meta">🍖 '+foodLine+'</div>'
               + '</div>'
               + '<div class="dvc-col dvc-col-right">'
-                + '<div class="dvc-meta">😊 ชอบ: '+likesVal+' · 😠 ไม่ชอบ: '+dislikesVal+'</div>'
-                + '<div class="dvc-meta" style="'+(fullInfo.allergy?'color:#a83232;font-weight:600;':'')+'">⚠️ แพ้: '+allergyVal+'</div>'
                 + '<div class="dvc-meta">📝 Remark: '+noteVal+'</div>'
               + '</div>'
             + '</div>'
@@ -1572,7 +1499,6 @@ async function registerOwner() {
   if(PROVINCES.indexOf(province)===-1){showMsg('newuser_msg','กรุณาเลือกจังหวัดจากลิสต์ที่มีให้','error');return;}
   if(!district){showMsg('newuser_msg','กรุณาเลือกเขต/อำเภอจากลิสต์','error');return;}
   if((DISTRICTS[province]||[]).indexOf(district)===-1){showMsg('newuser_msg','กรุณาเลือกเขต/อำเภอจากลิสต์ที่มีให้','error');return;}
-  if(!document.getElementById('reg_terms_accept_checkbox').checked){showMsg('newuser_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อน','error');return;}
   document.getElementById('regBtn').disabled=true;
   showMsg('newuser_msg','⏳ กำลังตรวจสอบเบอร์โทร...','success');
   var phoneNorm = phone.replace(/\D/g,'');
@@ -1586,12 +1512,12 @@ async function registerOwner() {
     }
   } catch(e) { /* ถ้าเช็คไม่ได้ ปล่อยให้บันทึกต่อไป ดีกว่าบล็อกเพราะปัญหาเครือข่าย */ }
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
-  var regTermsAcceptedAt = new Date().toLocaleString('th-TH');
-  var data={action:'addOwner',name,phone,province,district,lineId:'',lineName:lineName||'',address:addr+', '+district+', '+province,source:'line_direct',timestamp:regTermsAcceptedAt,termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt,email:email||'',acquisitionSource:acquisitionSource||''};
+  var nowTimestamp = new Date().toLocaleString('th-TH');
+  var data={action:'addOwner',name,phone,province,district,lineId:'',lineName:lineName||'',address:addr+', '+district+', '+province,source:'line_direct',timestamp:nowTimestamp,email:email||'',acquisitionSource:acquisitionSource||''};
   try {
     var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
-    currentOwner={ownerId:result.ownerId,name,phone,lineName:lineName||'',termsVersion:TERMS_VERSION,termsAcceptedAt:regTermsAcceptedAt};
+    currentOwner={ownerId:result.ownerId,name,phone,lineName:lineName||''};
     allOwnersCache = null; // invalidate cache so next search sees this new owner
   } catch(e) {
     document.getElementById('regBtn').disabled=false;
@@ -1650,24 +1576,15 @@ async function loadSavedDogs() {
           foodType: c[9] ? String(c[9].v || '').trim() : '',
           mealsPerDay: c[10] ? String(c[10].v || '').trim() : '',
           tickControl: c[11] ? String(c[11].v || '').trim() : '',
-          likes:    c[12] ? String(c[12].v || '').trim() : '',
-          dislikes: c[13] ? String(c[13].v || '').trim() : '',
-          allergy:  c[14] ? String(c[14].v || '').trim() : '',
-          note:     c[15] ? String(c[15].v || '').trim() : '',
+          note:     c[12] ? String(c[12].v || '').trim() : '',
         });
       }
     });
   } catch(e) { savedDogs = []; }
 }
 
-function needsTermsAcceptance() {
-  return !currentOwner || !currentOwner.termsVersion || currentOwner.termsVersion !== TERMS_VERSION;
-}
-
 function renderSavedDogs() {
   renderPendingNewDogs();
-  var termsSection = document.getElementById('step2_terms_section');
-  if (termsSection) termsSection.style.display = needsTermsAcceptance() ? 'block' : 'none';
   if (savedDogs.length === 0) {
     document.getElementById('saved_dogs_section').style.display = 'none';
     document.getElementById('new_dog_section').style.display = 'block';
@@ -1743,9 +1660,6 @@ function renderNewDogForm() {
     + '<div class="form-group"><label>จำนวนมื้อต่อวัน *</label><select id="new_dog_meals_per_day"><option value="">เลือก</option><option value="1 มื้อ/วัน">1 มื้อ/วัน</option><option value="2 มื้อ/วัน">2 มื้อ/วัน</option><option value="3 มื้อ/วัน">3 มื้อ/วัน</option><option value="มากกว่า 3 มื้อ/วัน">มากกว่า 3 มื้อ/วัน</option></select></div>'
     + '</div>'
     + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด *</label><input type="text" id="new_dog_tick_control" placeholder="เช่น หยดหลัง Frontline ทุกเดือน"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ชอบ</label><input type="text" id="new_dog_likes" placeholder="เช่น เล่นน้ำ ชอบกอด ชอบนอนโซฟา"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง</label><input type="text" id="new_dog_dislikes" placeholder="เช่น กลัวเสียงดัง ไม่ชอบสุนัขตัวใหญ่"/></div>'
-    + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="new_dog_allergy" placeholder="เช่น แพ้ไก่ เป็นโรคหัวใจ ไม่มี"/></div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
     + '<button type="button" class="btn-ghost" onclick="saveDogAndAddAnother()">'+(editingPendingIdx!==null?'💾 บันทึกการแก้ไข':'✓ บันทึก')+'</button>'
     + '</div>';
@@ -1925,9 +1839,6 @@ function buildNewDogFromForm() {
   if (!mealsPerDay) { showMsg('dog_msg','กรุณาเลือกจำนวนมื้อต่อวัน','error'); return false; }
   var tickControl = document.getElementById('new_dog_tick_control').value.trim();
   if (!tickControl) { showMsg('dog_msg','กรุณากรอกวิธีกำจัดเห็บหมัด','error'); return false; }
-  var likes = document.getElementById('new_dog_likes').value.trim();
-  var dislikes = document.getElementById('new_dog_dislikes').value.trim();
-  var allergy = document.getElementById('new_dog_allergy').value.trim();
   var note = document.getElementById('new_dog_note').value.trim();
   var size = getSizeFromWeight(w);
   var price = calcDogPrice(size);
@@ -1947,9 +1858,6 @@ function buildNewDogFromForm() {
     foodType: foodType,
     mealsPerDay: mealsPerDay,
     tickControl: tickControl,
-    likes: likes,
-    dislikes: dislikes,
-    allergy: allergy,
     note: note,
     size: size, price: price, isNew: true
   };
@@ -1982,9 +1890,6 @@ function fillFormFromDog(dog) {
   document.getElementById('new_dog_food_type').value = dog.foodType || '';
   document.getElementById('new_dog_meals_per_day').value = dog.mealsPerDay || '';
   document.getElementById('new_dog_tick_control').value = dog.tickControl || '';
-  document.getElementById('new_dog_likes').value = dog.likes || '';
-  document.getElementById('new_dog_dislikes').value = dog.dislikes || '';
-  document.getElementById('new_dog_allergy').value = dog.allergy || '';
   document.getElementById('new_dog_note').value = dog.note || '';
   updateNewDogPrice();
 }
@@ -2093,9 +1998,6 @@ function renderEditDogForm(dog) {
     + '</select></div>'
     + '</div>'
     + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด</label><input type="text" id="edit_dog_tick_control" value="'+escapeHtml(dog.tickControl)+'"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ชอบ</label><input type="text" id="edit_dog_likes" value="'+escapeHtml(dog.likes)+'"/></div>'
-    + '<div class="form-group"><label>สิ่งที่ไม่ชอบ / ข้อควรระวัง</label><input type="text" id="edit_dog_dislikes" value="'+escapeHtml(dog.dislikes)+'"/></div>'
-    + '<div class="form-group"><label>อาการแพ้ / โรคประจำตัว</label><input type="text" id="edit_dog_allergy" value="'+escapeHtml(dog.allergy)+'"/></div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="edit_dog_note" value="'+escapeHtml(dog.note)+'"/></div>';
 }
 
@@ -2124,9 +2026,6 @@ async function saveDogEdit() {
     foodType: document.getElementById('edit_dog_food_type').value,
     mealsPerDay: document.getElementById('edit_dog_meals_per_day').value,
     tickControl: document.getElementById('edit_dog_tick_control').value.trim(),
-    likes: document.getElementById('edit_dog_likes').value.trim(),
-    dislikes: document.getElementById('edit_dog_dislikes').value.trim(),
-    allergy: document.getElementById('edit_dog_allergy').value.trim(),
     note: document.getElementById('edit_dog_note').value.trim()
   };
   var btn = document.getElementById('editdog_save_btn');
@@ -2157,15 +2056,6 @@ async function saveDogEdit() {
 
 // ── STEP 3 ────────────────────────────────────────────
 function goStep3() {
-  if (needsTermsAcceptance()) {
-    if (!document.getElementById('terms_accept_checkbox').checked) {
-      showMsg('dog_msg','กรุณาติ๊กยอมรับเงื่อนไขการรับฝากก่อนดำเนินการต่อ','error');
-      return;
-    }
-    termsAcceptedAt = new Date().toLocaleString('th-TH');
-    currentOwner.termsVersion = TERMS_VERSION;
-    currentOwner.termsAcceptedAt = termsAcceptedAt;
-  }
   var dogs = [];
   selectedSavedDogs.forEach(function(d) {
     var w = parseFloat(d.weight)||0;
@@ -2251,7 +2141,7 @@ async function confirmBooking() {
   for (var i=0; i<dogs.length; i++) {
     if (dogs[i].isNew && currentOwner.ownerId) {
       try {
-        var dogData = {action:'addDog', ownerId:currentOwner.ownerId, dogName:dogs[i].name, breed:dogs[i].breed, gender:dogs[i].gender, neutered:dogs[i].neutered, weight:dogs[i].weight, age:dogs[i].age||'', foodType:dogs[i].foodType||'', mealsPerDay:dogs[i].mealsPerDay||'', tickControl:dogs[i].tickControl||'', likes:dogs[i].likes||'', dislikes:dogs[i].dislikes||'', allergy:dogs[i].allergy||'', note:dogs[i].note||'', timestamp:new Date().toLocaleString('th-TH')};
+        var dogData = {action:'addDog', ownerId:currentOwner.ownerId, dogName:dogs[i].name, breed:dogs[i].breed, gender:dogs[i].gender, neutered:dogs[i].neutered, weight:dogs[i].weight, age:dogs[i].age||'', foodType:dogs[i].foodType||'', mealsPerDay:dogs[i].mealsPerDay||'', tickControl:dogs[i].tickControl||'', note:dogs[i].note||'', timestamp:new Date().toLocaleString('th-TH')};
         var res = await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(dogData)});
         var result = await res.json();
         dogs[i].dogId = result.dogId || '';
