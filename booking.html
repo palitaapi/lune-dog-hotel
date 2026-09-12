@@ -205,21 +205,20 @@
 
   <!-- PARK STEP 1: DATE (Dog Park) -->
   <div id="screen-park-step1" style="display:none;">
-    <div class="steps"><div class="step active">1. วันที่</div><div class="step">2. น้องหมา</div><div class="step">3. สรุป</div></div>
+    <div class="steps"><div class="step active">1. ประเภท</div><div class="step">2. น้องหมา</div><div class="step">3. สรุป</div></div>
     <div class="card">
       <div class="section-label">Step 1 · ขั้นตอนที่ 1</div>
-      <h2>เลือกวันที่ · Dog Park</h2>
+      <h2>Dog Park</h2>
       <div class="divider"></div>
+      <div id="park_datetime_display" style="font-size:0.85rem;color:var(--gray-dark);margin-bottom:1.2rem;"></div>
       <div class="form-group">
-        <label>วันที่เข้าใช้บริการ (เสาร์-อาทิตย์เท่านั้น)</label>
-        <input type="date" id="park_date" onchange="onParkDateChange()"/>
+        <label>เลือกประเภทการเข้าใช้บริการ</label>
+        <div class="mode-tabs">
+          <div class="mode-tab active" id="park_pass_single" onclick="selectParkPassType('single')">รายครั้ง · ฿100/ตัว</div>
+          <div class="mode-tab" id="park_pass_monthly" onclick="selectParkPassType('monthly')">รายเดือน · ฿500/ตัว</div>
+        </div>
       </div>
-      <div id="park_date_msg"></div>
-      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin:1rem 0;">
-        <strong style="font-size:.76rem;">Dog Park Day Pass</strong><br>
-        · เปิดให้บริการเฉพาะวันเสาร์-อาทิตย์ ตั้งแต่ 12:00–19:00 น.<br>
-        · ราคา ฿100 ต่อน้องหมา 1 ตัว · จ่ายเต็มจำนวน ไม่มีมัดจำ
-      </div>
+      <div id="park_validity_note" style="font-size:0.78rem;color:var(--gray-dark);margin-bottom:1rem;display:none;"></div>
       <button class="btn-primary" onclick="goParkStep2()">Next → ถัดไป</button>
     </div>
   </div>
@@ -364,7 +363,8 @@ const MAX_CAP = 8;
 const TIME_OPTIONS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00'];
 const TERMS_VERSION = '2026-06-25'; // เปลี่ยนค่านี้ทุกครั้งที่แก้เงื่อนไข จะบังคับให้ลูกค้าเก่าติ๊กยอมรับใหม่อัตโนมัติ
 const OVERNIGHT_PRICES = {small:400,medium:550,large:700};
-const PARK_DAY_PASS_PRICE = 100; // Dog Park Day Pass, ราคาเดียวไม่แยกไซส์
+const PARK_DAY_PASS_PRICE = 100; // Dog Park รายครั้ง ต่อตัว
+const PARK_MONTHLY_PRICE = 500;  // Dog Park รายเดือน ต่อตัว (ใช้ได้ 30 วัน)
 const DAYCARE_DISCOUNT = 0.30; // ราคา daycare = overnight ลด 30%
 const PRICES = {
   overnight: OVERNIGHT_PRICES,
@@ -385,7 +385,10 @@ const DISTRICTS = {
 let currentOwner = null;
 let serviceType = 'hotel'; // 'hotel' | 'park'
 let servicePreset = false; // true ถ้ารู้ service มาก่อนแล้ว (จาก URL param หรือ sessionStorage) ไม่ต้องถามซ้ำหลัง login
-let parkDate = '';
+let parkDate = '';       // วันนี้เสมอ (walk-in) — YYYY-MM-DD
+let parkBookingTime = ''; // เวลาที่กดจอง — HH:MM (เก็บไว้ดูช่วงเวลาที่ลูกค้ามาเยอะสุด)
+let parkPassType = 'single'; // 'single' | 'monthly'
+let parkValidUntil = '';  // ใช้เมื่อ parkPassType === 'monthly' เท่านั้น
 let allOwnersCache = null;
 let bookingType = 'overnight';
 let checkIn = '', checkOut = '';
@@ -420,29 +423,40 @@ function confirmServiceSelect() {
   goToServiceStep1();
 }
 function goToServiceStep1() {
-  showScreen(serviceType === 'park' ? 'park-step1' : 'step1');
+  if (serviceType === 'park') enterParkStep1();
+  else showScreen('step1');
 }
 function goAfterLogin() {
   if (servicePreset) goToServiceStep1();
   else showScreen('service');
 }
-function isWeekend(dateStr) {
-  var d = new Date(dateStr+'T00:00:00');
-  var day = d.getDay(); // 0=Sun, 6=Sat
-  return day === 0 || day === 6;
+function pad2(n) { return String(n).padStart(2,'0'); }
+function formatDateYMD(d) { return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function enterParkStep1() {
+  var now = new Date();
+  parkDate = formatDateYMD(now);
+  parkBookingTime = pad2(now.getHours())+':'+pad2(now.getMinutes());
+  document.getElementById('park_datetime_display').textContent = 'วันนี้ ' + parkDate + ' เวลา ' + parkBookingTime + ' น.';
+  selectParkPassType(parkPassType); // รีเฟรชข้อความ validity ให้ตรงกับวันเวลาปัจจุบัน
+  showScreen('park-step1');
 }
-function onParkDateChange() {
-  parkDate = document.getElementById('park_date').value;
-  document.getElementById('park_date_msg').innerHTML = '';
-  if (parkDate && !isWeekend(parkDate)) {
-    showMsg('park_date_msg','กรุณาเลือกวันเสาร์หรืออาทิตย์เท่านั้น','error');
+function selectParkPassType(type) {
+  parkPassType = type;
+  document.getElementById('park_pass_single').classList.toggle('active', type==='single');
+  document.getElementById('park_pass_monthly').classList.toggle('active', type==='monthly');
+  var noteEl = document.getElementById('park_validity_note');
+  if (type === 'monthly') {
+    var until = new Date(parkDate+'T00:00:00');
+    until.setDate(until.getDate()+30);
+    parkValidUntil = formatDateYMD(until);
+    noteEl.textContent = 'ใช้ได้ 30 วันนับจากวันนี้ (ถึงวันที่ ' + parkValidUntil + ')';
+    noteEl.style.display = 'block';
+  } else {
+    parkValidUntil = '';
+    noteEl.style.display = 'none';
   }
 }
 function goParkStep2() {
-  parkDate = document.getElementById('park_date').value;
-  if (!parkDate) { showMsg('park_date_msg','กรุณาเลือกวันที่','error'); return; }
-  if (!isWeekend(parkDate)) { showMsg('park_date_msg','กรุณาเลือกวันเสาร์หรืออาทิตย์เท่านั้น','error'); return; }
-  document.getElementById('park_date_msg').innerHTML = '';
   renderSavedDogs();
   showScreen('step2');
 }
@@ -562,10 +576,16 @@ function renderSavedDogs() {
     return '<div class="saved-dog-card" id="sdc_'+d.dogId+'" onclick="toggleSavedDog(\''+d.dogId+'\')">'
       + '<div class="check">✓</div>'
       + '<div class="dog-card-name">'+d.name+(genderIcon ? ' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>' : '')+'</div>'
-      + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+(d.age ? ' · อายุ '+d.age : '')+'</div>'
+      + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
+      + '<div class="dog-card-meta" onclick="event.stopPropagation();" style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;">'
+        + '<span>อายุปัจจุบัน:</span>'
+        + '<input type="text" id="age_input_'+d.dogId+'" value="'+escapeHtml(d.age||'')+'" placeholder="เช่น 2 ปี" style="width:80px;font-size:0.78rem;padding:2px 6px;border:0.5px solid var(--gray-line);border-radius:4px;"/>'
+        + '<button type="button" style="font-size:0.7rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0 0 0 2px;text-decoration:underline;" onclick="saveQuickAge(\''+d.dogId+'\')">อัปเดต</button>'
+        + '<span id="age_saved_'+d.dogId+'" style="font-size:0.7rem;color:#2e7d32;"></span>'
+      + '</div>'
       + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
-      + '<div class="dog-card-price">฿'+totalPrice.toLocaleString()+(serviceType==='park' ? '/ครั้ง' : (bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน'))+'</div>'
-      + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="event.stopPropagation();openEditDog(\''+d.dogId+'\')">✎ แก้ไขข้อมูล</button>'
+      + '<div class="dog-card-price">฿'+totalPrice.toLocaleString()+(serviceType==='park' ? (parkPassType==='monthly'?'/เดือน':'/ครั้ง') : (bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน'))+'</div>'
+      + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="event.stopPropagation();openEditDog(\''+d.dogId+'\')">✎ แก้ไขข้อมูลอื่นๆ</button>'
       + '</div>';
   }).join('');
   document.getElementById('saved_dog_cards').innerHTML = html;
@@ -583,6 +603,28 @@ function toggleSavedDog(dogId) {
   } else {
     var dog = savedDogs.find(function(d){return d.dogId===dogId;});
     if (dog) { selectedSavedDogs.push(dog); card.classList.add('selected'); }
+  }
+}
+
+async function saveQuickAge(dogId) {
+  var input = document.getElementById('age_input_'+dogId);
+  var newAge = input.value.trim();
+  var dog = savedDogs.find(function(d){ return d.dogId === dogId; });
+  if (!dog || !newAge) return;
+  var data = {
+    action:'updateDog', dogId: dogId,
+    name: dog.name, breed: dog.breed, gender: dog.gender, neutered: dog.neutered,
+    weight: dog.weight, age: newAge, foodType: dog.foodType||'', mealsPerDay: dog.mealsPerDay||'',
+    tickControl: dog.tickControl||'', likes: dog.likes||'', dislikes: dog.dislikes||'',
+    allergy: dog.allergy||'', note: dog.note||''
+  };
+  var savedTag = document.getElementById('age_saved_'+dogId);
+  try {
+    await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
+    dog.age = newAge; // อัปเดต local cache ด้วย เผื่อใช้ต่อในหน้าสรุป
+    if (savedTag) { savedTag.textContent = '✓ บันทึกแล้ว'; setTimeout(function(){ savedTag.textContent=''; }, 2000); }
+  } catch(e) {
+    if (savedTag) savedTag.textContent = 'บันทึกไม่สำเร็จ';
   }
 }
 
@@ -941,7 +983,7 @@ function goStep2() {
 // ── PRICE HELPERS ────────────────────────────────────
 function calcDogPrice(size) {
   if (serviceType === 'park') {
-    return PARK_DAY_PASS_PRICE;
+    return parkPassType === 'monthly' ? PARK_MONTHLY_PRICE : PARK_DAY_PASS_PRICE;
   }
   if (bookingType === 'daycare') {
     return PRICES.daycare[size];
@@ -1326,25 +1368,32 @@ function goStep3() {
 }
 
 function renderParkSummary(dogs) {
-  var totalPrice = dogs.length * PARK_DAY_PASS_PRICE;
+  var pricePerDog = parkPassType === 'monthly' ? PARK_MONTHLY_PRICE : PARK_DAY_PASS_PRICE;
+  var totalPrice = dogs.length * pricePerDog;
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
+  var passLabel = parkPassType === 'monthly' ? 'Dog Park รายเดือน' : 'Dog Park รายครั้ง';
   var dogsHtml = dogs.map(function(d){
     var headerName = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'');
-    d.finalPrice = PARK_DAY_PASS_PRICE;
+    d.finalPrice = pricePerDog;
     return '<div class="summary-row-dog">'
       + '<div class="row-header">'+headerName+'</div>'
-      + '<div class="row-line">+ ฿'+PARK_DAY_PASS_PRICE+' = Day Pass</div>'
-      + '<div class="row-total">Total = ฿'+PARK_DAY_PASS_PRICE+'</div>'
+      + '<div class="row-line">+ ฿'+pricePerDog+' = '+(parkPassType==='monthly'?'รายเดือน':'Day Pass')+'</div>'
+      + '<div class="row-total">Total = ฿'+pricePerDog+'</div>'
       + '</div>';
   }).join('');
 
+  var dateValLine = parkDate + ' เวลา ' + parkBookingTime + ' น.';
+  var validityRow = parkPassType === 'monthly'
+    ? '<div class="summary-row"><span class="summary-label">ใช้ได้ถึง</span><span class="summary-val">'+parkValidUntil+' (30 วัน)</span></div>'
+    : '';
+
   document.getElementById('summary_content').innerHTML=
     '<div class="summary-row"><span class="summary-label">ชื่อ</span><span class="summary-val">'+(currentOwner.name||currentOwner.lineName)+'</span></div>'
-    +'<div class="summary-row"><span class="summary-label">บริการ</span><span class="summary-val">Dog Park Day Pass</span></div>'
-    +'<div class="summary-row"><span class="summary-label">วันที่</span><span class="summary-val">'+parkDate+'</span></div>'
+    +'<div class="summary-row"><span class="summary-label">บริการ</span><span class="summary-val">'+passLabel+'</span></div>'
+    +'<div class="summary-row"><span class="summary-label">วันที่จอง</span><span class="summary-val">'+dateValLine+'</span></div>'
+    +validityRow
     +dogsHtml
-    +'<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿'+totalPrice.toLocaleString()+'</span></div>'
-    +'<p class="deposit-note">* ชำระเต็มจำนวน ไม่มีการเก็บมัดจำสำหรับ Dog Park</p>';
+    +'<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿'+totalPrice.toLocaleString()+'</span></div>';
 
   window._bookingDogs = dogs;
   window._bookingTotal = totalPrice;
@@ -1374,7 +1423,8 @@ async function confirmBooking() {
 
   var data;
   if (serviceType === 'park') {
-    // Dog Park: วันเดียว จ่ายเต็ม ไม่มีมัดจำ/ไม่มี extra charge — reuse addBooking เดิม แค่ค่าต่างกัน
+    // Dog Park: จ่ายเต็ม ไม่มีมัดจำ/ไม่มี extra charge — reuse addBooking เดิม แค่ค่าต่างกัน
+    // dropOffTime เก็บเวลาที่กดจองจริง ไว้ดูช่วงเวลาที่ลูกค้ามาเยอะสุด
     data = {
       action:'addBooking',
       ownerId:currentOwner.ownerId||'',
@@ -1382,9 +1432,9 @@ async function confirmBooking() {
       phone:currentOwner.phone||'',
       lineId:currentOwner.lineId||'',
       lineName:currentOwner.lineName,
-      type:'Dog Park Day Pass',
-      checkIn:parkDate, checkOut:parkDate,
-      dropOffTime:'12:00', pickUpTime:'19:00',
+      type: parkPassType==='monthly' ? 'Dog Park Monthly' : 'Dog Park Day Pass',
+      checkIn:parkDate, checkOut: parkPassType==='monthly' ? parkValidUntil : parkDate,
+      dropOffTime:parkBookingTime, pickUpTime:'',
       extraCharge:'',
       nights:1,
       totalPrice: totalPrice,

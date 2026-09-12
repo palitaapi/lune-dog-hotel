@@ -1120,7 +1120,7 @@ async function renderPaymentMonthSummary() {
       if (b.status === 'cancelled') return;
 
       var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
-      var isPark = (b.type === 'Dog Park Day Pass');
+      var isPark = ((b.type === 'Dog Park Day Pass' || b.type === 'Dog Park Monthly'));
       var fullAmount, paidSoFar;
 
       if (isPark) {
@@ -1225,7 +1225,7 @@ function renderPaymentResults(bookings) {
     var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_deposit';
     var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
     var isOpen = !!bpExpandedIds[b.bookingId];
-    var isPark = (b.type === 'Dog Park Day Pass');
+    var isPark = ((b.type === 'Dog Park Day Pass' || b.type === 'Dog Park Monthly'));
 
     var collapsedHtml = '<div class="bpc-collapsed" onclick="toggleBpc(\''+b.bookingId+'\')">'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span><span class="db-chevron">'+(isOpen?'▲':'▼')+'</span></div>'
