@@ -246,7 +246,6 @@
           <div class="form-group"><label>เวลา Drop-off</label><select id="bk_checkin_time" onchange="onCheckinTimeChange()"></select></div>
           <div class="form-group"><label>เวลา Pick-up</label><select id="bk_checkout_time" onchange="updateDates()"></select></div>
         </div>
-        <div id="overnight_extra" style="display:none;font-size:0.8rem;padding:0.6rem 0.9rem;background:var(--bg2);border:0.5px solid var(--gray-line);margin-bottom:0.8rem;color:var(--gray-dark);"></div>
       </div>
       <!-- DAYCARE -->
       <div id="daycare_fields" style="display:none;">
@@ -261,13 +260,11 @@
       <div id="date_msg"></div>
       <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;margin-top:1.5rem;">
         <strong style="font-size:.76rem;">เวลา · Hours</strong><br>
-        · Drop-off &amp; Pick-up: 8:00–20:00 น.<br>
-        · มารับหลังหรือก่อนเวลาทำการ มีค่า after-hours เพิ่ม ฿100/ชม.<br><br>
+        · Drop-off &amp; Pick-up: 8:00–20:00 น.<br><br>
         <strong style="font-size:.76rem;">ฝากรายวัน · Daycare</strong><br>
         · ฝาก-รับภายในวันเดียวกัน ไม่ค้างคืน<br><br>
         <strong style="font-size:.76rem;">ค้างคืน · Overnight</strong><br>
-        · 24 ชม. นับเป็นราคา 1 คืน<br>
-        · เกินกำหนดเช็คเอาท์ คิดราคา Daycare เพิ่ม (ถ้ามารับก่อน 20:00 น.)
+        · คิดราคาตามจำนวนคืน ไม่ว่าจะมาส่ง/รับเวลาไหนของวัน
       </div>
       <button class="btn-primary" onclick="goStep2()">Next → ถัดไป</button>
     </div>
@@ -841,12 +838,6 @@ var checkOutTime = '20:00';
 var dropOffTime  = '08:00';
 var pickUpTime   = '20:00';
 // สำหรับ overnight: extra charge ส่วนที่เกิน
-var extraChargeType = ''; // 'daycare' | 'overnight' | ''
-
-function timeToMins(t) {
-  var p = t.split(':');
-  return parseInt(p[0]) * 60 + parseInt(p[1]);
-}
 
 function selectBookingType(type) {
   bookingType = type;
@@ -859,14 +850,6 @@ function selectBookingType(type) {
 
 function updateType() {
   selectBookingType('overnight');
-}
-
-function calcOvernightExtra() {
-  // ส่วนที่เกิน = ชั่วโมงที่ pick-up เกิน drop-off ในวันสุดท้าย
-  var dropMins   = timeToMins(checkInTime);
-  var pickMins   = timeToMins(checkOutTime);
-  var diffMins   = pickMins - dropMins; // บวก = pick-up หลัง drop-off, ลบ = ก่อน
-  return diffMins; // หน่วย นาที
 }
 
 function fillTimeSelect(id, defaultVal, minTime) {
@@ -929,19 +912,6 @@ function updateDates() {
     var ci = new Date(checkIn), co = new Date(checkOut);
     if (co <= ci) { el.style.display = 'none'; return; }
     nights = Math.round((co - ci) / 86400000);
-
-    // คำนวณส่วนเกิน
-    var extraMins = calcOvernightExtra();
-    var extraText = '';
-    extraChargeType = '';
-    if (extraMins > 0) {
-      // เกินกำหนดเช็คเอาท์ ไม่ว่ากี่ชม. → คิด daycare เต็มราคา (ถ้ามารับหลัง 20:00 จะมี after-hours surcharge เพิ่มแยกอัตโนมัติ)
-      extraChargeType = 'daycare';
-      extraText = '⏱ Pick-up หลัง Drop-off ' + Math.round(extraMins/60*10)/10 + ' ชม. → บวก Daycare rate (ถ้ามารับหลัง 20:00 จะมีค่า after-hours เพิ่มตามจริง)';
-    }
-    var extraBox = document.getElementById('overnight_extra');
-    extraBox.style.display = extraText ? 'block' : 'none';
-    extraBox.textContent = extraText;
 
     var dates = getDatesInRange(checkIn, checkOut, bookingType);
     var maxB = 0;
@@ -1012,47 +982,14 @@ function calcDogPrice(size) {
   if (bookingType === 'daycare') {
     return PRICES.daycare[size];
   }
-  // overnight base
-  var base = PRICES.overnight[size] * nights;
-  // extra ส่วนเกินวันสุดท้าย
-  if (extraChargeType === 'daycare') {
-    base += PRICES.daycare[size];
-  }
-  return base;
+  // overnight: คิดราคาตามจำนวนคืนล้วนๆ ไม่มีค่าใช้จ่ายเพิ่มจากเวลา drop-off/pick-up แล้ว
+  return PRICES.overnight[size] * nights;
 }
 
 function getOvernightLabel() {
-  var label = nights + ' ' + (nights===1?'day':'days') + ' (Overnight)';
-  if (extraChargeType === 'daycare') {
-    var extraHrs = Math.round(calcOvernightExtra()/60*10)/10;
-    label += ' + ' + extraHrs + ' ' + (extraHrs===1?'hr.':'hrs.') + ' (Daycare)';
-  }
-  return label;
+  return nights + ' ' + (nights===1?'day':'days') + ' (Overnight)';
 }
 
-// ── SURCHARGE (after-hours after 20:00) ──────────────
-function calcSurcharge() {
-  var CUTOFF = 20 * 60; // 20:00 in minutes
-  var RATE = 100;       // ฿100 per hour (rounded up)
-  var surcharge = 0;
-  var doTime = bookingType === 'overnight' ? checkInTime  : dropOffTime;
-  var puTime = bookingType === 'overnight' ? checkOutTime : pickUpTime;
-  var doMins = timeToMins(doTime);
-  var puMins = timeToMins(puTime);
-  if (doMins > CUTOFF) surcharge += RATE * Math.ceil((doMins - CUTOFF) / 60);
-  if (puMins > CUTOFF) surcharge += RATE * Math.ceil((puMins - CUTOFF) / 60);
-  return surcharge;
-}
-
-function getSurchargeLabel() {
-  var CUTOFF = 20 * 60;
-  var parts = [];
-  var doTime = bookingType === 'overnight' ? checkInTime  : dropOffTime;
-  var puTime = bookingType === 'overnight' ? checkOutTime : pickUpTime;
-  if (timeToMins(doTime) > CUTOFF) parts.push('Drop-off ' + doTime + ' น.');
-  if (timeToMins(puTime) > CUTOFF) parts.push('Pick-up ' + puTime + ' น.');
-  return 'After-hours (' + parts.join(' · ') + ')';
-}
 
 // ── NEW DOG FORM: VALIDATE & BUILD ───────────────────
 // คืนค่า: dog object (กรอกครบ ผ่าน), null (ฟอร์มว่าง ไม่มีอะไรต้องเพิ่ม), false (กรอกไม่ครบ แสดง error แล้ว)
@@ -1348,10 +1285,6 @@ function goStep3() {
   });
   dogs.forEach(function(d){ totalPrice += d.finalPrice; });
 
-  // After-hours surcharge (shared across all dogs, added once)
-  var surcharge = calcSurcharge();
-  totalPrice += surcharge;
-
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var dogsHtml=dogsByPriceDesc.map(function(d){
     var headerName = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'');
@@ -1360,9 +1293,6 @@ function goStep3() {
       var nightlyRate = PRICES.overnight[d.size];
       var nightlyTotal = nightlyRate * nights;
       lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' '+(nights===1?'Day':'Days')+' x ฿'+nightlyRate.toLocaleString());
-      if (extraChargeType === 'daycare') {
-        lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day x ฿'+PRICES.daycare[d.size].toLocaleString());
-      }
     } else {
       lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day');
     }
@@ -1380,9 +1310,7 @@ function goStep3() {
     +'<div class="summary-row"><span class="summary-label">เวลา</span><span class="summary-val">'+(bookingType==='overnight'?'Drop-off '+checkInTime+' → Pick-up '+checkOutTime+' น.':'Drop-off '+dropOffTime+' – Pick-up '+pickUpTime+' น.')+'</span></div>'
     +'<div class="summary-row"><span class="summary-label">ระยะเวลา</span><span class="summary-val">'+(bookingType==='overnight'?getOvernightLabel():'1 วัน')+'</span></div>'
     +dogsHtml
-    +(surcharge > 0 ? '<div class="summary-row"><span class="summary-label">'+getSurchargeLabel()+'</span><span class="summary-val">฿'+surcharge.toLocaleString()+'</span></div>' : '')
-    +'<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿'+totalPrice.toLocaleString()+'</span></div>'
-    +'<p class="deposit-note">* มัดจำ 50% = ฿'+Math.round(totalPrice/2).toLocaleString()+' เพื่อยืนยันการจอง</p>';
+    +'<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿'+totalPrice.toLocaleString()+'</span></div>';
 
   // store for confirm
   window._bookingDogs = dogs;
@@ -1492,7 +1420,7 @@ async function confirmBooking() {
       checkIn,checkOut,
       dropOffTime: bookingType==='overnight' ? checkInTime  : dropOffTime,
       pickUpTime:  bookingType==='overnight' ? checkOutTime : pickUpTime,
-      extraCharge: bookingType==='overnight' ? extraChargeType : '',
+      extraCharge: '',
       nights:bookingType==='overnight'?nights:1,
       totalPrice: totalPrice,
       allDates,
