@@ -85,8 +85,7 @@
   .grand-total-box .price-label{font-size:0.78rem;font-weight:700;color:var(--black);}
   .grand-total-box .price-amount{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:1.05rem;font-weight:700;color:var(--black);}
   .status-badge{display:inline-block;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.65rem;border-radius:999px;font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-weight:700;}
-  .status-pending_deposit{background:#FDF4E3;color:#8a6d1f;border:0.5px solid var(--yellow);}
-  .status-deposit_paid{background:#e8f5e9;color:#2e7d32;border:0.5px solid #a5d6a7;}
+  .status-pending_payment{background:#FDF4E3;color:#8a6d1f;border:0.5px solid var(--yellow);}
   .status-fully_paid{background:#1b5e20;color:#fff;border:0.5px solid #1b5e20;}
   .status-cancelled{background:#f0ebe4;color:var(--gray-dark);border:0.5px solid var(--gray-line);}
   .bpc-status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;}
@@ -378,18 +377,6 @@
       <div class="section-label">ขั้นตอนที่ 2</div>
       <h2>น้องหมาของลูกค้า</h2>
       <div class="divider"></div>
-      <div style="display:flex;gap:0.7rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-        <div style="flex:1;min-width:150px;background:var(--bg);border:1px solid var(--honey);border-radius:8px;padding:0.75rem 0.9rem;">
-          <div style="font-size:0.64rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;font-weight:600;">New guests</div>
-          <div style="font-size:0.86rem;font-weight:600;color:var(--black);margin-bottom:0.4rem;">คืนแรกลด 25%</div>
-          <div style="font-size:0.66rem;color:var(--gray-dark);font-style:italic;line-height:1.4;">*ส่วนลดหลังจากจ่ายค่าใช้จ่ายที่เหลือจากค่ามัดจำ</div>
-        </div>
-        <div style="flex:1;min-width:150px;background:var(--bg);border:1px solid var(--honey);border-radius:8px;padding:0.75rem 0.9rem;">
-          <div style="font-size:0.64rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;font-weight:600;">Multi-dog</div>
-          <div style="font-size:0.86rem;font-weight:600;color:var(--black);margin-bottom:0.4rem;">ตัวที่ 2 เป็นต้นไปลด 10%</div>
-          <div style="font-size:0.66rem;color:var(--gray-dark);font-style:italic;line-height:1.4;">*ส่วนลดอัตโนมัติตอนกดจองผ่านระบบ</div>
-        </div>
-      </div>
 
       <div id="pending_new_dogs_section" style="display:none;margin-bottom:1.5rem;"></div>
 
@@ -669,8 +656,7 @@ var paymentSearchDebounceTimer = null;
 var allBookingsCache = null; // raw rows from Booking sheet, grouped by bookingId
 
 var STATUS_LABEL = {
-  pending_deposit: 'รอมัดจำ',
-  deposit_paid:    'รับมัดจำแล้ว',
+  pending_payment: 'รอชำระเงิน',
   fully_paid:      'จ่ายครบแล้ว',
   cancelled:       'ยกเลิก'
 };
@@ -758,7 +744,6 @@ async function loadAllBookingsGrouped() {
       status:      c[22]? String(c[22].v || '').trim() : '',
       promoAmount: c[29]? String(c[29].v || '').trim() : '',
       extraAmount: c[30]? String(c[30].v || '').trim() : '',
-      depositPaidAmount: c[28]? String(c[28].v || '').trim() : '',
     };
   }).filter(function(r){ return r.bookingId; });
 
@@ -780,9 +765,8 @@ async function loadAllBookingsGrouped() {
         totalPrice: r.totalPrice,
         promoAmount: r.promoAmount,
         extraAmount: r.extraAmount,
-        depositPaidAmount: r.depositPaidAmount,
         allDates: r.allDates,
-        status: r.status || 'pending_deposit',
+        status: r.status || 'pending_payment',
         dogs: []
       };
     }
@@ -950,7 +934,7 @@ async function renderDbOwnerProfile(ownerId) {
     html += '<div class="db-subhead">ประวัติการจอง ('+bookings.length+')</div>';
     if (bookings.length) {
       html += bookings.map(function(b) {
-        var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_deposit';
+        var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_payment';
         return '<div class="db-booking-row" onclick="jumpToPaymentSearch(\''+b.bookingId+'\')">'
           + '<span class="db-id-tag">'+b.bookingId+'</span>'
           + '<span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span>'
@@ -1042,8 +1026,8 @@ async function renderPaymentMonthSummary() {
     }).join('');
 
     // ── สรุปยอด: cancelled ไม่นับเลย ──
-    // ยอดเต็มจริงของแต่ละ booking = deposit1st + finalDue (ปรับด้วย promo/extra ที่ 2nd deposit แล้ว)
-    var incompleteCount=0, incompletePaid=0, incompleteRemaining=0;
+    // จ่ายเต็มจำนวนทีเดียวทุกบริการแล้ว (Hotel และ Park) ไม่มีมัดจำแยกงวดอีกต่อไป
+    var pendingCount=0, pendingAmt=0;
     var fullyCount=0, fullyAmt=0;
 
     bookings.forEach(function(b) {
@@ -1052,36 +1036,21 @@ async function renderPaymentMonthSummary() {
       if (b.status === 'cancelled') return;
 
       var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
-      var isPark = ((b.type === 'Dog Park Day Pass' || b.type === 'Dog Park Monthly'));
-      var fullAmount, paidSoFar;
-
-      if (isPark) {
-        // Dog Park: จ่ายเต็มจำนวนทีเดียว ไม่มีมัดจำ/โปร/ค่าใช้จ่ายเพิ่ม
-        fullAmount = totalPrice;
-        paidSoFar = (b.status === 'fully_paid') ? totalPrice : 0;
-      } else {
-        var depositPaidAmount = parseFloat(String(b.depositPaidAmount||'').replace(/[^0-9.]/g,'')) || 0;
-        var deposit1st = depositPaidAmount > 0 ? depositPaidAmount : Math.ceil(totalPrice * 0.5);
-        var promoAmount = parseFloat(String(b.promoAmount||'').replace(/[^0-9.]/g,'')) || 0;
-        var extraAmount = parseFloat(String(b.extraAmount||'').replace(/[^0-9.]/g,'')) || 0;
-        var deposit2nd = totalPrice - deposit1st;
-        var finalDue = Math.max(0, deposit2nd - promoAmount + extraAmount);
-        fullAmount = deposit1st + finalDue; // ยอดเต็มจริงหลังหักโปร/บวกค่าใช้จ่ายเพิ่มแล้ว
-        paidSoFar = (b.status === 'deposit_paid') ? deposit1st : 0;
-      }
+      var promoAmount = parseFloat(String(b.promoAmount||'').replace(/[^0-9.]/g,'')) || 0;
+      var extraAmount = parseFloat(String(b.extraAmount||'').replace(/[^0-9.]/g,'')) || 0;
+      var fullAmount = Math.max(0, totalPrice - promoAmount + extraAmount);
 
       if (b.status === 'fully_paid') {
         fullyCount++;
         fullyAmt += fullAmount;
       } else {
-        incompleteCount++;
-        incompletePaid += paidSoFar;
-        incompleteRemaining += (fullAmount - paidSoFar);
+        pendingCount++;
+        pendingAmt += fullAmount;
       }
     });
 
-    var totalCount = incompleteCount + fullyCount;
-    var totalAmt = incompletePaid + incompleteRemaining + fullyAmt;
+    var totalCount = pendingCount + fullyCount;
+    var totalAmt = pendingAmt + fullyAmt;
 
     el.innerHTML =
       '<div class="revenue-card" style="margin-bottom:1.2rem;">'
@@ -1090,11 +1059,7 @@ async function renderPaymentMonthSummary() {
         + '</div>'
         + '<div class="revenue-breakdown" style="font-size:0.85rem;">'
           + '<div style="display:flex;justify-content:space-between;padding:0.5rem 0;font-weight:700;border-bottom:1px dashed var(--gray-line);"><span>ลูกค้าทั้งหมด · '+totalCount+' ราย</span><span>฿'+formatMoney(totalAmt)+'</span></div>'
-          + '<div style="padding:0.5rem 0;border-bottom:1px dashed var(--gray-line);">'
-            + '<div style="display:flex;justify-content:space-between;"><span>⏳ ยังไม่จ่ายครบ · '+incompleteCount+' ราย</span><span style="font-weight:600;">฿'+formatMoney(incompletePaid+incompleteRemaining)+'</span></div>'
-            + '<div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--gray-dark);padding-top:0.25rem;"><span>　จ่ายมัดจำแล้ว</span><span>฿'+formatMoney(incompletePaid)+'</span></div>'
-            + '<div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--gray-dark);"><span>　เหลือค้างชำระ</span><span>฿'+formatMoney(incompleteRemaining)+'</span></div>'
-          + '</div>'
+          + '<div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px dashed var(--gray-line);"><span>⏳ ยังไม่จ่าย · '+pendingCount+' ราย</span><span style="font-weight:600;">฿'+formatMoney(pendingAmt)+'</span></div>'
           + '<div style="display:flex;justify-content:space-between;padding:0.5rem 0;"><span>✅ จ่ายครบแล้ว · '+fullyCount+' ราย</span><span style="font-weight:600;">฿'+formatMoney(fullyAmt)+'</span></div>'
         + '</div>'
       + '</div>';
@@ -1142,22 +1107,16 @@ function renderPaymentResults(bookings) {
   lastPaymentResults = bookings;
   document.getElementById('payment_search_results').innerHTML = bookings.map(function(b) {
     var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
-    // มัดจำที่แสดง: ใช้ depositPaidAmount ที่บันทึกไว้แบบ fix ค่า (ไม่เปลี่ยนตาม totalPrice ที่แก้ทีหลัง)
-    // fallback เป็นคำนวณจาก totalPrice ปัจจุบัน เฉพาะตอนยังไม่เคยจ่ายมัดจำ (pending_deposit)
-    var depositPaidAmount = parseFloat(String(b.depositPaidAmount||'').replace(/[^0-9.]/g,'')) || 0;
-    var deposit1st = depositPaidAmount > 0 ? depositPaidAmount : Math.ceil(totalPrice * 0.5);
-    var deposit2nd = totalPrice - deposit1st; // 2nd deposit เต็ม (ก่อนปรับปรุงด้วย promo/extra)
 
-    // Promotion & Extra: รายการปรับปรุงแยกต่างหาก ไม่แตะ totalPrice/deposit1st เลย
+    // Promotion & Extra: รายการปรับปรุงยังใช้ได้กับทุกบริการ (Hotel และ Park)
     var promoAmount = parseFloat(String(b.promoAmount||'').replace(/[^0-9.]/g,'')) || 0;
     var extraAmount = parseFloat(String(b.extraAmount||'').replace(/[^0-9.]/g,'')) || 0;
     var hasAdjustment = promoAmount > 0 || extraAmount > 0;
-    var grandTotal = Math.max(0, deposit2nd - promoAmount + extraAmount); // กันติดลบ
+    var finalAmount = Math.max(0, totalPrice - promoAmount + extraAmount);
 
-    var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_deposit';
+    var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_payment';
     var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
     var isOpen = !!bpExpandedIds[b.bookingId];
-    var isPark = ((b.type === 'Dog Park Day Pass' || b.type === 'Dog Park Monthly'));
 
     var collapsedHtml = '<div class="bpc-collapsed" onclick="toggleBpc(\''+b.bookingId+'\')">'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span><span class="db-chevron">'+(isOpen?'▲':'▼')+'</span></div>'
@@ -1170,8 +1129,9 @@ function renderPaymentResults(bookings) {
       return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'+collapsedHtml+'</div>';
     }
 
-    // Dog Park จ่ายเต็มจำนวนทีเดียว ไม่มีมัดจำ 2 งวด เลยไม่มีสถานะ "รับมัดจำแล้ว" ให้เลือก
-    var statusKeysForThis = isPark ? Object.keys(STATUS_LABEL).filter(function(s){ return s !== 'deposit_paid'; }) : Object.keys(STATUS_LABEL);
+    // จ่ายเต็มจำนวนทีเดียวทุกบริการแล้ว (Hotel และ Park) ไม่มีมัดจำแยกงวดอีกต่อไป
+    var isPaid = (b.status === 'fully_paid');
+    var statusKeysForThis = Object.keys(STATUS_LABEL);
     var actionsHtml = statusKeysForThis.map(function(s) {
       var isCurrent = (s === statusKey);
       var danger = (s === 'cancelled' && !isCurrent) ? ' danger' : '';
@@ -1181,33 +1141,8 @@ function renderPaymentResults(bookings) {
       return '<button class="bpc-action-btn'+danger+currentClass+'"'+onclick+'>'+icon+STATUS_LABEL[s]+'</button>';
     }).join('');
 
-    var priceHtml;
-    if (isPark) {
-      // Dog Park: ยอดเดียว จ่ายเต็มจำนวน ไม่มีมัดจำ/โปรโมชั่น/ค่าใช้จ่ายเพิ่ม
-      var parkPaid = (b.status === 'fully_paid');
-      priceHtml = '<div class="price-summary">'
-        + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(parkPaid?' <span class="paid-tag">Paid</span>':'')+'</span></div>'
-      + '</div>';
-
-      return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
-        + collapsedHtml
-        + '<div style="margin-top:0.8rem;padding-top:0.8rem;border-top:0.5px solid var(--gray-line);">'
-        + '<div class="bpc-status-row"><span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span></div>'
-        + priceHtml
-        + '<div class="bpc-actions">'+actionsHtml+'</div>'
-        + '<div id="bpc_msg_'+b.bookingId+'"></div>'
-        + '</div>'
-        + '</div>';
-    }
-
-
-    var deposit1stPaid = (b.status === 'deposit_paid' || b.status === 'fully_paid');
-    var deposit2ndPaid = (b.status === 'fully_paid');
-
     var priceHtml = '<div class="price-summary">'
-      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+'</span></div>'
-      + '<div class="price-row"><span class="price-label">1st Deposit 50%</span><span class="price-amount">฿'+deposit1st.toLocaleString()+(deposit1stPaid?' <span class="paid-tag">Paid</span>':'')+'</span></div>'
-      + '<div class="price-row"><span class="price-label">2nd Deposit 50%</span><span class="price-amount">฿'+deposit2nd.toLocaleString()+(deposit2ndPaid && !hasAdjustment?' <span class="paid-tag">Paid</span>':'')+'</span></div>';
+      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(isPaid && !hasAdjustment?' <span class="paid-tag">Paid</span>':'')+'</span></div>';
 
     if (hasAdjustment) {
       priceHtml += '<div class="adjustment-block">'
@@ -1215,9 +1150,8 @@ function renderPaymentResults(bookings) {
       if (promoAmount > 0) priceHtml += '<div class="adjustment-row promo"><span class="price-label">− ส่วนลดโปรโมชั่น</span><span class="price-amount">฿'+promoAmount.toLocaleString()+'</span></div>';
       if (extraAmount > 0) priceHtml += '<div class="adjustment-row extra"><span class="price-label">+ ค่าใช้จ่ายเพิ่ม</span><span class="price-amount">฿'+extraAmount.toLocaleString()+'</span></div>';
       priceHtml += '</div>'
-        + '<div class="grand-total-box"><span class="price-label">Grand Total'+(deposit2ndPaid?' <span class="paid-tag" style="color:var(--black);">· Paid</span>':'')+'</span><span class="price-amount">฿'+grandTotal.toLocaleString()+'</span></div>';
+        + '<div class="grand-total-box"><span class="price-label">Grand Total'+(isPaid?' <span class="paid-tag" style="color:var(--black);">· Paid</span>':'')+'</span><span class="price-amount">฿'+finalAmount.toLocaleString()+'</span></div>';
     }
-
     priceHtml += '</div>';
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
@@ -2076,13 +2010,14 @@ function goStep3() {
   editingPendingIdx = null;
   document.getElementById('dog_msg').innerHTML='';
 
+  // ไม่มีส่วนลด multi-dog แล้ว — ทุกตัวจ่ายเต็มราคา (เรียงราคา/น้ำหนักไว้เพื่อความสวยงามของลำดับการแสดงผลเท่านั้น)
   var totalPrice=0;
   var dogsByPriceDesc = dogs.slice().sort(function(a,b){
     if (b.price !== a.price) return b.price - a.price;
     return (parseFloat(b.weight)||0) - (parseFloat(a.weight)||0);
   });
-  dogsByPriceDesc.forEach(function(d,i){
-    d.finalPrice = Math.round(d.price*(i>0?0.9:1));
+  dogsByPriceDesc.forEach(function(d){
+    d.finalPrice = d.price;
   });
   dogs.forEach(function(d){ totalPrice += d.finalPrice; });
 
@@ -2103,9 +2038,6 @@ function goStep3() {
     } else {
       lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day');
     }
-    if (d.finalPrice < d.price) {
-      lines.push('- ฿'+(d.price-d.finalPrice).toLocaleString()+' = Discount 10%');
-    }
     return '<div class="summary-row-dog">'
       + '<div class="row-header">'+headerName+'</div>'
       + lines.map(function(l){ return '<div class="row-line">'+l+'</div>'; }).join('')
@@ -2121,8 +2053,7 @@ function goStep3() {
     +'<div class="summary-row"><span class="summary-label">ระยะเวลา</span><span class="summary-val">'+(bookingType==='overnight'?getOvernightLabel():'1 วัน')+'</span></div>'
     +dogsHtml
     +(surcharge > 0 ? '<div class="summary-row"><span class="summary-label">'+getSurchargeLabel()+'</span><span class="summary-val">฿'+surcharge.toLocaleString()+'</span></div>' : '')
-    +'<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿'+totalPrice.toLocaleString()+'</span></div>'
-    +'<p class="deposit-note">* มัดจำ 50% = ฿'+Math.round(totalPrice/2).toLocaleString()+' เพื่อยืนยันการจอง</p>';
+    +'<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿'+totalPrice.toLocaleString()+'</span></div>';
 
   window._bookingDogs = dogs;
   window._bookingTotal = totalPrice;
