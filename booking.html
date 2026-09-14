@@ -144,7 +144,7 @@
       </div>
       <div class="service-check">✓</div>
     </div>
-    <button class="btn-primary" style="margin-top:0.6rem;" onclick="confirmServiceSelect()">Next → ถัดไป</button>
+    <button class="btn-primary" style="margin-top:0.6rem;" onclick="confirmServiceSelect()">ถัดไป</button>
   </div>
 
   <!-- LOADING -->
@@ -197,7 +197,7 @@
         <option value="อื่นๆ">อื่นๆ</option>
       </select>
     </div>
-    <button class="btn-primary" id="regBtn" onclick="registerAndBook()">Next → ถัดไป</button>
+    <button class="btn-primary" id="regBtn" onclick="registerAndBook()">ถัดไป</button>
     <div id="newuser_msg"></div>
   </div>
 
@@ -205,7 +205,7 @@
   <div id="screen-park-step1" style="display:none;">
     <div class="steps"><div class="step active">1. ประเภท</div><div class="step">2. น้องหมา</div><div class="step">3. สรุป</div></div>
     <div class="card">
-      <div class="section-label">Step 1 · ขั้นตอนที่ 1</div>
+      <div class="section-label">ขั้นตอนที่ 1</div>
       <h2>Dog Park</h2>
       <div class="divider"></div>
       <div id="park_datetime_display" style="font-size:0.85rem;color:var(--gray-dark);margin-bottom:1.2rem;"></div>
@@ -217,16 +217,16 @@
         </div>
       </div>
       <div id="park_validity_note" style="font-size:0.78rem;color:var(--gray-dark);margin-bottom:1rem;display:none;"></div>
-      <button class="btn-primary" onclick="goParkStep2()">Next → ถัดไป</button>
+      <button class="btn-primary" onclick="goParkStep2()">ถัดไป</button>
     </div>
   </div>
 
   <!-- STEP 1: DATE -->
   <div id="screen-step1" style="display:none;">
-    <div class="steps"><div class="step active">1. Dates<br><span style="font-size:0.65rem;opacity:0.8;">วันที่</span></div><div class="step">2. Dogs<br><span style="font-size:0.65rem;opacity:0.8;">น้องหมา</span></div><div class="step">3. Summary<br><span style="font-size:0.65rem;opacity:0.8;">สรุป</span></div></div>
+    <div class="steps"><div class="step active">1. วันที่</div><div class="step">2. น้องหมา</div><div class="step">3. สรุป</div></div>
     <div class="card">
-      <div class="section-label">Step 1 · ขั้นตอนที่ 1</div>
-      <h2 style="font-family:'Space Mono','IBM Plex Sans Thai',monospace;">Select Dates · เลือกวันที่</h2>
+      <div class="section-label">ขั้นตอนที่ 1</div>
+      <h2 style="font-family:'Space Mono','IBM Plex Sans Thai',monospace;">เลือกวันที่</h2>
       <div class="divider"></div>
       <div class="form-group"><label>ประเภทการฝาก</label>
         <div class="mode-tabs">
@@ -256,24 +256,16 @@
       </div>
       <div id="date_summary" style="display:none;background:var(--bg2);padding:0.9rem 1rem;font-size:0.85rem;margin-bottom:1rem;border:0.5px solid var(--gray-line);"></div>
       <div id="date_msg"></div>
-      <div style="background:#FDF4E3;border-left:3px solid #FDDA7B;padding:.6rem .9rem;border-radius:4px;font-size:.75rem;color:#5b4327;line-height:1.7;margin-bottom:1.2rem;margin-top:1.5rem;">
-        <strong style="font-size:.76rem;">เวลา · Hours</strong><br>
-        · Drop-off &amp; Pick-up: 8:00–20:00 น.<br><br>
-        <strong style="font-size:.76rem;">ฝากรายวัน · Daycare</strong><br>
-        · ฝาก-รับภายในวันเดียวกัน ไม่ค้างคืน<br><br>
-        <strong style="font-size:.76rem;">ค้างคืน · Overnight</strong><br>
-        · คิดราคาตามจำนวนคืน ไม่ว่าจะมาส่ง/รับเวลาไหนของวัน
-      </div>
-      <button class="btn-primary" onclick="goStep2()">Next → ถัดไป</button>
+      <button class="btn-primary" onclick="goStep2()">ถัดไป</button>
     </div>
   </div>
 
   <!-- STEP 2: DOGS -->
   <div id="screen-step2" style="display:none;">
-    <div class="steps"><div class="step done">1. Dates · วันที่</div><div class="step active">2. Dogs · น้องหมา</div><div class="step">3. Summary · สรุป</div></div>
+    <div class="steps"><div class="step done">1. วันที่</div><div class="step active">2. น้องหมา</div><div class="step">3. สรุป</div></div>
     <div class="card">
-      <div class="section-label">Step 2 · ขั้นตอนที่ 2</div>
-      <h2>Your Dogs · น้องหมาของคุณ</h2>
+      <div class="section-label">ขั้นตอนที่ 2</div>
+      <h2>น้องหมาของคุณ</h2>
       <div class="divider"></div>
 
       <div id="pending_new_dogs_section" style="display:none;margin-bottom:1.5rem;"></div>
@@ -293,18 +285,18 @@
       <div id="dog_msg"></div>
 
       <div class="btn-row">
-        <button class="btn-secondary" onclick="showScreen(serviceType==='park'?'park-step1':'step1')">← Back · ย้อนกลับ</button>
-        <button class="btn-primary" onclick="goStep3()">Review Booking → ดูสรุป</button>
+        <button class="btn-secondary" onclick="showScreen(serviceType==='park'?'park-step1':'step1')">ย้อนกลับ</button>
+        <button class="btn-primary" onclick="goStep3()">ดูสรุป</button>
       </div>
     </div>
   </div>
 
   <!-- STEP 3: SUMMARY -->
   <div id="screen-step3" style="display:none;">
-    <div class="steps"><div class="step done">1. Dates · วันที่</div><div class="step done">2. Dogs · น้องหมา</div><div class="step active">3. Summary · สรุป</div></div>
+    <div class="steps"><div class="step done">1. วันที่</div><div class="step done">2. น้องหมา</div><div class="step active">3. สรุป</div></div>
     <div class="card">
-      <div class="section-label">Step 3 · ขั้นตอนที่ 3</div>
-      <h2>Booking Summary · สรุปการจอง</h2>
+      <div class="section-label">ขั้นตอนที่ 3</div>
+      <h2>สรุปการจอง</h2>
       <div class="divider"></div>
       <div id="summary_content"></div>
       <div style="background:var(--bg);border:1px solid var(--gray-line);border-radius:12px;padding:1.2rem;margin:1.2rem 0;">
@@ -314,8 +306,8 @@
       </div>
       <div id="confirm_msg"></div>
       <div class="btn-row">
-        <button class="btn-secondary" onclick="showScreen('step2')">← Back · ย้อนกลับ</button>
-        <button class="btn-primary" id="confirmBtn" onclick="confirmBooking()">Confirm Booking · ยืนยัน ✓</button>
+        <button class="btn-secondary" onclick="showScreen('step2')">ย้อนกลับ</button>
+        <button class="btn-primary" id="confirmBtn" onclick="confirmBooking()">ยืนยัน ✓</button>
       </div>
     </div>
   </div>
@@ -1100,7 +1092,8 @@ function renderPendingNewDogs() {
       return '<div class="saved-dog-card selected" style="cursor:default;">'
         + '<div class="check">✓</div>'
         + '<div class="dog-card-name">'+d.name+'</div>'
-        + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+(d.age?' · อายุ '+d.age:'')+'</div>'
+        + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
+        + '<div class="dog-card-meta">'+(d.age?'อายุ '+d.age:'ไม่ระบุอายุ')+'</div>'
         + '<div class="dog-card-meta">'+d.weight+' กก. · '+sizeLabel[d.size]+'</div>'
         + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="editPendingNewDog('+idx+')">✎ แก้ไข</button>'
         + '</div>';
