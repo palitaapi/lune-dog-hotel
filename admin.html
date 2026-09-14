@@ -1532,6 +1532,7 @@ function renderSavedDogs() {
       + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
       + '<div class="dog-card-meta">'+(d.age?'อายุ '+d.age:'ไม่ระบุอายุ')+'</div>'
       + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
+      + ((!d.foodType || !d.mealsPerDay) ? '<div class="dog-card-meta" style="color:#a83232;font-weight:600;">⚠️ ยังไม่มีข้อมูลอาหาร/จำนวนมื้อ กรุณาแก้ไขข้อมูล</div>' : '')
       + (neuteredBadge ? '<div class="dog-card-badges">'+neuteredBadge+'</div>' : '')
       + (d.note ? '<div class="dog-card-note">📝 '+d.note+'</div>' : '')
       + (d.tickControl ? '<div class="dog-card-note">🦟 '+d.tickControl+'</div>' : '')
@@ -1873,10 +1874,10 @@ function renderEditDogForm(dog) {
     + '</div></div>'
     + '</div>'
     + '<div class="form-row">'
-    + '<div class="form-group"><label>ประเภทอาหารที่กิน</label><select id="edit_dog_food_type">'
+    + '<div class="form-group"><label>ประเภทอาหารที่กิน *</label><select id="edit_dog_food_type">'
     + foodOptions.map(function(o){ return '<option value="'+o.v+'"'+(dog.foodType===o.v||(!dog.foodType&&o.v==='')?' selected':'')+'>'+o.l+'</option>'; }).join('')
     + '</select></div>'
-    + '<div class="form-group"><label>จำนวนมื้อต่อวัน</label><select id="edit_dog_meals_per_day">'
+    + '<div class="form-group"><label>จำนวนมื้อต่อวัน *</label><select id="edit_dog_meals_per_day">'
     + mealOptions.map(function(o){ return '<option value="'+o+'"'+(dog.mealsPerDay===o||(!dog.mealsPerDay&&o==='')?' selected':'')+'>'+(o===''?'เลือก':o)+'</option>'; }).join('')
     + '</select></div>'
     + '</div>'
@@ -1897,6 +1898,10 @@ async function saveDogEdit() {
     if (ageMonths) parts.push(ageMonths + ' เดือน');
     return parts.join(' ');
   })();
+  var foodType = document.getElementById('edit_dog_food_type').value;
+  if (!foodType) { showMsg('editdog_msg','กรุณาเลือกประเภทอาหารที่กิน','error'); return; }
+  var mealsPerDay = document.getElementById('edit_dog_meals_per_day').value;
+  if (!mealsPerDay) { showMsg('editdog_msg','กรุณาเลือกจำนวนมื้อต่อวัน','error'); return; }
   var data = {
     action: 'updateDog',
     dogId: editingDogId,
@@ -1906,8 +1911,8 @@ async function saveDogEdit() {
     neutered: document.getElementById('edit_dog_neutered').value,
     weight: weight,
     age: age,
-    foodType: document.getElementById('edit_dog_food_type').value,
-    mealsPerDay: document.getElementById('edit_dog_meals_per_day').value,
+    foodType: foodType,
+    mealsPerDay: mealsPerDay,
     tickControl: document.getElementById('edit_dog_tick_control').value.trim(),
     note: document.getElementById('edit_dog_note').value.trim()
   };

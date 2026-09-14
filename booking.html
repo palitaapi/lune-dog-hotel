@@ -573,6 +573,7 @@ function renderSavedDogs() {
       + '<div class="dog-card-meta">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
       + '<div class="dog-card-meta">'+(d.age?'อายุ '+d.age:'ไม่ระบุอายุ')+'</div>'
       + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
+      + ((serviceType==='hotel' && (!d.foodType || !d.mealsPerDay)) ? '<div class="dog-card-meta" style="color:#a83232;font-weight:600;">⚠️ ยังไม่มีข้อมูลอาหาร/จำนวนมื้อ กรุณาแก้ไขข้อมูล</div>' : '')
       + '<div class="dog-card-meta" onclick="event.stopPropagation();" style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;margin-top:0.3rem;">'
         + '<span style="font-size:0.72rem;color:var(--gray-dark);">อัปเดตอายุ:</span>'
         + '<input type="text" id="age_input_'+d.dogId+'" value="'+escapeHtml(d.age||'')+'" placeholder="เช่น 2 ปี" style="width:80px;font-size:0.78rem;padding:2px 6px;border:0.5px solid var(--gray-line);border-radius:4px;"/>'
@@ -669,8 +670,8 @@ function renderNewDogForm() {
     + '</select>'
     + '<input type="text" id="new_dog_tick_control_other" placeholder="ระบุวิธีกำจัดเห็บหมัด" style="display:none;margin-top:0.5rem;"/></div>'
     + '<div class="form-row">'
-    + '<div class="form-group"><label>ประเภทอาหารที่กิน</label><select id="new_dog_food_type"><option value="">เลือก (ถ้ามี)</option><option value="เม็ด">เม็ด (Dry food)</option><option value="เปียก">เปียก (Wet food)</option><option value="เม็ด + เปียก">เม็ด + เปียก</option><option value="โฮมคุก">โฮมคุก (Home cooked)</option><option value="บาร์ฟ">บาร์ฟ (BARF)</option><option value="อื่นๆ">อื่นๆ</option></select></div>'
-    + '<div class="form-group"><label>จำนวนมื้อต่อวัน</label><select id="new_dog_meals_per_day"><option value="">เลือก (ถ้ามี)</option><option value="1 มื้อ/วัน">1 มื้อ/วัน</option><option value="2 มื้อ/วัน">2 มื้อ/วัน</option><option value="3 มื้อ/วัน">3 มื้อ/วัน</option><option value="มากกว่า 3 มื้อ/วัน">มากกว่า 3 มื้อ/วัน</option></select></div>'
+    + '<div class="form-group"><label>ประเภทอาหารที่กิน'+(serviceType==='hotel'?' *':'')+'</label><select id="new_dog_food_type"><option value="">เลือก'+(serviceType==='hotel'?'':' (ถ้ามี)')+'</option><option value="เม็ด">เม็ด (Dry food)</option><option value="เปียก">เปียก (Wet food)</option><option value="เม็ด + เปียก">เม็ด + เปียก</option><option value="โฮมคุก">โฮมคุก (Home cooked)</option><option value="บาร์ฟ">บาร์ฟ (BARF)</option><option value="อื่นๆ">อื่นๆ</option></select></div>'
+    + '<div class="form-group"><label>จำนวนมื้อต่อวัน'+(serviceType==='hotel'?' *':'')+'</label><select id="new_dog_meals_per_day"><option value="">เลือก'+(serviceType==='hotel'?'':' (ถ้ามี)')+'</option><option value="1 มื้อ/วัน">1 มื้อ/วัน</option><option value="2 มื้อ/วัน">2 มื้อ/วัน</option><option value="3 มื้อ/วัน">3 มื้อ/วัน</option><option value="มากกว่า 3 มื้อ/วัน">มากกว่า 3 มื้อ/วัน</option></select></div>'
     + '</div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
     + '<button type="button" class="add-new-dog-btn" onclick="saveDogAndAddAnother()">'+(editingPendingIdx!==null?'💾 บันทึกการแก้ไข':'✓ บันทึก')+'</button>'
@@ -996,7 +997,9 @@ function buildNewDogFromForm() {
   var ageMonths = document.getElementById('new_dog_age_months').value.trim();
   if (!ageYears && !ageMonths) { showMsg('dog_msg','กรุณากรอกอายุ (ปีหรือเดือน อย่างน้อย 1 ช่อง)','error'); return false; }
   var foodType = document.getElementById('new_dog_food_type').value;
+  if (serviceType==='hotel' && !foodType) { showMsg('dog_msg','กรุณาเลือกประเภทอาหารที่กิน','error'); return false; }
   var mealsPerDay = document.getElementById('new_dog_meals_per_day').value;
+  if (serviceType==='hotel' && !mealsPerDay) { showMsg('dog_msg','กรุณาเลือกจำนวนมื้อต่อวัน','error'); return false; }
   var tickControl = getTickControlValue('new');
   if (!tickControl) { showMsg('dog_msg','กรุณาเลือกวิธีกำจัดเห็บหมัด','error'); return false; }
   var note = document.getElementById('new_dog_note').value.trim();
@@ -1162,10 +1165,10 @@ function renderEditDogForm(dog) {
     + '</div></div>'
     + '</div>'
     + '<div class="form-row">'
-    + '<div class="form-group"><label>ประเภทอาหารที่กิน</label><select id="edit_dog_food_type">'
+    + '<div class="form-group"><label>ประเภทอาหารที่กิน'+(serviceType==='hotel'?' *':'')+'</label><select id="edit_dog_food_type">'
     + foodOptions.map(function(o){ return '<option value="'+o.v+'"'+(dog.foodType===o.v||(!dog.foodType&&o.v==='')?' selected':'')+'>'+o.l+'</option>'; }).join('')
     + '</select></div>'
-    + '<div class="form-group"><label>จำนวนมื้อต่อวัน</label><select id="edit_dog_meals_per_day">'
+    + '<div class="form-group"><label>จำนวนมื้อต่อวัน'+(serviceType==='hotel'?' *':'')+'</label><select id="edit_dog_meals_per_day">'
     + mealOptions.map(function(o){ return '<option value="'+o+'"'+(dog.mealsPerDay===o||(!dog.mealsPerDay&&o==='')?' selected':'')+'>'+(o===''?'เลือก':o)+'</option>'; }).join('')
     + '</select></div>'
     + '</div>'
@@ -1193,6 +1196,10 @@ async function saveDogEdit() {
     if (ageMonths) parts.push(ageMonths + ' เดือน');
     return parts.join(' ');
   })();
+  var foodType = document.getElementById('edit_dog_food_type').value;
+  if (serviceType==='hotel' && !foodType) { showMsg('editdog_msg','กรุณาเลือกประเภทอาหารที่กิน','error'); return; }
+  var mealsPerDay = document.getElementById('edit_dog_meals_per_day').value;
+  if (serviceType==='hotel' && !mealsPerDay) { showMsg('editdog_msg','กรุณาเลือกจำนวนมื้อต่อวัน','error'); return; }
   var data = {
     action: 'updateDog',
     dogId: editingDogId,
@@ -1202,8 +1209,8 @@ async function saveDogEdit() {
     neutered: document.getElementById('edit_dog_neutered').value,
     weight: weight,
     age: age,
-    foodType: document.getElementById('edit_dog_food_type').value,
-    mealsPerDay: document.getElementById('edit_dog_meals_per_day').value,
+    foodType: foodType,
+    mealsPerDay: mealsPerDay,
     tickControl: getTickControlValue('edit'),
     note: document.getElementById('edit_dog_note').value.trim()
   };
