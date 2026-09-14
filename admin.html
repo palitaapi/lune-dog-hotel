@@ -155,10 +155,9 @@
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
   .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.88rem;}
-  .summary-row-dog{padding:0.6rem 0.8rem;margin:0.4rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.78rem;}
+  .summary-row-dog{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;padding:0.75rem 1rem;margin:0.5rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.8rem;}
   .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .summary-row-dog .row-line{font-size:0.74rem;color:var(--gray-dark);padding-left:0.8rem;margin-top:0.3rem;}
-  .summary-row-dog .row-total{font-weight:700;color:var(--gold);margin-top:0.4rem;font-size:0.8rem;}
+  .summary-row-dog .row-total{font-weight:700;color:var(--gold);font-size:0.85rem;white-space:nowrap;flex:none;}
   .summary-row:last-child{border-bottom:none;}
   .summary-label{color:var(--gray-dark);font-weight:300;}
   .summary-val{font-weight:500;}
@@ -221,8 +220,7 @@
       <div id="mode-new" style="display:none;">
         <div class="form-group"><label>ชื่อของคุณพ่อคุณแม่ *</label><input type="text" id="own_name"/></div>
         <div class="form-group"><label>เบอร์โทรศัพท์ * (10 หลัก)</label><input type="tel" id="own_phone" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
-        <div class="form-group"><label>อีเมล *</label><input type="email" id="own_email" placeholder="example@email.com" oninput="validateEmailFormat()"/><div id="email_format_msg" style="font-size:0.75rem;color:var(--red);margin-top:0.3rem;"></div></div>
-        <div class="form-group"><label>บ้านเลขที่ / ถนน *</label><input type="text" id="own_address_detail" placeholder="เช่น 123/4 หมู่บ้านอนาสิริ ถ.บางใหญ่"/></div>
+        <div class="form-group"><label>อีเมล</label><input type="email" id="own_email" placeholder="example@email.com" oninput="validateEmailFormat()"/><div id="email_format_msg" style="font-size:0.75rem;color:var(--red);margin-top:0.3rem;"></div></div>
         <div class="form-group" style="position:relative;"><label>จังหวัด *</label>
           <input type="text" id="own_province" placeholder="พิมพ์ค้นหาจังหวัด..." autocomplete="off"
             oninput="filterDropdown('province')" onfocus="filterDropdown('province')" onblur="setTimeout(function(){closeDropdown('province')},150)"/>
@@ -233,8 +231,8 @@
             oninput="filterDropdown('district')" onfocus="filterDropdown('district')" onblur="setTimeout(function(){closeDropdown('district')},150)"/>
           <div id="district_dropdown_list" class="searchable-dropdown-list" style="display:none;"></div>
         </div>
-        <div class="form-group"><label>LINE Display Name (ถ้ามี)</label><input type="text" id="own_line_name" placeholder="ชื่อ LINE ของลูกค้า เผื่ออ้างอิง"/></div>
-        <div class="form-group"><label>รู้จักเราจากไหน (ถ้าทราบ)</label>
+        <div class="form-group"><label>ชื่อ LINE (ถ้ามี)</label><input type="text" id="own_line_name" placeholder="ชื่อ LINE ของลูกค้า เผื่ออ้างอิง"/></div>
+        <div class="form-group"><label>รู้จักเราจากไหน</label>
           <select id="own_acquisition_source">
             <option value="">— เลือก —</option>
             <option value="Facebook">Facebook</option>
@@ -1413,7 +1411,6 @@ function closeDropdown(type) {
 async function registerOwner() {
   var name=document.getElementById('own_name').value.trim();
   var phone=document.getElementById('own_phone').value.trim();
-  var addr=document.getElementById('own_address_detail').value.trim();
   var province=document.getElementById('own_province').value.trim();
   var district=document.getElementById('own_district').value.trim();
   var lineName=document.getElementById('own_line_name').value.trim();
@@ -1421,9 +1418,7 @@ async function registerOwner() {
   var acquisitionSource=document.getElementById('own_acquisition_source').value;
   if(!name){showMsg('newuser_msg','กรุณากรอกชื่อของคุณพ่อคุณแม่','error');return;}
   if(!phone||phone.length!==10){showMsg('newuser_msg','กรุณากรอกเบอร์โทรให้ครบ 10 หลัก','error');return;}
-  if(!email){showMsg('newuser_msg','กรุณากรอกอีเมล','error');return;}
-  if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)){showMsg('newuser_msg','กรุณากรอกอีเมลให้ถูกต้อง','error');return;}
-  if(!addr){showMsg('newuser_msg','กรุณากรอกบ้านเลขที่/ถนน','error');return;}
+  if(email && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)){showMsg('newuser_msg','กรุณากรอกอีเมลให้ถูกต้อง','error');return;}
   if(!province){showMsg('newuser_msg','กรุณาเลือกจังหวัดจากลิสต์','error');return;}
   if(PROVINCES.indexOf(province)===-1){showMsg('newuser_msg','กรุณาเลือกจังหวัดจากลิสต์ที่มีให้','error');return;}
   if(!district){showMsg('newuser_msg','กรุณาเลือกเขต/อำเภอจากลิสต์','error');return;}
@@ -1442,7 +1437,7 @@ async function registerOwner() {
   } catch(e) { /* ถ้าเช็คไม่ได้ ปล่อยให้บันทึกต่อไป ดีกว่าบล็อกเพราะปัญหาเครือข่าย */ }
   showMsg('newuser_msg','⏳ กำลังบันทึก...','success');
   var nowTimestamp = new Date().toLocaleString('th-TH');
-  var data={action:'addOwner',name,phone,province,district,lineId:'',lineName:lineName||'',address:addr+', '+district+', '+province,source:'line_direct',timestamp:nowTimestamp,email:email||'',acquisitionSource:acquisitionSource||''};
+  var data={action:'addOwner',name,phone,province,district,lineId:'',lineName:lineName||'',address:district+', '+province,source:'line_direct',timestamp:nowTimestamp,email:email||'',acquisitionSource:acquisitionSource||''};
   try {
     var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
@@ -1534,7 +1529,8 @@ function renderSavedDogs() {
     return '<div class="saved-dog-card" id="sdc_'+d.dogId+'" onclick="toggleSavedDog(\''+d.dogId+'\')">'
       + '<div class="check">✓</div>'
       + '<div class="dog-card-name">'+d.name+(genderIcon ? ' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>' : '')+'</div>'
-      + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+(d.age ? ' · อายุ '+d.age : '')+'</div>'
+      + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
+      + '<div class="dog-card-meta">'+(d.age?'อายุ '+d.age:'ไม่ระบุอายุ')+'</div>'
       + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
       + (neuteredBadge ? '<div class="dog-card-badges">'+neuteredBadge+'</div>' : '')
       + (d.note ? '<div class="dog-card-note">📝 '+d.note+'</div>' : '')
@@ -1584,11 +1580,11 @@ function renderNewDogForm() {
     + '<div class="form-group"><label>น้ำหนัก (กก.) *</label><input type="number" id="new_dog_weight" placeholder="เช่น 8" min="0.1" max="60" step="0.1" oninput="updateNewDogPrice()"/><div id="new_dog_size_display" style="display:none;margin-top:0.5rem;" class="size-display"></div><div style="font-size:0.8rem;color:var(--gold);font-weight:600;margin-top:0.3rem;" id="new_dog_price"></div></div>'
     + '<div class="form-group"><label>อายุ *</label><div class="form-row" style="gap:0.6rem;"><input type="text" id="new_dog_age_years" placeholder="ปี" inputmode="numeric" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\'\')"/><input type="text" id="new_dog_age_months" placeholder="เดือน" inputmode="numeric" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\'\').slice(0,2);if(parseInt(this.value)>11)this.value=\'11\';"/></div></div>'
     + '</div>'
+    + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด *</label><input type="text" id="new_dog_tick_control" placeholder="เช่น หยดหลัง Frontline ทุกเดือน"/></div>'
     + '<div class="form-row">'
     + '<div class="form-group"><label>ประเภทอาหารที่กิน *</label><select id="new_dog_food_type"><option value="">เลือก</option><option value="เม็ด">เม็ด (Dry food)</option><option value="เปียก">เปียก (Wet food)</option><option value="เม็ด + เปียก">เม็ด + เปียก</option><option value="โฮมคุก">โฮมคุก (Home cooked)</option><option value="บาร์ฟ">บาร์ฟ (BARF)</option><option value="อื่นๆ">อื่นๆ</option></select></div>'
     + '<div class="form-group"><label>จำนวนมื้อต่อวัน *</label><select id="new_dog_meals_per_day"><option value="">เลือก</option><option value="1 มื้อ/วัน">1 มื้อ/วัน</option><option value="2 มื้อ/วัน">2 มื้อ/วัน</option><option value="3 มื้อ/วัน">3 มื้อ/วัน</option><option value="มากกว่า 3 มื้อ/วัน">มากกว่า 3 มื้อ/วัน</option></select></div>'
     + '</div>'
-    + '<div class="form-group"><label>วิธีกำจัดเห็บหมัด *</label><input type="text" id="new_dog_tick_control" placeholder="เช่น หยดหลัง Frontline ทุกเดือน"/></div>'
     + '<div class="form-group"><label>หมายเหตุเพิ่มเติม</label><input type="text" id="new_dog_note" placeholder="เช่น ต้องกินยาตอนเช้า"/></div>'
     + '<button type="button" class="btn-ghost" onclick="saveDogAndAddAnother()">'+(editingPendingIdx!==null?'💾 บันทึกการแก้ไข':'✓ บันทึก')+'</button>'
     + '</div>';
@@ -1807,7 +1803,8 @@ function renderPendingNewDogs() {
       return '<div class="saved-dog-card selected" style="cursor:default;">'
         + '<div class="check">✓</div>'
         + '<div class="dog-card-name">'+d.name+'</div>'
-        + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+(d.age?' · อายุ '+d.age:'')+'</div>'
+        + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
+        + '<div class="dog-card-meta">'+(d.age?'อายุ '+d.age:'ไม่ระบุอายุ')+'</div>'
         + '<div class="dog-card-meta">'+d.weight+' กก. · '+sizeLabel[d.size]+'</div>'
         + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="editPendingNewDog('+idx+')">✎ แก้ไข</button>'
         + '</div>';
@@ -1975,18 +1972,9 @@ function goStep3() {
 
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var dogsHtml=dogsByPriceDesc.map(function(d){
-    var headerName = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)'+(d.breed?' · '+d.breed:'')+(d.gender?' · '+d.gender:'')+(d.isNew?' <span style="color:var(--green);">· ใหม่</span>':'');
-    var lines = [];
-    if (bookingType === 'overnight') {
-      var nightlyRate = PRICES.overnight[d.size];
-      var nightlyTotal = nightlyRate * nights;
-      lines.push('+ ฿'+nightlyTotal.toLocaleString()+' = Overnight '+nights+' '+(nights===1?'Day':'Days')+' x ฿'+nightlyRate.toLocaleString());
-    } else {
-      lines.push('+ ฿'+PRICES.daycare[d.size].toLocaleString()+' = Daycare 1 Day');
-    }
+    var headerName = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)';
     return '<div class="summary-row-dog">'
       + '<div class="row-header">'+headerName+'</div>'
-      + lines.map(function(l){ return '<div class="row-line">'+l+'</div>'; }).join('')
       + '<div class="row-total">Total = ฿'+d.finalPrice.toLocaleString()+'</div>'
       + '</div>';
   }).join('');
