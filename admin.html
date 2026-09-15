@@ -444,6 +444,8 @@
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx-DX2O28F2WfKIISqEn-_S0hUGsBNA--OGExtooxpGeBxyGNXV90iWgrt3dW2-wnuE/exec';
 const SHEET_ID        = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
+const BOOKING_SHEET_NAME_HOTEL = 'Booking - Dog Hotel';
+const BOOKING_SHEET_NAME_PARK  = 'Booking - Dog Park';
 const OWNER_SHEET_ID  = '1QQ58FPEAWvGWdNG8EmjWDZJDIDM_QfLWVA3Q1TYfhec';
 const MAX_CAP = 8;
 const TERMS_VERSION = '2026-06-25'; // เปลี่ยนค่านี้ทุกครั้งที่แก้เงื่อนไข จะบังคับให้ลูกค้าเก่าติ๊กยอมรับใหม่อัตโนมัติ
@@ -709,12 +711,11 @@ async function loadDogsFoodMap() {
   return map;
 }
 
-async function loadAllBookingsGrouped() {
-  if (allBookingsCache) return allBookingsCache;
-  var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Booking&_cb='+Date.now());
+async function fetchBookingRows(sheetName) {
+  var res = await fetch('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet='+encodeURIComponent(sheetName)+'&_cb='+Date.now());
   var raw = await res.text();
   var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
-  var rows = (json.table ? json.table.rows || [] : []).map(function(row) {
+  return (json.table ? json.table.rows || [] : []).map(function(row) {
     var c = row.c || [];
     return {
       bookingId:   c[1] ? String(c[1].v || '').trim() : '',
@@ -739,6 +740,15 @@ async function loadAllBookingsGrouped() {
       extraAmount: c[30]? String(c[30].v || '').trim() : '',
     };
   }).filter(function(r){ return r.bookingId; });
+}
+
+async function loadAllBookingsGrouped() {
+  if (allBookingsCache) return allBookingsCache;
+  var results = await Promise.all([
+    fetchBookingRows(BOOKING_SHEET_NAME_HOTEL),
+    fetchBookingRows(BOOKING_SHEET_NAME_PARK)
+  ]);
+  var rows = results[0].concat(results[1]);
 
   // Group by bookingId — 1 booking อาจมีหลาย row (1 row ต่อ 1 หมา)
   var grouped = {};
