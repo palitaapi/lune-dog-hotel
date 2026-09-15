@@ -410,7 +410,6 @@ function selectService(type) {
   document.getElementById('svc_park').classList.toggle('selected', type==='park');
 }
 function confirmServiceSelect() {
-  try { sessionStorage.setItem('lune_service_type', serviceType); } catch(e) {}
   goToServiceStep1();
 }
 function goToServiceStep1() {
