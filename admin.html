@@ -1501,6 +1501,7 @@ async function loadSavedDogs() {
         savedDogs.push({
           dogId:    c[1] ? String(c[1].v || '').trim() : '',
           ownerId:  ownerIdCell,
+          timestamp: c[0] ? String(c[0].v || '').trim() : '',
           name:     c[3] ? String(c[3].v || '').trim() : '',
           breed:    c[4] ? String(c[4].v || '').trim() : '',
           gender:   c[5] ? String(c[5].v || '').trim() : '',
@@ -1540,7 +1541,7 @@ function renderSavedDogs() {
       + '<div class="check">✓</div>'
       + '<div class="dog-card-name">'+d.name+(genderIcon ? ' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>' : '')+'</div>'
       + '<div class="dog-card-meta dog-card-breed">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
-      + '<div class="dog-card-meta">'+(d.age?'อายุ '+d.age:'ไม่ระบุอายุ')+'</div>'
+      + '<div class="dog-card-meta">'+(d.age?'อายุ '+calcCurrentAge(d.age, d.timestamp):'ไม่ระบุอายุ')+'</div>'
       + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
       + ((!d.foodType || !d.mealsPerDay) ? '<div class="dog-card-meta" style="color:#a83232;font-weight:600;">⚠️ ยังไม่มีข้อมูลอาหาร/จำนวนมื้อ กรุณาแก้ไขข้อมูล</div>' : '')
       + (neuteredBadge ? '<div class="dog-card-badges">'+neuteredBadge+'</div>' : '')
@@ -1841,6 +1842,37 @@ function parseAgeString(ageStr) {
   return {years:years, months:months};
 }
 
+// timestamp ที่บันทึกไว้เป็น string แบบไทย เช่น "14/9/2569 14:30:00" (ปี พ.ศ.) — แปลงกลับเป็น Date จริง
+function parseThaiTimestamp(str) {
+  if (!str) return null;
+  var m = String(str).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (!m) return null;
+  var day = parseInt(m[1],10), month = parseInt(m[2],10), yearBE = parseInt(m[3],10);
+  var yearCE = yearBE - 543;
+  var d = new Date(yearCE, month-1, day);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// คำนวณอายุปัจจุบัน โดยนับต่อจากอายุที่เคยบันทึกไว้ ณ วันที่บันทึกนั้น
+function calcCurrentAge(ageStr, timestampStr) {
+  if (!ageStr) return '';
+  var recordDate = parseThaiTimestamp(timestampStr);
+  if (!recordDate) return ageStr; // ไม่มี/อ่าน timestamp ไม่ได้ → โชว์ค่าที่บันทึกไว้เดิม
+  var parsed = parseAgeString(ageStr);
+  var totalMonthsAtRecord = (parseInt(parsed.years)||0)*12 + (parseInt(parsed.months)||0);
+  var now = new Date();
+  var elapsedMonths = (now.getFullYear()-recordDate.getFullYear())*12 + (now.getMonth()-recordDate.getMonth());
+  if (now.getDate() < recordDate.getDate()) elapsedMonths--;
+  if (elapsedMonths < 0) elapsedMonths = 0;
+  var totalMonthsNow = totalMonthsAtRecord + elapsedMonths;
+  var years = Math.floor(totalMonthsNow/12);
+  var months = totalMonthsNow%12;
+  var parts = [];
+  if (years) parts.push(years+' ปี');
+  parts.push(months+' เดือน');
+  return parts.join(' ');
+}
+
 function openEditDog(dogId) {
   var dog = savedDogs.find(function(d){ return d.dogId === dogId; });
   if (!dog) return;
@@ -1851,7 +1883,7 @@ function openEditDog(dogId) {
 }
 
 function renderEditDogForm(dog) {
-  var ageParsed = parseAgeString(dog.age);
+  var ageParsed = parseAgeString(calcCurrentAge(dog.age, dog.timestamp));
   document.getElementById('editdog_title').textContent = 'แก้ไขข้อมูล: ' + dog.name;
   var foodOptions = [
     {v:'', l:'เลือก'}, {v:'เม็ด', l:'เม็ด (Dry food)'}, {v:'เปียก', l:'เปียก (Wet food)'},

@@ -531,6 +531,7 @@ async function loadSavedDogs() {
         savedDogs.push({
           dogId:    c[1] ? String(c[1].v || '').trim() : '',
           ownerId:  ownerIdCell,
+          timestamp: c[0] ? String(c[0].v || '').trim() : '',
           name:     c[3] ? String(c[3].v || '').trim() : '',
           breed:    c[4] ? String(c[4].v || '').trim() : '',
           gender:   c[5] ? String(c[5].v || '').trim() : '',
@@ -570,15 +571,9 @@ function renderSavedDogs() {
       + '<div class="check">✓</div>'
       + '<div class="dog-card-name">'+d.name+(genderIcon ? ' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>' : '')+'</div>'
       + '<div class="dog-card-meta">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
-      + '<div class="dog-card-meta">'+(d.age?'อายุ '+d.age:'ไม่ระบุอายุ')+'</div>'
+      + '<div class="dog-card-meta">'+(d.age?'อายุ '+calcCurrentAge(d.age, d.timestamp):'ไม่ระบุอายุ')+'</div>'
       + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
       + ((serviceType==='hotel' && (!d.foodType || !d.mealsPerDay)) ? '<div class="dog-card-meta" style="color:#a83232;font-weight:600;">⚠️ ยังไม่มีข้อมูลอาหาร/จำนวนมื้อ กรุณาแก้ไขข้อมูล</div>' : '')
-      + '<div class="dog-card-meta" onclick="event.stopPropagation();" style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;margin-top:0.3rem;">'
-        + '<span style="font-size:0.72rem;color:var(--gray-dark);">อัปเดตอายุ:</span>'
-        + '<input type="text" id="age_input_'+d.dogId+'" value="'+escapeHtml(d.age||'')+'" placeholder="เช่น 2 ปี" style="width:80px;font-size:0.78rem;padding:2px 6px;border:0.5px solid var(--gray-line);border-radius:4px;"/>'
-        + '<button type="button" style="font-size:0.7rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0 0 0 2px;text-decoration:underline;" onclick="saveQuickAge(\''+d.dogId+'\')">อัปเดต</button>'
-        + '<span id="age_saved_'+d.dogId+'" style="font-size:0.7rem;color:#2e7d32;"></span>'
-      + '</div>'
       + '<div class="dog-card-price">฿'+totalPrice.toLocaleString()+(serviceType==='park' ? (parkPassType==='monthly'?'/เดือน':'/ครั้ง') : (bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน'))+'</div>'
       + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="event.stopPropagation();openEditDog(\''+d.dogId+'\')">✎ แก้ไขข้อมูลอื่นๆ</button>'
       + '</div>';
@@ -601,26 +596,6 @@ function toggleSavedDog(dogId) {
   }
 }
 
-async function saveQuickAge(dogId) {
-  var input = document.getElementById('age_input_'+dogId);
-  var newAge = input.value.trim();
-  var dog = savedDogs.find(function(d){ return d.dogId === dogId; });
-  if (!dog || !newAge) return;
-  var data = {
-    action:'updateDog', dogId: dogId,
-    name: dog.name, breed: dog.breed, gender: dog.gender, neutered: dog.neutered,
-    weight: dog.weight, age: newAge, foodType: dog.foodType||'', mealsPerDay: dog.mealsPerDay||'',
-    tickControl: dog.tickControl||'', note: dog.note||''
-  };
-  var savedTag = document.getElementById('age_saved_'+dogId);
-  try {
-    await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
-    dog.age = newAge; // อัปเดต local cache ด้วย เผื่อใช้ต่อในหน้าสรุป
-    if (savedTag) { savedTag.textContent = '✓ บันทึกแล้ว'; setTimeout(function(){ savedTag.textContent=''; }, 2000); }
-  } catch(e) {
-    if (savedTag) savedTag.textContent = 'บันทึกไม่สำเร็จ';
-  }
-}
 
 function toggleNewDogForm() {
   showingNewDogForm = !showingNewDogForm;
@@ -1121,6 +1096,37 @@ function parseAgeString(ageStr) {
   return {years:years, months:months};
 }
 
+// timestamp ที่บันทึกไว้เป็น string แบบไทย เช่น "14/9/2569 14:30:00" (ปี พ.ศ.) — แปลงกลับเป็น Date จริง
+function parseThaiTimestamp(str) {
+  if (!str) return null;
+  var m = String(str).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (!m) return null;
+  var day = parseInt(m[1],10), month = parseInt(m[2],10), yearBE = parseInt(m[3],10);
+  var yearCE = yearBE - 543;
+  var d = new Date(yearCE, month-1, day);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// คำนวณอายุปัจจุบัน โดยนับต่อจากอายุที่เคยบันทึกไว้ ณ วันที่บันทึกนั้น
+function calcCurrentAge(ageStr, timestampStr) {
+  if (!ageStr) return '';
+  var recordDate = parseThaiTimestamp(timestampStr);
+  if (!recordDate) return ageStr; // ไม่มี/อ่าน timestamp ไม่ได้ → โชว์ค่าที่บันทึกไว้เดิม
+  var parsed = parseAgeString(ageStr);
+  var totalMonthsAtRecord = (parseInt(parsed.years)||0)*12 + (parseInt(parsed.months)||0);
+  var now = new Date();
+  var elapsedMonths = (now.getFullYear()-recordDate.getFullYear())*12 + (now.getMonth()-recordDate.getMonth());
+  if (now.getDate() < recordDate.getDate()) elapsedMonths--;
+  if (elapsedMonths < 0) elapsedMonths = 0;
+  var totalMonthsNow = totalMonthsAtRecord + elapsedMonths;
+  var years = Math.floor(totalMonthsNow/12);
+  var months = totalMonthsNow%12;
+  var parts = [];
+  if (years) parts.push(years+' ปี');
+  parts.push(months+' เดือน');
+  return parts.join(' ');
+}
+
 function openEditDog(dogId) {
   var dog = savedDogs.find(function(d){ return d.dogId === dogId; });
   if (!dog) return;
@@ -1131,7 +1137,7 @@ function openEditDog(dogId) {
 }
 
 function renderEditDogForm(dog) {
-  var ageParsed = parseAgeString(dog.age);
+  var ageParsed = parseAgeString(calcCurrentAge(dog.age, dog.timestamp));
   document.getElementById('editdog_title').textContent = 'แก้ไขข้อมูล: ' + dog.name;
   var foodOptions = [
     {v:'', l:'เลือก'}, {v:'เม็ด', l:'เม็ด (Dry food)'}, {v:'เปียก', l:'เปียก (Wet food)'},
