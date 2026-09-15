@@ -124,7 +124,7 @@
 
   <!-- SERVICE SELECT -->
   <div id="screen-service" class="card" style="display:none;">
-    <div class="section-label">Book a Stay</div>
+    <div class="section-label">Select a service</div>
     <h2>เลือกบริการ</h2>
     <div class="divider"></div>
     <p class="subtitle">เลือกบริการที่ต้องการจอง</p>
@@ -225,31 +225,31 @@
     <div class="steps"><div class="step active">1. วันที่</div><div class="step">2. น้องหมา</div><div class="step">3. สรุป</div></div>
     <div class="card">
       <div class="section-label">ขั้นตอนที่ 1</div>
-      <h2 style="font-family:'Space Mono','IBM Plex Sans Thai',monospace;">เลือกวันที่</h2>
+      <h2 style="font-family:'Space Mono','IBM Plex Sans Thai',monospace;">เลือกวันและเวลา</h2>
       <div class="divider"></div>
       <div class="form-group"><label>ประเภทการฝาก</label>
         <div class="mode-tabs">
-          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">Overnight Care | ค้างคืน</div>
+          <div class="mode-tab active" id="type_tab_overnight" onclick="selectBookingType('overnight')">Overnight | ค้างคืน</div>
           <div class="mode-tab" id="type_tab_daycare" onclick="selectBookingType('daycare')">Daycare | รายวัน</div>
         </div>
       </div>
       <!-- OVERNIGHT -->
       <div id="overnight_fields">
         <div class="form-row">
-          <div class="form-group"><label>วันที่ Drop-off</label><input type="date" id="bk_checkin" onchange="onCheckinDateChange()"/></div>
-          <div class="form-group"><label>วันที่ Pick-up</label><input type="date" id="bk_checkout" onchange="updateDates()"/></div>
+          <div class="form-group"><label>วันที่ส่ง</label><input type="date" id="bk_checkin" onchange="onCheckinDateChange()"/></div>
+          <div class="form-group"><label>วันที่รับ</label><input type="date" id="bk_checkout" onchange="updateDates()"/></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>เวลา Drop-off</label><select id="bk_checkin_time" onchange="onCheckinTimeChange()"></select></div>
-          <div class="form-group"><label>เวลา Pick-up</label><select id="bk_checkout_time" onchange="updateDates()"></select></div>
+          <div class="form-group"><label>เวลาส่ง</label><select id="bk_checkin_time" onchange="onCheckinTimeChange()"></select></div>
+          <div class="form-group"><label>เวลารับ</label><select id="bk_checkout_time" onchange="updateDates()"></select></div>
         </div>
       </div>
       <!-- DAYCARE -->
       <div id="daycare_fields" style="display:none;">
         <div class="form-group"><label>วันที่ฝาก</label><input type="date" id="bk_daycare_date" onchange="updateDates()"/></div>
         <div class="form-row">
-          <div class="form-group"><label>เวลา Drop-off</label><select id="bk_dropoff" onchange="onDropoffTimeChange()"></select></div>
-          <div class="form-group"><label>เวลา Pick-up</label><select id="bk_pickup" onchange="updateDates()"></select></div>
+          <div class="form-group"><label>เวลาส่ง</label><select id="bk_dropoff" onchange="onDropoffTimeChange()"></select></div>
+          <div class="form-group"><label>เวลารับ</label><select id="bk_pickup" onchange="updateDates()"></select></div>
         </div>
         <p style="display:none;">* รับฝากได้ตั้งแต่ 08:00–20:00 น. หากต้องการนอกเวลา กรุณาแจ้งเป็นกรณีพิเศษ</p>
       </div>
@@ -301,7 +301,7 @@
       <div style="background:var(--bg);border:1px solid var(--gray-line);border-radius:12px;padding:1.2rem;margin:1.2rem 0;">
         <div style="font-size:0.85rem;font-weight:600;color:var(--black);margin-bottom:0.8rem;">สแกน QR เพื่อชำระเงิน</div>
         <img src="assets/payment-qr.png" alt="QR Code ชำระเงิน" style="width:180px;height:180px;object-fit:contain;margin:0 auto 0.8rem;display:block;"/>
-        <p style="font-size:0.78rem;color:var(--gray-dark);line-height:1.7;">โอนแล้วรบกวนส่งสลิปยืนยันทาง LINE <a href="https://line.me/R/ti/p/@luneandco" target="_blank" style="color:var(--gold);font-weight:600;">@luneandco</a> เพื่อยืนยันการจองค่ะ</p>
+        <p style="font-size:0.78rem;color:var(--gray-dark);line-height:1.7;">รบกวนส่งสลิปการโอนเงินทาง LINE <a href="https://line.me/R/ti/p/@luneandco" target="_blank" style="color:var(--gold);font-weight:600;">@luneandco</a> เพื่อยืนยันการจอง</p>
       </div>
       <div id="confirm_msg"></div>
       <div class="btn-row">
@@ -331,12 +331,10 @@
   <div id="screen-success" class="card" style="display:none;">
     <div class="success-screen">
       <div class="success-icon">🐾</div>
-      <div class="section-label">Booking Received · จองสำเร็จ</div>
-      <h2>You're all set!</h2>
-      <p style="font-family:'Instrument Serif',serif;font-style:italic;font-size:1.1rem;color:var(--gold);margin:.2rem 0 .8rem;">รับคำขอจองแล้ว</p>
+      <h2>ได้รับการจองของคุณแล้ว</h2>
       <div class="divider" style="margin:0.8rem auto 1.5rem;"></div>
       <div class="booking-id-badge" id="success_bookingid">BK-0000</div>
-      <p style="font-size:0.78rem;color:var(--gray-dark);margin-top:0.5rem;margin-bottom:1.5rem;">กรุณาเก็บ Booking ID ไว้เป็นหลักฐาน · Please keep this as your reference.</p>
+      <p style="font-size:0.78rem;color:var(--gray-dark);margin-top:0.5rem;margin-bottom:1.5rem;">กรุณาเก็บ Booking ID ไว้เป็นหลักฐาน</p>
       <div style="background:var(--bg);border:1px solid var(--gray-line);border-radius:12px;padding:1.2rem;margin-bottom:1.5rem;">
         <div style="font-size:0.85rem;font-weight:600;color:var(--black);margin-bottom:0.8rem;">สแกน QR เพื่อชำระเงิน</div>
         <img src="assets/payment-qr.png" alt="QR Code ชำระเงิน" style="width:180px;height:180px;object-fit:contain;margin:0 auto 0.8rem;display:block;"/>
@@ -843,7 +841,7 @@ function onCheckinTimeChange() {
   var ciTime = document.getElementById('bk_checkin_time').value;
   var coSel = document.getElementById('bk_checkout_time');
   if (!ciTime) {
-    coSel.innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
+    coSel.innerHTML = '<option value="">— เลือกเวลาส่งก่อน —</option>';
     coSel.disabled = true;
   } else {
     coSel.disabled = false;
@@ -856,7 +854,7 @@ function onDropoffTimeChange() {
   var doTime = document.getElementById('bk_dropoff').value;
   var puSel = document.getElementById('bk_pickup');
   if (!doTime) {
-    puSel.innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
+    puSel.innerHTML = '<option value="">— เลือกเวลาส่งก่อน —</option>';
     puSel.disabled = true;
   } else {
     puSel.disabled = false;
@@ -885,7 +883,7 @@ function updateDates() {
     var rem = MAX_CAP - maxB;
     el.innerHTML = rem <= 0
       ? '<span style="color:var(--red);">⚠️ วันที่เลือกเต็มแล้ว</span>'
-      : '✓ ' + nights + ' คืน &nbsp;·&nbsp; Drop-off <strong>' + checkInTime + '</strong> → Pick-up <strong>' + checkOutTime + '</strong>'  // rem + '</strong> ที่';
+      : '✓ ' + nights + ' คืน &nbsp;·&nbsp; ส่ง <strong>' + checkInTime + '</strong> → รับ <strong>' + checkOutTime + '</strong>'  // rem + '</strong> ที่';
 
   } else {
     checkIn     = document.getElementById('bk_daycare_date').value;
@@ -895,7 +893,7 @@ function updateDates() {
     pickUpTime  = document.getElementById('bk_pickup').value;
     if (!checkIn || !dropOffTime || !pickUpTime) { el.style.display = 'none'; return; }
     if (dropOffTime >= pickUpTime) {
-      el.innerHTML = '<span style="color:var(--red);">⚠️ เวลา Pick-up ต้องหลัง Drop-off</span>';
+      el.innerHTML = '<span style="color:var(--red);">⚠️ เวลารับต้องหลังเวลาส่ง</span>';
       el.style.display = 'block'; return;
     }
     var dates = getDatesInRange(checkIn, checkOut, 'daycare');
@@ -904,7 +902,7 @@ function updateDates() {
     var rem = MAX_CAP - maxB;
     el.innerHTML = rem <= 0
       ? '<span style="color:var(--red);">⚠️ วันที่เลือกเต็มแล้ว</span>'
-      : '✓ Daycare &nbsp;·&nbsp; Drop-off <strong>' + dropOffTime + '</strong> – Pick-up <strong>' + pickUpTime + '</strong> น.'  // rem ที่';
+      : '✓ Daycare &nbsp;·&nbsp; ส่ง <strong>' + dropOffTime + '</strong> → รับ <strong>' + pickUpTime + '</strong> น.'  // rem ที่';
   }
   el.style.display = 'block';
 }
@@ -925,15 +923,15 @@ function goStep2() {
     checkOut     = document.getElementById('bk_checkout').value;
     checkInTime  = document.getElementById('bk_checkin_time').value;
     checkOutTime = document.getElementById('bk_checkout_time').value;
-    if (!checkIn)  { showMsg('date_msg','กรุณาเลือกวันที่ Drop-off','error'); return; }
-    if (!checkOut || new Date(checkOut) <= new Date(checkIn)) { showMsg('date_msg','กรุณาเลือกวันที่ Pick-up ให้ถูกต้อง','error'); return; }
+    if (!checkIn)  { showMsg('date_msg','กรุณาเลือกวันที่ส่ง','error'); return; }
+    if (!checkOut || new Date(checkOut) <= new Date(checkIn)) { showMsg('date_msg','กรุณาเลือกวันที่รับให้ถูกต้อง','error'); return; }
   } else {
     checkIn     = document.getElementById('bk_daycare_date').value;
     checkOut    = checkIn;
     dropOffTime = document.getElementById('bk_dropoff').value;
     pickUpTime  = document.getElementById('bk_pickup').value;
     if (!checkIn)  { showMsg('date_msg','กรุณาเลือกวันที่ฝาก','error'); return; }
-    if (dropOffTime >= pickUpTime) { showMsg('date_msg','เวลา Pick-up ต้องหลัง Drop-off','error'); return; }
+    if (dropOffTime >= pickUpTime) { showMsg('date_msg','เวลารับต้องหลังเวลาส่ง','error'); return; }
   }
   document.getElementById('date_msg').innerHTML = '';
   renderSavedDogs();
@@ -1302,7 +1300,7 @@ function goStep3() {
     '<div class="summary-row"><span class="summary-label">ชื่อ</span><span class="summary-val">'+(currentOwner.name||currentOwner.lineName)+'</span></div>'
     +'<div class="summary-row"><span class="summary-label">ประเภท</span><span class="summary-val">'+(bookingType==='overnight'?'Overnight Care':'Daycare')+'</span></div>'
     +'<div class="summary-row"><span class="summary-label">วันที่</span><span class="summary-val">'+checkIn+(bookingType==='overnight'?' → '+checkOut:'')+'</span></div>'
-    +'<div class="summary-row"><span class="summary-label">เวลา</span><span class="summary-val">'+(bookingType==='overnight'?'Drop-off '+checkInTime+' → Pick-up '+checkOutTime+' น.':'Drop-off '+dropOffTime+' – Pick-up '+pickUpTime+' น.')+'</span></div>'
+    +'<div class="summary-row"><span class="summary-label">เวลา</span><span class="summary-val">'+(bookingType==='overnight'?'ส่ง '+checkInTime+' → รับ '+checkOutTime+' น.':'ส่ง '+dropOffTime+' → รับ '+pickUpTime+' น.')+'</span></div>'
     +'<div class="summary-row"><span class="summary-label">ระยะเวลา</span><span class="summary-val">'+(bookingType==='overnight'?getOvernightLabel():'1 วัน')+'</span></div>'
     +dogsHtml
     +'<div class="summary-total"><span>ราคารวม</span><span class="summary-total-price">฿'+totalPrice.toLocaleString()+'</span></div>';
@@ -1457,10 +1455,10 @@ window.addEventListener('load', async function() {
   document.getElementById('bk_checkout').disabled=true;
   document.getElementById('bk_daycare_date').min=tomorrow;
   fillTimeSelect('bk_checkin_time','');
-  document.getElementById('bk_checkout_time').innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
+  document.getElementById('bk_checkout_time').innerHTML = '<option value="">— เลือกเวลาส่งก่อน —</option>';
   document.getElementById('bk_checkout_time').disabled = true;
   fillTimeSelect('bk_dropoff','');
-  document.getElementById('bk_pickup').innerHTML = '<option value="">— เลือก Drop-off ก่อน —</option>';
+  document.getElementById('bk_pickup').innerHTML = '<option value="">— เลือกเวลาส่งก่อน —</option>';
   document.getElementById('bk_pickup').disabled = true;
   updateType(); // set initial show/hide state
 
