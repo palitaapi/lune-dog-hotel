@@ -27,36 +27,36 @@ nav{
   position:fixed;inset:0 0 auto;height:66px;z-index:99;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 48px;
-  background:var(--yellow);
-  border-bottom:1px solid rgba(66,47,37,.12);
+  background:var(--cocoa);
+  border-bottom:1px solid rgba(0,0,0,.15);
 }
 .logo{
   font-family:'Ranchers',sans-serif;letter-spacing:.01em;
-  color:var(--cocoa);text-decoration:none;white-space:nowrap;
+  color:var(--cream);text-decoration:none;white-space:nowrap;
   display:flex;align-items:center;gap:10px;
 }
 .logo *{font-family:'Ranchers',sans-serif;}
-.logo-main{font-size:1.5rem;line-height:0.85;color:var(--cocoa);}
-.logo-sub{font-size:.72rem;line-height:1.05;letter-spacing:.02em;color:var(--cream);text-align:center;}
+.logo-main{font-size:1.5rem;line-height:0.85;color:var(--cream);}
+.logo-sub{font-size:.72rem;line-height:1.05;letter-spacing:.02em;color:var(--yellow);text-align:center;}
 .logo-sub .divider{display:flex;align-items:center;gap:4px;margin:2px 0;}
-.logo-sub .divider .bar{flex:1;height:1.5px;background:var(--cream);}
-.logo-sub .divider .dot{width:4px;height:4px;border-radius:50%;background:var(--cocoa);flex:none;}
+.logo-sub .divider .bar{flex:1;height:1.5px;background:var(--yellow);}
+.logo-sub .divider .dot{width:4px;height:4px;border-radius:50%;background:var(--cream);flex:none;}
 .nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:.82rem;letter-spacing:.03em;transition:color .15s;}
-.nav-links a:hover{color:var(--cocoa);}
+.nav-links a{color:rgba(255,247,239,.75);text-decoration:none;font-size:.82rem;letter-spacing:.03em;transition:color .15s;}
+.nav-links a:hover{color:var(--yellow);}
 .nav-r{display:flex;align-items:center;gap:.8rem;}
 .btn-nav-primary{
-  background:var(--cocoa);color:var(--cream);
+  background:var(--yellow);color:var(--cocoa);
   padding:.5rem 1.3rem;border-radius:999px;text-decoration:none;
   font-size:.78rem;font-weight:600;letter-spacing:.04em;white-space:nowrap;transition:background .15s;
 }
-.btn-nav-primary:hover{background:var(--espresso);}
+.btn-nav-primary:hover{background:var(--honey);}
 .btn-nav-ghost{
-  background:transparent;color:var(--cocoa);
+  background:var(--cream);color:var(--cocoa);
   padding:.48rem 1.2rem;border-radius:999px;text-decoration:none;
-  font-size:.78rem;font-weight:500;border:1.5px solid rgba(66,47,37,.3);white-space:nowrap;transition:all .15s;
+  font-size:.78rem;font-weight:500;border:1.5px solid transparent;white-space:nowrap;transition:all .15s;
 }
-.btn-nav-ghost:hover{border-color:var(--cocoa);}
+.btn-nav-ghost:hover{background:var(--bg2);}
 
 /* ── HERO ── */
 .hero{
@@ -66,7 +66,7 @@ nav{
   overflow:hidden;
 }
 .hero-label{
-  font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.22em;
+  font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.2em;
   text-transform:uppercase;color:#5b4327;margin-bottom:2.8rem;
 }
 .hero h1{
@@ -76,7 +76,7 @@ nav{
 }
 .hero h1 em{font-style:italic;}
 .hero-sub{
-  font-size:1.05rem;color:#5b4327;line-height:1.8;
+  font-size:.92rem;color:#5b4327;line-height:1.8;
   max-width:520px;margin:0 auto .9rem;font-weight:300;
 }
 .hero-btns{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-bottom:4rem;}
@@ -381,11 +381,11 @@ window.addEventListener('load',initCalendar);
     <span class="logo-sub">Dog Hotel<span class="divider"><span class="bar"></span><span class="dot"></span><span class="bar"></span></span>Dog Park</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#services">Services</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#availability">Availability</a></li>
-    <li><a href="#reviews">Reviews</a></li>
-    <li><a href="#location">Find Us</a></li>
+    <li><a href="#services">บริการ</a></li>
+    <li><a href="#pricing">ราคา</a></li>
+    <li><a href="#availability">ปฏิทินว่าง</a></li>
+    <li><a href="#reviews">รีวิว</a></li>
+    <li><a href="#location">โลเคชัน</a></li>
   </ul>
   <div class="nav-r">
     <a href="booking.html" class="btn-nav-primary">จองเลย</a>
@@ -399,8 +399,8 @@ window.addEventListener('load',initCalendar);
   <p class="hero-sub">โรงแรมน้องหมาแบบพรีเมียม และสนามกว้างวิ่งเล่นอิสระ</p>
   <div class="hero-label">Premium Dog Hotel &amp; Dog Park<br><span style="color:var(--cream);"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:3px;margin-top:-1px;opacity:.7;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Bang Yai, Nonthaburi</span></div>
   <div class="hero-btns">
-    <a href="booking.html" class="btn-dark">Book Now · จองเลย</a>
-    <a href="https://line.me/R/ti/p/@luneandco" target="_blank" class="btn-ghost">Contact Us · LINE @luneandco</a>
+    <a href="booking.html" class="btn-dark">จองเลย</a>
+    <a href="https://line.me/R/ti/p/@luneandco" target="_blank" class="btn-ghost">ติดต่อเรา · LINE @luneandco</a>
   </div>
   <div style="height:6rem;"></div>
   <div class="hero-slab">
@@ -567,8 +567,8 @@ window.addEventListener('load',initCalendar);
       <p style="font-size:.7rem;color:#aaa;margin-top:.5rem;">Update map with your exact address</p>
     </div>
     <div>
-      <div class="loc-row"><div class="loc-lbl">Where</div><div class="loc-val">Near Anasiri Village, Bang Yai, Nonthaburi<br>ใกล้หมู่บ้านอนาสิริ บางใหญ่ นนทบุรี</div></div>
-      <div class="loc-row"><div class="loc-lbl">Hours</div><div class="loc-val">Drop-off &amp; pick-up: 8:00–20:00 daily<br>เช็คอิน &amp; เช็คเอาท์ : 8:00–20:00 ทุกวัน</div></div>
+      <div class="loc-row"><div class="loc-lbl">ที่ตั้ง</div><div class="loc-val">ใกล้หมู่บ้านอนาสิริ บางใหญ่ นนทบุรี</div></div>
+      <div class="loc-row"><div class="loc-lbl">เวลาทำการ</div><div class="loc-val">Dog Hotel : 8:00–20:00 ทุกวัน<br>Dog Park : 12:00-19:00 เสาร์-อาทิตย์</div></div>
       <div class="loc-row"><div class="loc-lbl">LINE</div><div class="loc-val">@luneandco</div></div>
       <div class="loc-row"><div class="loc-lbl">Tel</div><div class="loc-val">08X-XXX-XXXX</div></div>
       <div style="display:flex;justify-content:flex-start;gap:.7rem;margin-top:1.6rem;">
@@ -589,10 +589,10 @@ window.addEventListener('load',initCalendar);
 <section id="cta">
   <div class="band-kicker">Ready when you are</div>
   <h2>Your dog<br>deserves <em>this.</em></h2>
-  <p class="band-sub">จองผ่านเว็บหรือไลน์ ยืนยันภายใน 24 ชม.<br>Quick booking via web or LINE, confirmed within 24 hours.</p>
+  <p class="band-sub">จองผ่านเว็บหรือไลน์ ยืนยันภายใน 24 ชม.</p>
   <div class="band-btns">
-    <a href="booking.html" class="btn-yellow">Book Now · จองเลย →</a>
-    <a href="https://line.me/R/ti/p/@luneandco" target="_blank" class="btn-cream-ghost">Contact Us · LINE @luneandco</a>
+    <a href="booking.html" class="btn-yellow">จองเลย →</a>
+    <a href="https://line.me/R/ti/p/@luneandco" target="_blank" class="btn-cream-ghost">ติดต่อเรา · LINE @luneandco</a>
   </div>
 </section>
 
