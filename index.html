@@ -199,7 +199,7 @@ section{padding:5.5rem 5%;scroll-margin-top:80px;}
 .pr-wt{font-size:.78rem;color:var(--muted);margin-bottom:1.3rem;font-weight:300;}
 .pr-row{display:flex;justify-content:space-between;align-items:baseline;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.85rem;}
 .pr-row:last-of-type{border-bottom:none;}
-.pr-lbl{color:var(--muted);font-weight:300;}
+.pr-lbl{color:var(--muted);font-weight:300;white-space:nowrap;}
 .pr-val{font-size:1.1rem;font-weight:700;color:var(--cocoa);}
 .pr-val small{font-size:.7rem;font-weight:300;color:var(--muted);}
 .pr-btn{
@@ -535,7 +535,7 @@ window.addEventListener('load',initCalendar);
   <div class="sec-kicker">Pricing</div>
   <h2 class="sec-h2"><span style="color:var(--cocoa);">🌳 Dog Park</span><br><em style="color:var(--cream);">Free to roam.</em></h2>
   <div class="yl-bar"></div>
-  <div class="pr-grid" style="max-width:340px;margin-left:auto;margin-right:auto;margin-top:2rem;">
+  <div class="pr-grid" style="grid-template-columns:1fr;max-width:280px;margin-left:auto;margin-right:auto;margin-top:2rem;">
     <div class="pr-card">
       <div class="pr-tier">Day Pass</div>
       <div class="pr-name">Dog Park</div>
