@@ -106,6 +106,7 @@ nav{
   margin-top:-5vw;margin-bottom:-1rem;
   position:relative;z-index:1;
 }
+.hero-spacer{height:6rem;}
 .hero-illus-wrap img{
   width:min(540px,60vw);
 }
@@ -283,12 +284,13 @@ footer p{font-size:.73rem;color:rgba(255,247,239,.3);font-weight:300;}
   .hero{padding-top:calc(66px + 3rem);}
   .hero h1{font-size:clamp(3.2rem,12vw,6rem);}
   .hero-illus-wrap img{width:80vw;}
+  .hero-spacer{height:2.5rem;}
   .hero-slab{padding-bottom:1.5rem;}
   .hero-stats{flex-direction:column;align-items:center;}
   .hero-stat{border-right:none;border-bottom:1px solid var(--line);width:100%;max-width:none;}
   .hero-stat:last-child{border-bottom:none;}
   section{padding:4rem 24px;}
-  #services{padding:4rem 24px;}
+  #services{padding:2rem 24px 4rem;}
   .srv-cards,.pr-grid,.promo-grid{grid-template-columns:1fr;}
   .pricing-split{grid-template-columns:1fr;gap:2rem;}
   .pr-feats{grid-template-columns:1fr;}
@@ -403,7 +405,7 @@ window.addEventListener('load',initCalendar);
     <a href="booking.html" class="btn-dark">จองเลย</a>
     <a href="https://line.me/R/ti/p/@luneandco" target="_blank" class="btn-ghost">ติดต่อเรา · LINE @luneandco</a>
   </div>
-  <div style="height:6rem;"></div>
+  <div class="hero-spacer"></div>
   <div class="hero-slab">
     <div class="hero-illus-wrap">
       <img src="assets/dogs-brown-v2.png" alt="Lune's Dog Hotel &amp; Dog Park"/>
