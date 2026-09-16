@@ -126,7 +126,7 @@ nav{
 .hero-stat-label{font-size:.78rem;color:var(--muted);margin-top:.3rem;font-weight:300;}
 
 /* ── SHARED SECTION STYLES ── */
-section{padding:5.5rem 5%;}
+section{padding:5.5rem 5%;scroll-margin-top:80px;}
 .sec-kicker{
   font-family:'Space Mono',monospace;font-size:.65rem;
   letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;
@@ -290,7 +290,7 @@ footer p{font-size:.73rem;color:rgba(255,247,239,.3);font-weight:300;}
   .hero-stat{border-right:none;border-bottom:1px solid var(--line);width:100%;max-width:none;}
   .hero-stat:last-child{border-bottom:none;}
   section{padding:4rem 24px;}
-  #services{padding:0.8rem 24px 4rem;}
+  #services{padding:4rem 24px;}
   .srv-cards,.pr-grid,.promo-grid{grid-template-columns:1fr;}
   .pricing-split{grid-template-columns:1fr;gap:2rem;}
   .pr-feats{grid-template-columns:1fr;}
@@ -423,7 +423,7 @@ window.addEventListener('load',initCalendar);
     <p class="srv-tagline">Every dog gets to roam by day and rest safely by night.</p>
   </div>
   <div class="srv-cards">
-    <div class="srv-card">
+    <a href="#pricing" class="srv-card" style="text-decoration:none;color:inherit;cursor:pointer;">
       <div class="srv-n">01</div>
       <div class="srv-icon">🏡</div>
       <h3>Dog Hotel</h3>
@@ -431,65 +431,52 @@ window.addEventListener('load',initCalendar);
       <div class="srv-price">Overnight From ฿400 / night</div>
       <div class="srv-price">Daycare From ฿280 / day</div>
       <div style="color:rgba(255,247,239,.6);font-size:.72rem;margin-top:.5rem;">เปิดทุกวัน ตั้งแต่ 08:00–20:00 น.</div>
-    </div>
-    <div class="srv-card">
+      <div style="color:var(--honey);font-size:.72rem;margin-top:.8rem;font-weight:600;">ดูราคาและจอง →</div>
+    </a>
+    <a href="#pricing-park" class="srv-card" style="text-decoration:none;color:inherit;cursor:pointer;">
       <div class="srv-n">02</div>
       <div class="srv-icon">🌳</div>
       <h3>Dog Park</h3>
       <p>ปล่อยวิ่งเล่นอิสระในสนามเปิด</p>
       <div class="srv-price">Dog Park ฿100 / dog</div>
       <div style="color:rgba(255,247,239,.6);font-size:.72rem;margin-top:.5rem;">เปิดเสาร์-อาทิตย์ ตั้งแต่ 12:00–19:00 น.</div>
-    </div>
+      <div style="color:var(--honey);font-size:.72rem;margin-top:.8rem;font-weight:600;">ดูราคาและจอง →</div>
+    </a>
 
   </div>
 </section>
 
 <!-- PRICING -->
 <section id="pricing">
-  <div class="sec-kicker">Pricing</div>
+  <div class="sec-kicker">Pricing · Dog Hotel</div>
   <h2 class="sec-h2"><span style="color:var(--cocoa);">Simple rates,</span><br><em style="color:var(--gold);">no surprises.</em></h2>
   <div class="yl-bar"></div>
   <p class="sec-sub">ราคาเดียวครอบคลุมทุกอย่าง</p>
-  <div class="pricing-split">
-    <div>
-      <div class="pricing-col-label">Dog Hotel</div>
-      <div class="pr-grid">
-        <div class="pr-card">
-          <div class="pr-tier">Small</div>
-          <div class="pr-name">Small Paws</div>
-          <div class="pr-wt">Under 10 kg</div>
-          <div class="pr-row"><span class="pr-lbl">Overnight</span><span class="pr-val">฿400 <small>/night</small></span></div>
-          <div class="pr-row"><span class="pr-lbl">Daycare</span><span class="pr-val">฿280 <small>/day</small></span></div>
-          <a href="booking.html?service=hotel" class="pr-btn">Reserve</a>
-        </div>
-        <div class="pr-card">
-          <div class="pr-tier">Medium</div>
-          <div class="pr-name">Medium Paws</div>
-          <div class="pr-wt">10–18 kg</div>
-          <div class="pr-row"><span class="pr-lbl">Overnight</span><span class="pr-val">฿550 <small>/night</small></span></div>
-          <div class="pr-row"><span class="pr-lbl">Daycare</span><span class="pr-val">฿385 <small>/day</small></span></div>
-          <a href="booking.html?service=hotel" class="pr-btn">Reserve</a>
-        </div>
-        <div class="pr-card">
-          <div class="pr-tier">Large</div>
-          <div class="pr-name">Large Paws</div>
-          <div class="pr-wt">18–25 kg</div>
-          <div class="pr-row"><span class="pr-lbl">Overnight</span><span class="pr-val">฿700 <small>/night</small></span></div>
-          <div class="pr-row"><span class="pr-lbl">Daycare</span><span class="pr-val">฿490 <small>/day</small></span></div>
-          <a href="booking.html?service=hotel" class="pr-btn">Reserve</a>
-        </div>
-      </div>
+  <div class="pricing-col-label">Dog Hotel</div>
+  <div class="pr-grid">
+    <div class="pr-card">
+      <div class="pr-tier">Small</div>
+      <div class="pr-name">Small Paws</div>
+      <div class="pr-wt">Under 10 kg</div>
+      <div class="pr-row"><span class="pr-lbl">Overnight</span><span class="pr-val">฿400 <small>/night</small></span></div>
+      <div class="pr-row"><span class="pr-lbl">Daycare</span><span class="pr-val">฿280 <small>/day</small></span></div>
+      <a href="booking.html?service=hotel" class="pr-btn">Reserve</a>
     </div>
-    <div>
-      <div class="pricing-col-label">Dog Park</div>
-      <div class="pr-card" style="border:1px solid var(--line);">
-        <div class="pr-tier">Day Pass</div>
-        <div class="pr-name">Dog Park</div>
-        <div class="pr-wt">เสาร์-อาทิตย์ 12:00–19:00 น.</div>
-        <div class="pr-row"><span class="pr-lbl">รายครั้ง</span><span class="pr-val">฿100 <small>/visit</small></span></div>
-        <div class="pr-row"><span class="pr-lbl">รายเดือน</span><span class="pr-val">฿500 <small>/month</small></span></div>
-        <a href="booking.html?service=park" class="pr-btn">Reserve</a>
-      </div>
+    <div class="pr-card">
+      <div class="pr-tier">Medium</div>
+      <div class="pr-name">Medium Paws</div>
+      <div class="pr-wt">10–18 kg</div>
+      <div class="pr-row"><span class="pr-lbl">Overnight</span><span class="pr-val">฿550 <small>/night</small></span></div>
+      <div class="pr-row"><span class="pr-lbl">Daycare</span><span class="pr-val">฿385 <small>/day</small></span></div>
+      <a href="booking.html?service=hotel" class="pr-btn">Reserve</a>
+    </div>
+    <div class="pr-card">
+      <div class="pr-tier">Large</div>
+      <div class="pr-name">Large Paws</div>
+      <div class="pr-wt">18–25 kg</div>
+      <div class="pr-row"><span class="pr-lbl">Overnight</span><span class="pr-val">฿700 <small>/night</small></span></div>
+      <div class="pr-row"><span class="pr-lbl">Daycare</span><span class="pr-val">฿490 <small>/day</small></span></div>
+      <a href="booking.html?service=hotel" class="pr-btn">Reserve</a>
     </div>
   </div>
   <div class="pr-includes" style="text-align:center;">
@@ -509,7 +496,7 @@ window.addEventListener('load',initCalendar);
 
 <!-- AVAILABILITY -->
 <section id="availability">
-  <div class="sec-kicker">Availability</div>
+  <div class="sec-kicker">Availability · Dog Hotel</div>
   <h2 class="sec-h2">Check open dates.</h2>
   <div class="yl-bar"></div>
   <p class="sec-sub">เรารับน้องหมาจำนวนจำกัดต่อวัน เพื่อให้ทุกตัวได้รับการดูแลอย่างใกล้ชิด</p>
@@ -528,6 +515,34 @@ window.addEventListener('load',initCalendar);
       <div><span class="leg-dot" style="background:var(--honey);"></span>Occupied</div>
       <div><span class="leg-dot" style="background:var(--cocoa);"></span>Full</div>
       <div><span class="leg-dot" style="outline:2px solid var(--yellow);background:#fff;"></span>Today</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING: DOG PARK -->
+<section id="pricing-park">
+  <div class="sec-kicker">Pricing · Dog Park</div>
+  <h2 class="sec-h2"><span style="color:var(--cocoa);">Free to roam,</span><br><em style="color:var(--gold);">flat rate.</em></h2>
+  <div class="yl-bar"></div>
+  <p class="sec-sub">เปิดเฉพาะเสาร์-อาทิตย์ 12:00–19:00 น.</p>
+  <div class="pricing-col-label">Dog Park</div>
+  <div class="pr-grid" style="max-width:340px;margin-left:auto;margin-right:auto;">
+    <div class="pr-card">
+      <div class="pr-tier">Day Pass</div>
+      <div class="pr-name">Dog Park</div>
+      <div class="pr-wt">เสาร์-อาทิตย์ 12:00–19:00 น.</div>
+      <div class="pr-row"><span class="pr-lbl">รายครั้ง</span><span class="pr-val">฿100 <small>/visit</small></span></div>
+      <div class="pr-row"><span class="pr-lbl">รายเดือน</span><span class="pr-val">฿500 <small>/month</small></span></div>
+      <a href="booking.html?service=park" class="pr-btn">Reserve</a>
+    </div>
+  </div>
+  <div class="pr-includes" style="text-align:center;">
+    <div class="pr-inc-title" style="font-size:.78rem;">Every entry includes</div>
+    <div class="pr-feats" style="display:inline-grid;grid-template-columns:1fr 1fr;gap:.6rem 3rem;text-align:left;">
+      <div class="pr-feat" style="font-size:.92rem;">สนามปล่อยวิ่งเล่นอิสระ ไม่ขังกรง</div>
+      <div class="pr-feat" style="font-size:.92rem;">มีเจ้าหน้าที่ดูแลตลอดเวลา</div>
+      <div class="pr-feat" style="font-size:.92rem;">น้ำดื่มสะอาด</div>
+      <div class="pr-feat" style="font-size:.92rem;">สนามกว้าง อากาศถ่ายเทดี</div>
     </div>
   </div>
 </section>
