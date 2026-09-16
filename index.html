@@ -170,6 +170,20 @@ section{padding:5.5rem 5%;scroll-margin-top:80px;}
 /* ── PRICING ── */
 #pricing{background:var(--bg2);}
 .pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+.pr-card-combined{
+  max-width:560px;margin:0 auto;background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:2rem 2.2rem 2.2rem;
+}
+.pr-combined-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;row-gap:.2rem;}
+.pr-combined-head{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding-bottom:.7rem;border-bottom:1px solid var(--line);margin-bottom:.3rem;}
+.pr-combined-head:not(:first-child){text-align:center;}
+.pr-combined-size{padding:.8rem 0;border-bottom:1px solid var(--line);text-align:left;}
+.pr-combined-size b{font-size:.95rem;color:var(--cocoa);display:block;}
+.pr-combined-size small{font-size:.74rem;color:var(--muted);font-weight:300;}
+.pr-combined-price{padding:.8rem 0;border-bottom:1px solid var(--line);text-align:center;font-size:1.05rem;font-weight:700;color:var(--cocoa);}
+.pr-combined-price small{font-size:.68rem;font-weight:300;color:var(--muted);display:block;}
+.pr-combined-grid .pr-combined-size:last-of-type,
+.pr-combined-grid .pr-combined-price:nth-last-child(-n+2){border-bottom:none;}
 .pricing-split{display:grid;grid-template-columns:2fr 1fr;gap:2.5rem;align-items:start;margin-top:2.5rem;}
 .pricing-col-label{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
 .pricing-split .pr-grid{margin-top:0;}
@@ -202,6 +216,11 @@ section{padding:5.5rem 5%;scroll-margin-top:80px;}
 }
 .pr-feats{display:grid;grid-template-columns:1fr 1fr;gap:.4rem 2rem;}
 .pr-feat{display:flex;align-items:flex-start;gap:.55rem;font-size:.82rem;color:var(--muted);padding:.3rem 0;font-weight:300;}
+#pricing-park .sec-kicker,#pricing-park .pricing-col-label,#pricing-park .pr-inc-title{color:var(--cocoa);}
+#pricing-park .yl-bar{background:var(--cocoa);}
+#pricing-park .sec-sub,#pricing-park .pr-feat{color:var(--espresso);}
+#pricing-park .pr-includes{border-top-color:var(--cocoa);}
+#pricing-park .pr-feat::before{background:var(--cocoa);}
 .pr-feat::before{content:'';flex:none;width:5px;height:5px;background:var(--yellow);border-radius:50%;margin-top:7px;}
 
 /* ── CALENDAR ── */
@@ -447,37 +466,29 @@ window.addEventListener('load',initCalendar);
 </section>
 
 <!-- PRICING -->
-<section id="pricing">
-  <div class="sec-kicker">Pricing · Dog Hotel</div>
-  <h2 class="sec-h2"><span style="color:var(--cocoa);">Simple rates,</span><br><em style="color:var(--gold);">no surprises.</em></h2>
+<section id="pricing" style="background:#fff;">
+  <div class="sec-kicker">Pricing</div>
+  <h2 class="sec-h2"><span style="color:var(--cocoa);">🏡 Dog Hotel</span><br><em style="color:var(--gold);">Simple rates.</em></h2>
   <div class="yl-bar"></div>
-  <p class="sec-sub">ราคาเดียวครอบคลุมทุกอย่าง</p>
-  <div class="pricing-col-label">Dog Hotel</div>
-  <div class="pr-grid">
-    <div class="pr-card">
-      <div class="pr-tier">Small</div>
-      <div class="pr-name">Small Paws</div>
-      <div class="pr-wt">Under 10 kg</div>
-      <div class="pr-row"><span class="pr-lbl">Overnight</span><span class="pr-val">฿400 <small>/night</small></span></div>
-      <div class="pr-row"><span class="pr-lbl">Daycare</span><span class="pr-val">฿280 <small>/day</small></span></div>
-      <a href="booking.html?service=hotel" class="pr-btn">Reserve</a>
+  <div class="pr-card-combined" style="margin-top:2rem;">
+    <div class="pr-combined-grid">
+      <div class="pr-combined-head"></div>
+      <div class="pr-combined-head">Overnight</div>
+      <div class="pr-combined-head">Daycare</div>
+
+      <div class="pr-combined-size"><b>Small Paws</b><small>Under 10 kg</small></div>
+      <div class="pr-combined-price">฿400<small>/night</small></div>
+      <div class="pr-combined-price">฿280<small>/day</small></div>
+
+      <div class="pr-combined-size"><b>Medium Paws</b><small>10–18 kg</small></div>
+      <div class="pr-combined-price">฿550<small>/night</small></div>
+      <div class="pr-combined-price">฿385<small>/day</small></div>
+
+      <div class="pr-combined-size"><b>Large Paws</b><small>18–25 kg</small></div>
+      <div class="pr-combined-price">฿700<small>/night</small></div>
+      <div class="pr-combined-price">฿490<small>/day</small></div>
     </div>
-    <div class="pr-card">
-      <div class="pr-tier">Medium</div>
-      <div class="pr-name">Medium Paws</div>
-      <div class="pr-wt">10–18 kg</div>
-      <div class="pr-row"><span class="pr-lbl">Overnight</span><span class="pr-val">฿550 <small>/night</small></span></div>
-      <div class="pr-row"><span class="pr-lbl">Daycare</span><span class="pr-val">฿385 <small>/day</small></span></div>
-      <a href="booking.html?service=hotel" class="pr-btn">Reserve</a>
-    </div>
-    <div class="pr-card">
-      <div class="pr-tier">Large</div>
-      <div class="pr-name">Large Paws</div>
-      <div class="pr-wt">18–25 kg</div>
-      <div class="pr-row"><span class="pr-lbl">Overnight</span><span class="pr-val">฿700 <small>/night</small></span></div>
-      <div class="pr-row"><span class="pr-lbl">Daycare</span><span class="pr-val">฿490 <small>/day</small></span></div>
-      <a href="booking.html?service=hotel" class="pr-btn">Reserve</a>
-    </div>
+    <a href="booking.html?service=hotel" class="pr-btn" style="display:block;text-align:center;margin-top:1.5rem;">Reserve</a>
   </div>
   <div class="pr-includes" style="text-align:center;">
     <div class="pr-inc-title" style="font-size:.78rem;">Every stay includes</div>
@@ -495,7 +506,7 @@ window.addEventListener('load',initCalendar);
 </section>
 
 <!-- AVAILABILITY -->
-<section id="availability">
+<section id="availability" style="background:#fff;">
   <div class="sec-kicker">Availability · Dog Hotel</div>
   <h2 class="sec-h2">Check open dates.</h2>
   <div class="yl-bar"></div>
@@ -520,13 +531,11 @@ window.addEventListener('load',initCalendar);
 </section>
 
 <!-- PRICING: DOG PARK -->
-<section id="pricing-park">
-  <div class="sec-kicker">Pricing · Dog Park</div>
-  <h2 class="sec-h2"><span style="color:var(--cocoa);">Free to roam,</span><br><em style="color:var(--gold);">flat rate.</em></h2>
+<section id="pricing-park" style="background:var(--honey);">
+  <div class="sec-kicker">Pricing</div>
+  <h2 class="sec-h2"><span style="color:var(--cocoa);">🌳 Dog Park</span><br><em style="color:var(--cream);">Free to roam.</em></h2>
   <div class="yl-bar"></div>
-  <p class="sec-sub">เปิดเฉพาะเสาร์-อาทิตย์ 12:00–19:00 น.</p>
-  <div class="pricing-col-label">Dog Park</div>
-  <div class="pr-grid" style="max-width:340px;margin-left:auto;margin-right:auto;">
+  <div class="pr-grid" style="max-width:340px;margin-left:auto;margin-right:auto;margin-top:2rem;">
     <div class="pr-card">
       <div class="pr-tier">Day Pass</div>
       <div class="pr-name">Dog Park</div>
@@ -539,7 +548,7 @@ window.addEventListener('load',initCalendar);
   <div class="pr-includes" style="text-align:center;">
     <div class="pr-inc-title" style="font-size:.78rem;">Every entry includes</div>
     <div class="pr-feats" style="display:inline-grid;grid-template-columns:1fr 1fr;gap:.6rem 3rem;text-align:left;">
-      <div class="pr-feat" style="font-size:.92rem;">สนามปล่อยวิ่งเล่นอิสระ ไม่ขังกรง</div>
+      <div class="pr-feat" style="font-size:.92rem;">สนามปล่อยวิ่งเล่นอิสระ</div>
       <div class="pr-feat" style="font-size:.92rem;">มีเจ้าหน้าที่ดูแลตลอดเวลา</div>
       <div class="pr-feat" style="font-size:.92rem;">น้ำดื่มสะอาด</div>
       <div class="pr-feat" style="font-size:.92rem;">สนามกว้าง อากาศถ่ายเทดี</div>
