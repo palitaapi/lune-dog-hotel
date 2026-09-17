@@ -87,11 +87,11 @@ nav{
 }
 .btn-dark:hover{background:var(--espresso);}
 .btn-ghost{
-  background:transparent;color:var(--cocoa);
+  background:var(--cream);color:var(--cocoa);
   padding:.88rem 2rem;border-radius:999px;text-decoration:none;
-  font-size:.88rem;font-weight:500;border:2px solid var(--cocoa);transition:all .15s;
+  font-size:.88rem;font-weight:500;border:2px solid var(--cream);transition:all .15s;
 }
-.btn-ghost:hover{background:var(--cocoa);color:var(--cream);}
+.btn-ghost:hover{background:var(--bg2);}
 
 /* cream slab with overlapping illustration */
 .hero-slab{
@@ -210,10 +210,16 @@ section{padding:5.5rem 5%;scroll-margin-top:80px;}
 .pr-btn:hover{background:var(--cocoa);color:var(--cream);}
 .pr-includes{margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--line);}
 .pr-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:2rem;}
-.pr-layout .pr-card-combined{margin:0 !important;max-width:none;}
-.pr-layout .pr-includes{margin-top:0;padding-top:0;border-top:none;text-align:left !important;}
-.pr-layout .pr-inc-title{text-align:left !important;}
-.pr-layout .pr-feats{display:grid !important;grid-template-columns:1fr !important;gap:.3rem !important;}
+.pr-layout .pr-card-combined{margin:0 !important;max-width:none;width:100%;min-height:360px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box;}
+.pr-layout .pr-includes{
+  margin:0;padding:2rem 2.2rem;
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  width:100%;min-height:360px;box-sizing:border-box;
+  display:flex;flex-direction:column;justify-content:center;
+}
+#pricing-park .pr-includes{border:none !important;}
+.pr-layout .pr-inc-title{text-align:center !important;}
+.pr-layout .pr-feats{display:grid !important;grid-template-columns:1fr !important;gap:.3rem !important;text-align:center !important;justify-items:center;}
 .pr-inc-title{
   font-family:'Space Mono',monospace;font-size:.62rem;
   letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
@@ -224,7 +230,6 @@ section{padding:5.5rem 5%;scroll-margin-top:80px;}
 #pricing-park .sec-kicker,#pricing-park .pricing-col-label,#pricing-park .pr-inc-title{color:var(--cocoa);}
 #pricing-park .yl-bar{background:var(--cocoa);}
 #pricing-park .sec-sub,#pricing-park .pr-feat{color:var(--espresso);}
-#pricing-park .pr-includes{border-top-color:var(--cocoa);}
 #pricing-park .pr-feat::before{background:var(--cocoa);}
 .pr-feat::before{content:'';flex:none;width:5px;height:5px;background:var(--yellow);border-radius:50%;margin-top:7px;}
 
@@ -287,8 +292,8 @@ section{padding:5.5rem 5%;scroll-margin-top:80px;}
 .band-btns{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;}
 .btn-yellow{background:var(--yellow);color:var(--cocoa);padding:.95rem 2.5rem;border-radius:999px;text-decoration:none;font-size:.88rem;font-weight:700;letter-spacing:.04em;transition:background .15s;}
 .btn-yellow:hover{background:var(--honey);}
-.btn-cream-ghost{color:rgba(255,247,239,.65);border:1.5px solid rgba(255,247,239,.2);padding:.93rem 2.2rem;border-radius:999px;text-decoration:none;font-size:.88rem;font-weight:500;transition:border-color .15s;}
-.btn-cream-ghost:hover{border-color:rgba(255,247,239,.55);}
+.btn-cream-ghost{background:var(--cream);color:var(--cocoa);border:1.5px solid var(--cream);padding:.93rem 2.2rem;border-radius:999px;text-decoration:none;font-size:.88rem;font-weight:500;transition:background .15s;}
+.btn-cream-ghost:hover{background:var(--bg2);}
 
 /* ── FOOTER ── */
 footer{background:var(--espresso);padding:2rem 48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,247,239,.07);flex-wrap:wrap;gap:1rem;}
@@ -547,15 +552,19 @@ window.addEventListener('load',initCalendar);
   <h2 class="sec-h2"><span style="color:var(--cocoa);">🌳 Dog Park</span><br><em style="color:var(--cream);">Free to roam.</em></h2>
   <div class="yl-bar"></div>
   <div class="pr-layout">
-  <div class="pr-grid" style="grid-template-columns:1fr;max-width:280px;">
-    <div class="pr-card">
-      <div class="pr-tier">Day Pass</div>
-      <div class="pr-name">Dog Park</div>
-      <div class="pr-wt">เสาร์-อาทิตย์ 12:00–19:00 น.</div>
-      <div class="pr-row"><span class="pr-lbl">รายครั้ง</span><span class="pr-val">฿100 <small>/visit</small></span></div>
-      <div class="pr-row"><span class="pr-lbl">รายเดือน</span><span class="pr-val">฿500 <small>/month</small></span></div>
-      <a href="booking.html?service=park" class="pr-btn">Reserve</a>
+  <div class="pr-card-combined">
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;">เสาร์-อาทิตย์ 12:00–19:00 น.</div>
+    <div class="pr-combined-grid" style="grid-template-columns:1.4fr 1fr;">
+      <div class="pr-combined-head"></div>
+      <div class="pr-combined-head">Price</div>
+
+      <div class="pr-combined-size"><b>Day Pass</b><small>รายครั้ง</small></div>
+      <div class="pr-combined-price">฿100<small>/visit</small></div>
+
+      <div class="pr-combined-size"><b>Monthly Pass</b><small>รายเดือน</small></div>
+      <div class="pr-combined-price">฿500<small>/month</small></div>
     </div>
+    <a href="booking.html?service=park" class="pr-btn" style="display:block;text-align:center;margin-top:1.5rem;">Reserve</a>
   </div>
   <div class="pr-includes" style="text-align:center;">
     <div class="pr-inc-title" style="font-size:.78rem;">Every entry includes</div>
@@ -631,7 +640,7 @@ window.addEventListener('load',initCalendar);
   <h2>Your dog<br>deserves <em>this.</em></h2>
   <p class="band-sub">จองผ่านเว็บหรือไลน์ ยืนยันภายใน 24 ชม.</p>
   <div class="band-btns">
-    <a href="booking.html" class="btn-yellow">จองเลย →</a>
+    <a href="booking.html" class="btn-yellow">จองเลย</a>
     <a href="https://line.me/R/ti/p/@luneandco" target="_blank" class="btn-cream-ghost">ติดต่อเรา · LINE @luneandco</a>
   </div>
 </section>
