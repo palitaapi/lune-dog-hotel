@@ -209,6 +209,11 @@ section{padding:5.5rem 5%;scroll-margin-top:80px;}
 }
 .pr-btn:hover{background:var(--cocoa);color:var(--cream);}
 .pr-includes{margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--line);}
+.pr-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:2rem;}
+.pr-layout .pr-card-combined{margin:0 !important;max-width:none;}
+.pr-layout .pr-includes{margin-top:0;padding-top:0;border-top:none;text-align:left !important;}
+.pr-layout .pr-inc-title{text-align:left !important;}
+.pr-layout .pr-feats{display:grid !important;grid-template-columns:1fr !important;gap:.3rem !important;}
 .pr-inc-title{
   font-family:'Space Mono',monospace;font-size:.62rem;
   letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
@@ -313,6 +318,10 @@ footer p{font-size:.73rem;color:rgba(255,247,239,.3);font-weight:300;}
   .srv-cards,.pr-grid,.promo-grid{grid-template-columns:1fr;}
   .pricing-split{grid-template-columns:1fr;gap:2rem;}
   .pr-feats{grid-template-columns:1fr;}
+  .pr-layout{grid-template-columns:1fr;gap:2rem;}
+  .pr-layout .pr-includes{text-align:center !important;}
+  .pr-layout .pr-inc-title{text-align:center !important;}
+  .pr-layout .pr-feats{justify-content:center;}
   .rv-grid{grid-template-columns:1fr;}
   .loc-grid{grid-template-columns:1fr;gap:2rem;}
   #cta{padding:4rem 24px;}
@@ -403,11 +412,11 @@ window.addEventListener('load',initCalendar);
     <span class="logo-sub">Dog Hotel<span class="divider"><span class="bar"></span><span class="dot"></span><span class="bar"></span></span>Dog Park</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#services">บริการ</a></li>
-    <li><a href="#pricing">ราคา</a></li>
-    <li><a href="#availability">ปฏิทินว่าง</a></li>
-    <li><a href="#reviews">รีวิว</a></li>
-    <li><a href="#location">โลเคชัน</a></li>
+    <li><a href="#services">Our Services</a></li>
+    <li><a href="#pricing">Dog Hotel</a></li>
+    <li><a href="#pricing-park">Dog Park</a></li>
+    <li><a href="#reviews">Review</a></li>
+    <li><a href="#location">Location</a></li>
   </ul>
   <div class="nav-r">
     <a href="booking.html" class="btn-nav-primary">จองเลย</a>
@@ -470,7 +479,8 @@ window.addEventListener('load',initCalendar);
   <div class="sec-kicker">Pricing</div>
   <h2 class="sec-h2"><span style="color:var(--cocoa);">🏡 Dog Hotel</span><br><em style="color:var(--gold);">Simple rates.</em></h2>
   <div class="yl-bar"></div>
-  <div class="pr-card-combined" style="margin-top:2rem;">
+  <div class="pr-layout">
+  <div class="pr-card-combined">
     <div class="pr-combined-grid">
       <div class="pr-combined-head"></div>
       <div class="pr-combined-head">Overnight</div>
@@ -502,6 +512,7 @@ window.addEventListener('load',initCalendar);
       <div class="pr-feat" style="font-size:.92rem;">แปรงขน เช็ดทำความสะอาดก่อนนอน</div>
       <div class="pr-feat" style="font-size:.92rem;">กล้องวงจรปิด เพื่อความปลอดภัย</div>
     </div>
+  </div>
   </div>
 </section>
 
@@ -535,7 +546,8 @@ window.addEventListener('load',initCalendar);
   <div class="sec-kicker">Pricing</div>
   <h2 class="sec-h2"><span style="color:var(--cocoa);">🌳 Dog Park</span><br><em style="color:var(--cream);">Free to roam.</em></h2>
   <div class="yl-bar"></div>
-  <div class="pr-grid" style="grid-template-columns:1fr;max-width:280px;margin-left:auto;margin-right:auto;margin-top:2rem;">
+  <div class="pr-layout">
+  <div class="pr-grid" style="grid-template-columns:1fr;max-width:280px;">
     <div class="pr-card">
       <div class="pr-tier">Day Pass</div>
       <div class="pr-name">Dog Park</div>
@@ -553,6 +565,7 @@ window.addEventListener('load',initCalendar);
       <div class="pr-feat" style="font-size:.92rem;">น้ำดื่มสะอาด</div>
       <div class="pr-feat" style="font-size:.92rem;">สนามกว้าง อากาศถ่ายเทดี</div>
     </div>
+  </div>
   </div>
 </section>
 
