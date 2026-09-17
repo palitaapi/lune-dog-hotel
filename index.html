@@ -67,8 +67,8 @@ nav{
 }
 .hero-left,.hero-right{display:contents;} /* mobile: ไม่มีผลอะไรเลย ลูกๆ ไหลเหมือนเดิมทุกอย่าง */
 .hero-label{
-  font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.2em;
-  text-transform:uppercase;color:#5b4327;margin-bottom:2.8rem;font-weight:700;
+  font-family:'Hanken Grotesk','IBM Plex Sans Thai',sans-serif;font-size:.75rem;letter-spacing:.2em;
+  text-transform:uppercase;color:#5b4327;margin-bottom:2.8rem;
 }
 .hero h1{
   font-family:'Instrument Serif',serif;
@@ -78,7 +78,7 @@ nav{
 .hero h1 em{font-style:italic;}
 .hero-sub{
   font-size:.92rem;color:#5b4327;line-height:1.8;
-  max-width:520px;margin:0 auto .9rem;font-weight:700;
+  max-width:520px;margin:0 auto .9rem;font-weight:300;
 }
 .hero-btns{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-bottom:4rem;}
 .btn-dark{
@@ -330,6 +330,7 @@ footer p{font-size:.73rem;color:rgba(66,47,37,.6);font-weight:300;}
   .hero{padding-top:calc(66px + 3rem);}
   .hero h1{font-size:clamp(3.2rem,12vw,6rem);}
   .hero-illus-wrap img{width:80vw;}
+  .hero-btns{margin-bottom:1rem;}
   .hero-spacer{height:0;}
   .hero-slab{padding-bottom:0.2rem;}
   .hero-stats{flex-direction:column;align-items:center;}
@@ -656,7 +657,6 @@ window.addEventListener('load',initCalendar);
 
 <!-- CTA BAND -->
 <section id="cta">
-  <div class="band-kicker">Ready when you are</div>
   <h2>Zoomies all <em>day</em><br>Roomies all <em>night</em></h2>
   <p class="band-sub">จองผ่านเว็บหรือไลน์ ยืนยันภายใน 24 ชม.</p>
   <div class="band-btns">
