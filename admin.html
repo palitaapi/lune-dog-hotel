@@ -159,8 +159,8 @@
   .size-display{font-size:0.7rem;padding:0.3rem 0.55rem;background:var(--bg2);border:0.5px solid var(--gray-line);color:var(--gray-dark);display:inline-block;}
 
   .summary-row{display:flex;justify-content:space-between;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.88rem;}
-  .summary-row-dog{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;padding:0.75rem 1rem;margin:0.5rem 0;background:var(--bg2);border:1px solid var(--yellow);border-radius:8px;font-size:0.8rem;}
-  .summary-row-dog .row-header{font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .summary-row-dog{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;padding:0.7rem 0;border-bottom:0.5px solid var(--gray-line);font-size:0.80rem;}
+  .summary-row-dog .row-header{font-weight:500;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .summary-row-dog .row-total{font-weight:700;color:var(--gold);font-size:0.85rem;white-space:nowrap;flex:none;}
   .summary-row:last-child{border-bottom:none;}
   .summary-label{color:var(--gray-dark);font-weight:300;}
@@ -185,7 +185,7 @@
     <span class="logo-main">Lune's</span>
     <span class="logo-sub">Dog Hotel<span class="divider"><span class="bar"></span><span class="dot"></span><span class="bar"></span></span>Dog Park</span>
   </a>
-  <span class="admin-badge">แอดมิน · จองแทนลูกค้า</span>
+  <span class="admin-badge">แอดมิน</span>
 </header>
 <div class="container">
 
@@ -200,29 +200,11 @@
 
     <!-- ═══ TOP TAB: MANUAL ENTRY ═══ -->
     <div id="top-panel-entry">
-      <div class="section-label">ลงทะเบียน · บันทึกจองแทนลูกค้า</div>
+      <div class="section-label">ลงทะเบียน</div>
       <div class="divider"></div>
 
-      <div class="sub-tabs">
-        <div class="sub-tab active" id="tab-existing" onclick="switchMode('existing')">ลูกค้าเก่า</div>
-        <div class="sub-tab" id="tab-new" onclick="switchMode('new')">ลูกค้าใหม่</div>
-      </div>
-
-      <!-- EXISTING OWNER SEARCH -->
-      <div id="mode-existing">
-        <div class="form-group">
-          <label>ค้นหาด้วยชื่อ หรือเบอร์โทร</label>
-          <div class="search-row">
-            <input type="text" id="search_input" placeholder="เช่น คุณแพร หรือ 0812345678" oninput="debouncedSearch()"/>
-            <button onclick="searchOwners()">ค้นหา</button>
-          </div>
-        </div>
-        <div id="search_results"></div>
-        <div id="search_msg"></div>
-      </div>
-
       <!-- NEW OWNER FORM -->
-      <div id="mode-new" style="display:none;">
+      <div id="mode-new">
         <div class="form-group"><label>ชื่อของคุณพ่อคุณแม่ *</label><input type="text" id="own_name"/></div>
         <div class="form-group"><label>เบอร์โทรศัพท์ * (10 หลัก)</label><input type="tel" id="own_phone" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
         <div class="form-group"><label>อีเมล</label><input type="email" id="own_email" placeholder="example@email.com" oninput="validateEmailFormat()"/><div id="email_format_msg" style="font-size:0.75rem;color:var(--red);margin-top:0.3rem;"></div></div>
@@ -576,13 +558,6 @@ function switchTopTab(tab, skipAutoLoad) {
   if (tab==='payment') { renderPaymentMonthSummary(); if (!skipAutoLoad) searchBookingsForPayment(); } // โชว์ booking ทั้งหมดทันทีเหมือนแท็บฐานข้อมูล + สรุปยอดรายเดือน
 }
 
-function switchMode(mode) {
-  document.getElementById('tab-existing').classList.toggle('active', mode==='existing');
-  document.getElementById('tab-new').classList.toggle('active', mode==='new');
-  document.getElementById('mode-existing').style.display = mode==='existing' ? 'block' : 'none';
-  document.getElementById('mode-new').style.display = mode==='new' ? 'block' : 'none';
-}
-
 // ── OWNER SEARCH (existing) ──────────────────────────
 async function loadAllOwners() {
   if (allOwnersCache) return allOwnersCache;
@@ -601,54 +576,6 @@ async function loadAllOwners() {
   }).filter(function(o){ return o.ownerId; });
   allOwnersCache = rows;
   return rows;
-}
-
-function debouncedSearch() {
-  clearTimeout(searchDebounceTimer);
-  searchDebounceTimer = setTimeout(searchOwners, 350);
-}
-
-async function searchOwners() {
-  var q = document.getElementById('search_input').value.trim();
-  document.getElementById('search_msg').innerHTML = '';
-  if (!q) { document.getElementById('search_results').innerHTML = ''; return; }
-  document.getElementById('search_results').innerHTML = '<p class="empty-note">⏳ กำลังค้นหา...</p>';
-  try {
-    var owners = await loadAllOwners();
-    var qNorm = q.replace(/\D/g,'');
-    var results = owners.filter(function(o) {
-      var nameMatch = o.name && o.name.toLowerCase().indexOf(q.toLowerCase()) !== -1;
-      var phoneMatch = qNorm.length >= 3 && o.phone && o.phone.replace(/\D/g,'').indexOf(qNorm) !== -1;
-      return nameMatch || phoneMatch;
-    });
-    if (results.length === 0) {
-      document.getElementById('search_results').innerHTML = '<p class="empty-note">ไม่พบลูกค้า (ดึงข้อมูลจาก Sheet มาได้ '+owners.length+' รายชื่อ) — ถ้าเป็นลูกค้าใหม่ที่ไม่เคยจองผ่านระบบ ลองสลับไปแท็บ "ลงทะเบียนใหม่"</p>';
-      return;
-    }
-    document.getElementById('search_results').innerHTML = results.map(function(o) {
-      return '<div class="owner-result" id="or_'+o.ownerId+'" onclick="selectOwner(\''+o.ownerId+'\')">'
-        + '<div class="o-name">'+o.name+'</div>'
-        + '<div class="o-meta">'+(o.phone||'-')+(o.lineName?' · LINE: '+o.lineName:'')+'</div>'
-        + '</div>';
-    }).join('');
-  } catch(e) {
-    document.getElementById('search_results').innerHTML = '';
-    showMsg('search_msg','ค้นหาไม่สำเร็จ: '+e.message,'error');
-  }
-}
-
-async function selectOwner(ownerId) {
-  document.querySelectorAll('.owner-result').forEach(function(el){ el.classList.remove('selected'); });
-  var card = document.getElementById('or_'+ownerId);
-  if (card) card.classList.add('selected');
-  var owners = await loadAllOwners();
-  var o = owners.find(function(x){ return x.ownerId === ownerId; });
-  if (!o) return;
-  currentOwner = {ownerId:o.ownerId, name:o.name, phone:o.phone, lineName:o.lineName};
-  await loadAvailability();
-  await loadSavedDogs();
-  document.getElementById('step1_owner_label').textContent = 'จองให้: ' + currentOwner.name;
-  showScreen('step1');
 }
 
 // ── PAYMENT STATUS ────────────────────────────────────
@@ -723,6 +650,7 @@ async function fetchBookingRows(sheetName) {
   return (json.table ? json.table.rows || [] : []).map(function(row) {
     var c = row.c || [];
     return {
+      timestamp:   c[0] ? String(c[0].v || '').trim() : '',
       bookingId:   c[1] ? String(c[1].v || '').trim() : '',
       ownerId:     c[2] ? String(c[2].v || '').trim() : '',
       ownerName:   c[3] ? String(c[3].v || '').trim() : '',
@@ -761,6 +689,7 @@ async function loadAllBookingsGrouped() {
     if (!grouped[r.bookingId]) {
       grouped[r.bookingId] = {
         bookingId: r.bookingId,
+        timestamp: r.timestamp,
         ownerId: r.ownerId,
         ownerName: r.ownerName,
         phone: r.phone,
@@ -782,6 +711,7 @@ async function loadAllBookingsGrouped() {
   });
 
   var list = Object.keys(grouped).map(function(k){ return grouped[k]; });
+  list.sort(function(a, b){ return parseThaiDateTime(b.timestamp) - parseThaiDateTime(a.timestamp); });
   allBookingsCache = list;
   return list;
 }
@@ -1090,7 +1020,6 @@ async function searchBookingsForPayment() {
       var phoneMatch = qNorm.length >= 3 && b.phone && b.phone.replace(/\D/g,'').indexOf(qNorm) !== -1;
       return idMatch || nameMatch || phoneMatch;
     });
-    results = results.slice().sort(function(a,b2){ return (b2.checkIn||'').localeCompare(a.checkIn||''); });
     document.getElementById('payment_search_count').textContent = 'ทั้งหมด ' + results.length + ' รายการ';
     if (results.length === 0) {
       document.getElementById('payment_search_results').innerHTML = '<p class="empty-note">ไม่พบ booking ที่ตรงกับ "'+q+'"</p>';
@@ -1130,6 +1059,7 @@ function renderPaymentResults(bookings) {
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span><span class="db-chevron">'+(isOpen?'▲':'▼')+'</span></div>'
       + '<div class="bpc-meta">'+b.ownerName+' · '+(b.phone||'-')+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
       + '<div class="bpc-meta">'+b.type+' · '+dateLabel+'</div>'
+      + '<div class="bpc-meta" style="opacity:0.7;">🕐 จองเมื่อ '+(b.timestamp||'-')+'</div>'
       + '<div class="bpc-dogs">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
     + '</div>';
 
@@ -1446,7 +1376,7 @@ async function registerOwner() {
     var phoneExists = existingOwners.some(function(o){ return String(o.phone||'').replace(/\D/g,'') === phoneNorm; });
     if (phoneExists) {
       document.getElementById('regBtn').disabled=false;
-      showMsg('newuser_msg','เบอร์โทรนี้มีอยู่ในระบบแล้ว กรุณาค้นหาในแท็บ "ลูกค้าเก่า" แทน','error');
+      showMsg('newuser_msg','เบอร์โทรนี้มีอยู่ในระบบแล้ว กรุณาเช็คในแท็บ "ฐานข้อมูล" แทน','error');
       return;
     }
   } catch(e) { /* ถ้าเช็คไม่ได้ ปล่อยให้บันทึกต่อไป ดีกว่าบล็อกเพราะปัญหาเครือข่าย */ }
@@ -1858,6 +1788,15 @@ function parseThaiTimestamp(str) {
   return isNaN(d.getTime()) ? null : d;
 }
 
+// แปลง timestamp เต็ม (รวมเวลา ไม่ใช่แค่วันที่) เป็นตัวเลข ใช้เรียงลำดับ booking ล่าสุดขึ้นก่อน
+function parseThaiDateTime(str) {
+  if (!str) return 0;
+  var m = String(str).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})[,\s]+(\d{1,2}):(\d{2}):(\d{2})/);
+  if (!m) return 0;
+  var d = new Date(parseInt(m[3],10)-543, parseInt(m[2],10)-1, parseInt(m[1],10), parseInt(m[4],10), parseInt(m[5],10), parseInt(m[6],10));
+  return isNaN(d.getTime()) ? 0 : d.getTime();
+}
+
 // คำนวณอายุปัจจุบัน โดยนับต่อจากอายุที่เคยบันทึกไว้ ณ วันที่บันทึกนั้น
 function calcCurrentAge(ageStr, timestampStr) {
   if (!ageStr) return '';
@@ -2116,9 +2055,13 @@ function resetAll() {
   pendingNewDogs = []; editingPendingIdx = null;
   selectedSavedDogs = [];
   showingNewDogForm = false;
-  document.getElementById('search_input').value = '';
-  document.getElementById('search_results').innerHTML = '';
-  switchMode('existing');
+  document.getElementById('own_name').value = '';
+  document.getElementById('own_phone').value = '';
+  document.getElementById('own_email').value = '';
+  document.getElementById('own_province').value = '';
+  document.getElementById('own_district').value = '';
+  document.getElementById('own_line_name').value = '';
+  document.getElementById('own_acquisition_source').value = '';
   showScreen('source');
 }
 
