@@ -60,11 +60,12 @@ nav{
 
 /* ── HERO ── */
 .hero{
-  background:var(--yellow);
+  background:var(--honey);
   padding:calc(66px + 5rem) 5% 0;
   text-align:center;
   overflow:hidden;
 }
+.hero-left,.hero-right{display:contents;} /* mobile: ไม่มีผลอะไรเลย ลูกๆ ไหลเหมือนเดิมทุกอย่าง */
 .hero-label{
   font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.2em;
   text-transform:uppercase;color:#5b4327;margin-bottom:2.8rem;
@@ -93,9 +94,9 @@ nav{
 }
 .btn-ghost:hover{background:var(--bg2);}
 
-/* cream slab with overlapping illustration */
+/* slab เดิมมีไว้ทำเอฟเฟกต์รูปโผล่ทับกรอบมน ตอนนี้พื้นหลังสีเดียวกับ hero แล้วเลยไม่มีรอยต่อให้เห็น */
 .hero-slab{
-  background:var(--cream);
+  background:var(--honey);
   border-radius:40px 40px 0 0;
   padding:0 5% 4rem;
   position:relative;
@@ -124,6 +125,22 @@ nav{
   color:var(--cocoa);line-height:1;
 }
 .hero-stat-label{font-size:.78rem;color:var(--muted);margin-top:.3rem;font-weight:300;}
+
+/* ── DESKTOP: รูปขวา ข้อความซ้าย ── */
+@media(min-width:969px){
+  .hero{
+    display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:2rem;
+    text-align:left;padding-top:calc(66px + 3rem);overflow:visible;
+  }
+  .hero-left,.hero-right{display:block;} /* กลับมาเป็น element จริง เพื่อให้เป็น grid item ได้ */
+  .hero-sub{margin:0 0 .9rem;}
+  .hero-label{margin-bottom:2rem;}
+  .hero-btns{justify-content:flex-start;margin-bottom:0;}
+  .hero-spacer{display:none;}
+  .hero-slab{background:transparent;border-radius:0;padding:0;margin:0;}
+  .hero-illus-wrap{margin:0;justify-content:center;}
+  .hero-illus-wrap img{width:100%;max-width:520px;}
+}
 
 /* ── SHARED SECTION STYLES ── */
 section{padding:5.5rem 5%;scroll-margin-top:80px;}
@@ -431,17 +448,21 @@ window.addEventListener('load',initCalendar);
 
 <!-- HERO -->
 <div class="hero">
-  <h1><span style="color:var(--cocoa);">Good dogs</span><br><span style="color:var(--cocoa);">stay well </span><em style="color:var(--cream);">here.</em></h1>
-  <p class="hero-sub">โรงแรมน้องหมาแบบพรีเมียม และสนามกว้างวิ่งเล่นอิสระ</p>
-  <div class="hero-label">Premium Dog Hotel &amp; Dog Park<br><span style="color:var(--cream);"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:3px;margin-top:-1px;opacity:.7;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Bang Yai, Nonthaburi</span></div>
-  <div class="hero-btns">
-    <a href="booking.html" class="btn-dark">จองเลย</a>
-    <a href="https://line.me/R/ti/p/@798pcbhg" target="_blank" class="btn-ghost">ติดต่อเรา · LINE @798pcbhg</a>
+  <div class="hero-left">
+    <h1><span style="color:var(--cocoa);">Good dogs</span><br><span style="color:var(--cocoa);">stay well </span><em style="color:var(--cream);">here.</em></h1>
+    <p class="hero-sub">โรงแรมน้องหมาแบบพรีเมียม และสนามกว้างวิ่งเล่นอิสระ</p>
+    <div class="hero-label">Premium Dog Hotel &amp; Dog Park<br><span style="color:var(--cream);"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:3px;margin-top:-1px;opacity:.7;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Bang Yai, Nonthaburi</span></div>
+    <div class="hero-btns">
+      <a href="booking.html" class="btn-dark">จองเลย</a>
+      <a href="https://line.me/R/ti/p/@798pcbhg" target="_blank" class="btn-ghost">ติดต่อเรา · LINE @798pcbhg</a>
+    </div>
   </div>
-  <div class="hero-spacer"></div>
-  <div class="hero-slab">
-    <div class="hero-illus-wrap">
-      <img src="assets/dogs-brown-v2.png" alt="Lune's Dog Hotel &amp; Dog Park"/>
+  <div class="hero-right">
+    <div class="hero-spacer"></div>
+    <div class="hero-slab">
+      <div class="hero-illus-wrap">
+        <img src="assets/dogs-brown-v2.png" alt="Lune's Dog Hotel &amp; Dog Park"/>
+      </div>
     </div>
   </div>
 </div>
