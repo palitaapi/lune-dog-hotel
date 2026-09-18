@@ -39,6 +39,8 @@
   .form-group label{display:block;font-size:0.68rem;letter-spacing:0.15em;color:var(--gold);margin-bottom:0.4rem;text-transform:uppercase;font-weight:500;font-family:'Space Mono','IBM Plex Sans Thai',monospace;}
   .form-group input,.form-group select{width:100%;padding:0.75rem 0.9rem;border:1px solid var(--gray-line);font-size:0.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color 0.2s;border-radius:4px;font-family:'Hanken Grotesk','IBM Plex Sans Thai',sans-serif;}
   .form-group input:focus,.form-group select:focus{border-color:#422F25;}
+  .status-dropdown{padding:0.5rem 0.6rem;border:0.5px solid var(--gray-line);font-size:0.8rem;color:var(--text);background:var(--white);outline:none;border-radius:4px;cursor:pointer;font-family:'Hanken Grotesk','IBM Plex Sans Thai',sans-serif;transition:border-color 0.2s;}
+  .status-dropdown:focus{border-color:#422F25;}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
   .btn-primary{width:100%;padding:0.9rem;background:#422F25;color:#FFF7EF;border:none;font-size:0.85rem;letter-spacing:0.08em;cursor:pointer;border-radius:999px;font-weight:500;transition:background 0.2s;}
   .btn-primary:hover{background:#3A2822;}
@@ -248,13 +250,25 @@
           <button onclick="searchBookingsForPayment()">ค้นหา</button>
         </div>
       </div>
-      <div class="form-group">
-        <label>Filter by Status</label>
-        <div class="sub-tabs">
-          <div class="sub-tab active" onclick="filterByStatus('all');this.parentElement.querySelectorAll('.sub-tab').forEach(el=>el.classList.remove('active'));this.classList.add('active');">All</div>
-          <div class="sub-tab" onclick="filterByStatus('pending_payment');this.parentElement.querySelectorAll('.sub-tab').forEach(el=>el.classList.remove('active'));this.classList.add('active');">Pending</div>
-          <div class="sub-tab" onclick="filterByStatus('fully_paid');this.parentElement.querySelectorAll('.sub-tab').forEach(el=>el.classList.remove('active'));this.classList.add('active');">Paid</div>
-          <div class="sub-tab" onclick="filterByStatus('cancelled');this.parentElement.querySelectorAll('.sub-tab').forEach(el=>el.classList.remove('active'));this.classList.add('active');">Cancelled</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Filter by Status</label>
+          <select id="status_filter" onchange="filterByStatus(this.value)">
+            <option value="all">All Status</option>
+            <option value="pending_payment">Pending Payment</option>
+            <option value="fully_paid">Fully Paid</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Filter by Type</label>
+          <select id="type_filter" onchange="filterByType(this.value)">
+            <option value="all">All Types</option>
+            <option value="Overnight Care">🏠 Dog Hotel - Overnight</option>
+            <option value="Daycare">🏠 Dog Hotel - Daycare</option>
+            <option value="Dog Park Day Pass">🌳 Dog Park - Day Pass</option>
+            <option value="Dog Park Monthly">🌳 Dog Park - Monthly</option>
+          </select>
         </div>
       </div>
       <div id="payment_search_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
@@ -1045,6 +1059,7 @@ async function searchBookingsForPayment() {
 var lastPaymentResults = [];
 var bpExpandedIds = {};
 var currentStatusFilter = 'all';
+var currentTypeFilter = 'all';
 
 function toggleBpc(bookingId) {
   bpExpandedIds[bookingId] = !bpExpandedIds[bookingId];
@@ -1054,40 +1069,36 @@ function toggleBpc(bookingId) {
 function renderPaymentResults(bookings) {
   lastPaymentResults = bookings;
   
-  // Apply status filter
+  // Apply status + type filters
   var filteredBookings = bookings;
   if (currentStatusFilter !== 'all') {
-    filteredBookings = bookings.filter(function(b) {
+    filteredBookings = filteredBookings.filter(function(b) {
       return b.status === currentStatusFilter;
     });
   }
+  if (currentTypeFilter !== 'all') {
+    filteredBookings = filteredBookings.filter(function(b) {
+      return b.type === currentTypeFilter;
+    });
+  }
+  
+  document.getElementById('payment_search_count').textContent = 'ทั้งหมด ' + filteredBookings.length + ' รายการ';
   
   document.getElementById('payment_search_results').innerHTML = filteredBookings.map(function(b) {
     var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
 
-
-
     var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_payment';
     var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
-    var isOpen = !!bpExpandedIds[b.bookingId];
-
+    
+    // Emoji สำหรับ type
+    var typeEmoji = (b.type === 'Overnight Care' || b.type === 'Daycare') ? '🏠' : '🌳';
+    var typeLabel = typeEmoji + ' ' + b.type;
+    
     var timeLabel = '';
     if (b.type === 'Overnight Care' || b.type === 'Daycare') {
       timeLabel = '<div class="bpc-meta">⏰ ' + (b.dropOffTime||'-') + ' → ' + (b.pickUpTime||'-') + '</div>';
     }
-    var collapsedHtml = '<div class="bpc-collapsed" onclick="toggleBpc(\''+b.bookingId+'\')" style="cursor:pointer;">'
-      + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span><span class="db-chevron">'+(isOpen?'▲':'▼')+'</span></div>'
-      + '<div class="bpc-meta"><strong>'+b.ownerName+'</strong> · '+(b.phone||'-')+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
-      + '<div class="bpc-meta">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
-      + '<div class="bpc-meta">📋 ' + b.type + ' · ' + dateLabel + '</div>'
-      + timeLabel
-    + '</div>';
-
-    if (!isOpen) {
-      return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'+collapsedHtml+'</div>';
-    }
-
-    // จ่ายเต็มจำนวนทีเดียวทุกบริการแล้ว (Hotel และ Park) ไม่มีมัดจำแยกงวดอีกต่อไป
+    
     var isPaid = (b.status === 'fully_paid');
     var statusKeysForThis = Object.keys(STATUS_LABEL);
     var actionsHtml = statusKeysForThis.map(function(s) {
@@ -1099,26 +1110,31 @@ function renderPaymentResults(bookings) {
       return '<button class="bpc-action-btn'+danger+currentClass+'"'+onclick+'>'+icon+STATUS_LABEL[s]+'</button>';
     }).join('');
 
-
-
     var priceHtml = '<div class="price-summary">'
       + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(isPaid?' <span class="paid-tag">Paid</span>':'')+'</span></div>'
       + '</div>';
 
-    // เพิ่มปุ่ม Edit และ Details
+    // Edit button
     var editButton = '<button class="bpc-action-btn" style="color:#c9a23f;border-color:#c9a23f;" onclick="editBooking(\''+b.bookingId+'\')">📝 Edit</button>';
-    var detailsButton = '<button class="bpc-action-btn" onclick="toggleBpc(\''+b.bookingId+'\')">▲ Hide</button>';
-    actionsHtml = actionsHtml + ' ' + editButton + ' ' + detailsButton;
+    actionsHtml = actionsHtml + ' ' + editButton;
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
-      + collapsedHtml
-      + '<div style="margin-top:0.8rem;padding-top:0.8rem;border-top:0.5px solid var(--gray-line);">'
-      + '<div class="bpc-status-row"><span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span></div>'
+      + '<div style="display:flex;gap:1rem;margin-bottom:0.8rem;">'
+      + '<div style="flex:1;">'
+      + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
+      + '<div class="bpc-meta"><strong>'+b.ownerName+'</strong> · '+(b.phone||'-')+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
+      + '<div class="bpc-meta">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
+      + '<div class="bpc-meta">📋 ' + typeLabel + ' · ' + dateLabel + '</div>'
+      + timeLabel
+      + '</div>'
+      + '<div style="flex:none;text-align:right;min-width:120px;">'
+      + '<div class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</div>'
+      + '<div style="margin-top:0.6rem;font-size:0.9rem;font-weight:600;color:var(--gold);">฿'+totalPrice.toLocaleString()+'</div>'
+      + '</div>'
+      + '</div>'
       + priceHtml
       + '<div class="bpc-actions">'+actionsHtml+'</div>'
-
       + '<div id="bpc_msg_'+b.bookingId+'"></div>'
-      + '</div>'
       + '</div>';
   }).join('');
 }
@@ -1127,16 +1143,14 @@ function renderPaymentResults(bookings) {
 function filterByStatus(status) {
   currentStatusFilter = status;
   if (!lastPaymentResults) return;
-  
-  var filtered = lastPaymentResults;
-  if (status !== 'all') {
-    filtered = lastPaymentResults.filter(function(b) {
-      return b.status === status;
-    });
-  }
-  
-  document.getElementById('payment_search_count').textContent = 'ทั้งหมด ' + filtered.length + ' รายการ';
-  renderPaymentResults(filtered);
+  renderPaymentResults(lastPaymentResults);
+}
+
+// ── FILTER BY TYPE ──
+function filterByType(type) {
+  currentTypeFilter = type;
+  if (!lastPaymentResults) return;
+  renderPaymentResults(lastPaymentResults);
 }
 
 function editBooking(bookingId) {
