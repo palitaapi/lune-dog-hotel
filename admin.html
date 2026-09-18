@@ -39,7 +39,7 @@
   .form-group label{display:block;font-size:0.68rem;letter-spacing:0.15em;color:var(--gold);margin-bottom:0.4rem;text-transform:uppercase;font-weight:500;font-family:'Space Mono','IBM Plex Sans Thai',monospace;}
   .form-group input,.form-group select{width:100%;padding:0.75rem 0.9rem;border:1px solid var(--gray-line);font-size:0.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color 0.2s;border-radius:4px;font-family:'Hanken Grotesk','IBM Plex Sans Thai',sans-serif;}
   .form-group input:focus,.form-group select:focus{border-color:#422F25;}
-  .status-dropdown{padding:0.5rem 0.6rem;border:0.5px solid var(--gray-line);font-size:0.8rem;color:var(--text);background:var(--white);outline:none;border-radius:4px;cursor:pointer;font-family:'Hanken Grotesk','IBM Plex Sans Thai',sans-serif;transition:border-color 0.2s;}
+  .status-dropdown{width:100%;padding:0.5rem 0.6rem;border:0.5px solid var(--gray-line);font-size:0.8rem;color:var(--text);background:var(--white);outline:none;border-radius:4px;cursor:pointer;font-family:'Hanken Grotesk','IBM Plex Sans Thai',sans-serif;transition:border-color 0.2s;}
   .status-dropdown:focus{border-color:#422F25;}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
   .btn-primary{width:100%;padding:0.9rem;background:#422F25;color:#FFF7EF;border:none;font-size:0.85rem;letter-spacing:0.08em;cursor:pointer;border-radius:999px;font-weight:500;transition:background 0.2s;}
@@ -62,6 +62,12 @@
   .revenue-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--gold);padding:1.2rem;border-radius:4px;margin-bottom:1rem;}
   .revenue-card .revenue-label{font-size:0.78rem;color:var(--gray-dark);margin-bottom:0.4rem;}
   .revenue-card .revenue-amount{font-size:1.4rem;font-weight:700;color:var(--black);}
+  .summary-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--gold);padding:0.9rem;border-radius:4px;text-align:center;}
+  .summary-card.pending{border-top-color:#FFB366;}
+  .summary-card.paid{border-top-color:#66BB6A;}
+  .summary-card.cancelled{border-top-color:#BDBDBD;}
+  .summary-card .summary-label{font-size:0.72rem;color:var(--gray-dark);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.05em;}
+  .summary-card .summary-amount{font-size:1.3rem;font-weight:700;color:#422F25;}
   .revenue-card select{margin-left:0.5rem;font-size:0.78rem;padding:0.2rem 0.4rem;}
   .revenue-breakdown{margin-top:0.7rem;font-size:0.8rem;color:var(--gray-dark);line-height:1.8;}
   .dog-visit-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--yellow);padding:1rem;border-radius:4px;margin-bottom:0.8rem;}
@@ -242,7 +248,20 @@
     <div id="top-panel-payment" style="display:none;">
       <div class="section-label">ติดตามการจ่ายเงิน</div>
       <div class="divider"></div>
-      <div id="payment_month_summary"></div>
+      
+      <!-- Date Range -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>วันที่เริ่มต้น</label>
+          <input type="date" id="payment_date_start" onchange="searchBookingsForPayment()"/>
+        </div>
+        <div class="form-group">
+          <label>วันที่สิ้นสุด</label>
+          <input type="date" id="payment_date_end" onchange="searchBookingsForPayment()"/>
+        </div>
+      </div>
+      
+      <!-- Search -->
       <div class="form-group">
         <label>ค้นหาด้วย Booking ID หรือชื่อลูกค้า</label>
         <div class="search-row">
@@ -250,6 +269,8 @@
           <button onclick="searchBookingsForPayment()">ค้นหา</button>
         </div>
       </div>
+      
+      <!-- Filters -->
       <div class="form-row">
         <div class="form-group">
           <label>Filter by Status</label>
@@ -271,6 +292,10 @@
           </select>
         </div>
       </div>
+      
+      <!-- Summary -->
+      <div id="payment_summary_section" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;margin-bottom:1.2rem;"></div>
+      
       <div id="payment_search_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
       <div style="display:flex;flex-direction:column;align-items:center;">
         <div id="payment_search_results" style="width:100%;max-width:700px;"></div>
@@ -580,7 +605,7 @@ function switchTopTab(tab, skipAutoLoad) {
   if (tab==='database') { dbOwnersFullCache = null; dbDogsFullCache = null; allBookingsCache = null; } // ฐานข้อมูลต้องสดเสมอเช่นกัน
   if (tab==='reports') renderDogVisits();
   if (tab==='database') switchDbTab('owners');
-  if (tab==='payment') { renderPaymentMonthSummary(); if (!skipAutoLoad) searchBookingsForPayment(); } // โชว์ booking ทั้งหมดทันทีเหมือนแท็บฐานข้อมูล + สรุปยอดรายเดือน
+  if (tab==='payment') { if (!skipAutoLoad) { document.getElementById('payment_summary_section').innerHTML = ''; searchBookingsForPayment(); } } // โชว์ booking ทั้งหมดทันทีและสรุปยอดเงิน
 }
 
 // ── OWNER SEARCH (existing) ──────────────────────────
@@ -1032,10 +1057,25 @@ async function renderPaymentMonthSummary() {
 
 async function searchBookingsForPayment() {
   var q = document.getElementById('payment_search_input').value.trim();
+  var dateStart = document.getElementById('payment_date_start').value;
+  var dateEnd = document.getElementById('payment_date_end').value;
+  
   document.getElementById('payment_search_msg').innerHTML = '';
   document.getElementById('payment_search_results').innerHTML = '<p class="empty-note">⏳ กำลังโหลดข้อมูล...</p>';
   try {
     var bookings = await loadAllBookingsGrouped();
+    
+    // Filter by date range
+    if (dateStart || dateEnd) {
+      bookings = bookings.filter(function(b) {
+        var bDate = b.checkIn || '';
+        if (dateStart && bDate < dateStart) return false;
+        if (dateEnd && bDate > dateEnd) return false;
+        return true;
+      });
+    }
+    
+    // Filter by search query
     var qLower = q.toLowerCase();
     var qNorm = q.replace(/\D/g,'');
     var results = !q ? bookings : bookings.filter(function(b) {
@@ -1100,23 +1140,18 @@ function renderPaymentResults(bookings) {
     }
     
     var isPaid = (b.status === 'fully_paid');
-    var statusKeysForThis = Object.keys(STATUS_LABEL);
-    var actionsHtml = statusKeysForThis.map(function(s) {
-      var isCurrent = (s === statusKey);
-      var danger = (s === 'cancelled' && !isCurrent) ? ' danger' : '';
-      var currentClass = isCurrent ? ' current-status' : '';
-      var onclick = isCurrent ? '' : ' onclick="confirmUpdateStatus(\''+b.bookingId+'\',\''+s+'\')"';
-      var icon = isCurrent ? '✓ ' : '→ ';
-      return '<button class="bpc-action-btn'+danger+currentClass+'"'+onclick+'>'+icon+STATUS_LABEL[s]+'</button>';
-    }).join('');
+    
+    // Status dropdown (ไม่มีปุ่ม)
+    var actionsHtml = '<select class="status-dropdown" onchange="if(this.value){confirmUpdateStatus(\''+b.bookingId+'\',this.value);this.value=\''+statusKey+'\';}">'
+      + '<option value="">Change status...</option>'
+      + '<option value="pending_payment" '+(statusKey==='pending_payment'?'selected':'')+'>→ Pending Payment</option>'
+      + '<option value="fully_paid" '+(statusKey==='fully_paid'?'selected':'')+'>→ Fully Paid</option>'
+      + '<option value="cancelled" '+(statusKey==='cancelled'?'selected':'')+'>→ Cancel</option>'
+      + '</select>';
 
     var priceHtml = '<div class="price-summary">'
-      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(isPaid?' <span class="paid-tag">Paid</span>':'')+'</span></div>'
+      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+'</span></div>'
       + '</div>';
-
-    // Edit button
-    var editButton = '<button class="bpc-action-btn" style="color:#c9a23f;border-color:#c9a23f;" onclick="editBooking(\''+b.bookingId+'\')">📝 Edit</button>';
-    actionsHtml = actionsHtml + ' ' + editButton;
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
       + '<div style="display:flex;gap:1rem;margin-bottom:0.8rem;">'
@@ -1137,6 +1172,41 @@ function renderPaymentResults(bookings) {
       + '<div id="bpc_msg_'+b.bookingId+'"></div>'
       + '</div>';
   }).join('');
+  
+  // Update summary
+  updatePaymentSummary(filteredBookings);
+}
+
+// ── UPDATE PAYMENT SUMMARY ──
+function updatePaymentSummary(bookings) {
+  var summary = {
+    pending_payment: 0,
+    fully_paid: 0,
+    cancelled: 0
+  };
+  
+  bookings.forEach(function(b) {
+    var price = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
+    var status = b.status || 'pending_payment';
+    if (summary[status] !== undefined) {
+      summary[status] += price;
+    }
+  });
+  
+  var html = '<div class="summary-card pending">'
+    + '<div class="summary-label">Pending Payment</div>'
+    + '<div class="summary-amount">฿' + summary.pending_payment.toLocaleString('en-US', {maximumFractionDigits: 0}) + '</div>'
+    + '</div>'
+    + '<div class="summary-card paid">'
+    + '<div class="summary-label">Fully Paid</div>'
+    + '<div class="summary-amount">฿' + summary.fully_paid.toLocaleString('en-US', {maximumFractionDigits: 0}) + '</div>'
+    + '</div>'
+    + '<div class="summary-card cancelled">'
+    + '<div class="summary-label">Cancelled</div>'
+    + '<div class="summary-amount">฿' + summary.cancelled.toLocaleString('en-US', {maximumFractionDigits: 0}) + '</div>'
+    + '</div>';
+  
+  document.getElementById('payment_summary_section').innerHTML = html;
 }
 
 // ── FILTER BY STATUS ──
@@ -1151,10 +1221,6 @@ function filterByType(type) {
   currentTypeFilter = type;
   if (!lastPaymentResults) return;
   renderPaymentResults(lastPaymentResults);
-}
-
-function editBooking(bookingId) {
-  alert('ฟังก์ชั่นแก้ไข booking ' + bookingId + ' จะมาเร็ว ๆ นี้');
 }
 
 function confirmUpdateStatus(bookingId, newStatus) {
