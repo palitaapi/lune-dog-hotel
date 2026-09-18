@@ -69,7 +69,7 @@
   .dvc-col{flex:1;min-width:0;}
   .dvc-col-right{border-left:0.5px solid var(--gray-line);padding-left:1rem;}
   @media(max-width:480px){.dvc-row{flex-direction:column;gap:0.5rem;}.dvc-col-right{border-left:none;padding-left:0;border-top:0.5px solid var(--gray-line);padding-top:0.5rem;}}
-  .booking-payment-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--yellow);padding:0.9rem 1rem;border-radius:4px;margin-bottom:0.6rem;}
+  .booking-payment-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--yellow);padding:1.2rem;border-radius:8px;margin-bottom:1rem;background:var(--white);max-width:700px;}
   .bpc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.35rem;gap:0.6rem;}
   .bpc-id{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:0.74rem;font-weight:700;color:var(--black);}
   .bpc-meta{font-size:0.74rem;color:var(--gray-dark);line-height:1.5;margin-bottom:0.2rem;}
@@ -89,9 +89,9 @@
   .grand-total-box .price-label{font-size:0.78rem;font-weight:700;color:var(--black);}
   .grand-total-box .price-amount{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:1.05rem;font-weight:700;color:var(--black);}
   .status-badge{display:inline-block;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.65rem;border-radius:999px;font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-weight:700;}
-  .status-pending_payment{background:#FDF4E3;color:#8a6d1f;border:0.5px solid var(--yellow);}
-  .status-fully_paid{background:#1b5e20;color:#fff;border:0.5px solid #1b5e20;}
-  .status-cancelled{background:#f0ebe4;color:var(--gray-dark);border:0.5px solid var(--gray-line);}
+  .status-pending_payment{background:#FFE4CC;color:#a0622f;border:0.5px solid #FFD4AA;}
+  .status-fully_paid{background:#D4EDDA;color:#2d5c2d;border:0.5px solid #A8D5BA;}
+  .status-cancelled{background:#E8E8E8;color:#666;border:0.5px solid #D0D0D0;}
   .bpc-status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;}
   .bpc-actions{display:flex;flex-wrap:wrap;gap:0.5rem;}
   .bpc-action-btn{flex:1;min-width:120px;padding:0.55rem 0.7rem;font-size:0.74rem;border-radius:6px;border:0.5px solid var(--gray-line);background:var(--white);color:var(--black);cursor:pointer;transition:all .15s;}
@@ -248,8 +248,19 @@
           <button onclick="searchBookingsForPayment()">ค้นหา</button>
         </div>
       </div>
+      <div class="form-group">
+        <label>Filter by Status</label>
+        <div class="sub-tabs">
+          <div class="sub-tab active" onclick="filterByStatus('all');this.parentElement.querySelectorAll('.sub-tab').forEach(el=>el.classList.remove('active'));this.classList.add('active');">All</div>
+          <div class="sub-tab" onclick="filterByStatus('pending_payment');this.parentElement.querySelectorAll('.sub-tab').forEach(el=>el.classList.remove('active'));this.classList.add('active');">Pending</div>
+          <div class="sub-tab" onclick="filterByStatus('fully_paid');this.parentElement.querySelectorAll('.sub-tab').forEach(el=>el.classList.remove('active'));this.classList.add('active');">Paid</div>
+          <div class="sub-tab" onclick="filterByStatus('cancelled');this.parentElement.querySelectorAll('.sub-tab').forEach(el=>el.classList.remove('active'));this.classList.add('active');">Cancelled</div>
+        </div>
+      </div>
       <div id="payment_search_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
-      <div id="payment_search_results"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div id="payment_search_results" style="width:100%;max-width:700px;"></div>
+      </div>
       <div id="payment_search_msg"></div>
     </div>
 
@@ -1004,51 +1015,6 @@ async function renderPaymentMonthSummary() {
 }
 
 // ── DOG PARK MEMBERSHIP CARD ──────────────────────
-async function sendMembershipCardAction(bookingId, dogId, bookingType, lineId, checkInDate, ownerName, phone) {
-  // Validate all parameters
-  if (!bookingId || !dogId || !bookingType || !checkInDate || !ownerName || !phone) {
-    console.error('Missing parameters:', {bookingId, dogId, bookingType, lineId, checkInDate, ownerName, phone});
-    showMsg('bpc_msg_' + bookingId, '❌ ข้อมูลไม่ครบ กรุณาลองใหม่', 'error');
-    return;
-  }
-  
-  showMsg('bpc_msg_' + bookingId, '⏳ กำลังส่งการ์ด...', 'success');
-  try {
-    const payload = {
-      action: 'confirmPaymentAndSendCard',
-      bookingId: String(bookingId).trim(),
-      dogId: String(dogId).trim(),
-      bookingType: String(bookingType).trim(),
-      lineId: String(lineId).trim() || '',
-      checkInDate: String(checkInDate).trim(),
-      ownerName: String(ownerName).trim(),
-      phone: String(phone).trim()
-    };
-    
-    console.log('Sending payload:', payload);
-    
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
-    });
-    
-    const result = await res.json();
-    console.log('Response:', result);
-    
-    if (result.success) {
-      showMsg('bpc_msg_' + bookingId, result.message, 'success');
-      allBookingsCache = null;
-      setTimeout(() => searchBookingsForPayment(), 1500);
-    } else {
-      showMsg('bpc_msg_' + bookingId, result.message || '❌ ส่งการ์ดไม่สำเร็จ', 'error');
-    }
-  } catch (e) {
-    console.error('Error:', e);
-    showMsg('bpc_msg_' + bookingId, '❌ Error: ' + e.message, 'error');
-  }
-}
-
 
 async function searchBookingsForPayment() {
   var q = document.getElementById('payment_search_input').value.trim();
@@ -1078,6 +1044,7 @@ async function searchBookingsForPayment() {
 
 var lastPaymentResults = [];
 var bpExpandedIds = {};
+var currentStatusFilter = 'all';
 
 function toggleBpc(bookingId) {
   bpExpandedIds[bookingId] = !bpExpandedIds[bookingId];
@@ -1086,7 +1053,16 @@ function toggleBpc(bookingId) {
 
 function renderPaymentResults(bookings) {
   lastPaymentResults = bookings;
-  document.getElementById('payment_search_results').innerHTML = bookings.map(function(b) {
+  
+  // Apply status filter
+  var filteredBookings = bookings;
+  if (currentStatusFilter !== 'all') {
+    filteredBookings = bookings.filter(function(b) {
+      return b.status === currentStatusFilter;
+    });
+  }
+  
+  document.getElementById('payment_search_results').innerHTML = filteredBookings.map(function(b) {
     var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
 
 
@@ -1095,12 +1071,16 @@ function renderPaymentResults(bookings) {
     var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
     var isOpen = !!bpExpandedIds[b.bookingId];
 
-    var collapsedHtml = '<div class="bpc-collapsed" onclick="toggleBpc(\''+b.bookingId+'\')">'
+    var timeLabel = '';
+    if (b.type === 'Overnight Care' || b.type === 'Daycare') {
+      timeLabel = '<div class="bpc-meta">⏰ ' + (b.dropOffTime||'-') + ' → ' + (b.pickUpTime||'-') + '</div>';
+    }
+    var collapsedHtml = '<div class="bpc-collapsed" onclick="toggleBpc(\''+b.bookingId+'\')" style="cursor:pointer;">'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span><span class="db-chevron">'+(isOpen?'▲':'▼')+'</span></div>'
-      + '<div class="bpc-meta">'+b.ownerName+' · '+(b.phone||'-')+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
-      + '<div class="bpc-meta">'+b.type+' · '+dateLabel+'</div>'
-      + '<div class="bpc-meta" style="opacity:0.7;">🕐 จองเมื่อ '+(b.timestamp||'-')+'</div>'
-      + '<div class="bpc-dogs">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
+      + '<div class="bpc-meta"><strong>'+b.ownerName+'</strong> · '+(b.phone||'-')+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
+      + '<div class="bpc-meta">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
+      + '<div class="bpc-meta">📋 ' + b.type + ' · ' + dateLabel + '</div>'
+      + timeLabel
     + '</div>';
 
     if (!isOpen) {
@@ -1119,21 +1099,16 @@ function renderPaymentResults(bookings) {
       return '<button class="bpc-action-btn'+danger+currentClass+'"'+onclick+'>'+icon+STATUS_LABEL[s]+'</button>';
     }).join('');
 
-    // ── DOG PARK: Add membership card button if pending_payment ──
-    var isDogParkBooking = (b.type === 'Dog Park Day Pass' || b.type === 'Dog Park Monthly');
-    if (isDogParkBooking && statusKey === 'pending_payment' && b.dogs && b.dogs.length > 0) {
-      var firstDog = b.dogs[0];
-      var lineIdVal = b.lineId || '';
-      actionsHtml += '<button class="bpc-action-btn" style="background:#FDDA7B;color:#422F25;border-color:#FDDA7B;font-weight:600;" '
-        + 'onclick="sendMembershipCardAction(\''+b.bookingId+'\',\''+firstDog.dogId+'\',\''+b.type+'\',\''+lineIdVal+'\',\''+b.checkIn+'\',\''+b.ownerName+'\',\''+b.phone+'\')">'
-        + '🎫 ยืนยันเงิน & ส่งการ์ด</button>';
-    }
+
 
     var priceHtml = '<div class="price-summary">'
-      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(isPaid?' <span class="paid-tag">Paid</span>':'')+'</span></div>';
+      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(isPaid?' <span class="paid-tag">Paid</span>':'')+'</span></div>'
+      + '</div>';
 
-
-    priceHtml += '</div>';
+    // เพิ่มปุ่ม Edit และ Details
+    var editButton = '<button class="bpc-action-btn" style="color:#c9a23f;border-color:#c9a23f;" onclick="editBooking(\''+b.bookingId+'\')">📝 Edit</button>';
+    var detailsButton = '<button class="bpc-action-btn" onclick="toggleBpc(\''+b.bookingId+'\')">▲ Hide</button>';
+    actionsHtml = actionsHtml + ' ' + editButton + ' ' + detailsButton;
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
       + collapsedHtml
@@ -1146,6 +1121,26 @@ function renderPaymentResults(bookings) {
       + '</div>'
       + '</div>';
   }).join('');
+}
+
+// ── FILTER BY STATUS ──
+function filterByStatus(status) {
+  currentStatusFilter = status;
+  if (!lastPaymentResults) return;
+  
+  var filtered = lastPaymentResults;
+  if (status !== 'all') {
+    filtered = lastPaymentResults.filter(function(b) {
+      return b.status === status;
+    });
+  }
+  
+  document.getElementById('payment_search_count').textContent = 'ทั้งหมด ' + filtered.length + ' รายการ';
+  renderPaymentResults(filtered);
+}
+
+function editBooking(bookingId) {
+  alert('ฟังก์ชั่นแก้ไข booking ' + bookingId + ' จะมาเร็ว ๆ นี้');
 }
 
 function confirmUpdateStatus(bookingId, newStatus) {
