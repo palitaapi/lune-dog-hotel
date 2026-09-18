@@ -1115,8 +1115,9 @@ function renderPaymentResults(bookings) {
     var isDogParkBooking = (b.type === 'Dog Park Day Pass' || b.type === 'Dog Park Monthly');
     if (isDogParkBooking && statusKey === 'pending_payment' && b.dogs && b.dogs.length > 0) {
       var firstDog = b.dogs[0];
+      var lineIdVal = b.lineId || '';
       actionsHtml += '<button class="bpc-action-btn" style="background:#FDDA7B;color:#422F25;border-color:#FDDA7B;font-weight:600;" '
-        + 'onclick="sendMembershipCardAction(\''+b.bookingId+'\',\''+firstDog.dogId+'\',\''+b.type+'\',\''+b.lineId+'\',\''+b.checkIn+'\',\''+b.ownerName+'\',\''+b.phone+'\')">'
+        + 'onclick="sendMembershipCardAction(\''+b.bookingId+'\',\''+firstDog.dogId+'\',\''+b.type+'\',\''+lineIdVal+'\',\''+b.checkIn+'\',\''+b.ownerName+'\',\''+b.phone+'\')">'
         + '🎫 ยืนยันเงิน & ส่งการ์ด</button>';
     }
 
