@@ -1008,35 +1008,50 @@ async function renderPaymentMonthSummary() {
 
 // ── DOG PARK MEMBERSHIP CARD ──────────────────────
 async function sendMembershipCardAction(bookingId, dogId, bookingType, lineId, checkInDate, ownerName, phone) {
+  // Validate all parameters
+  if (!bookingId || !dogId || !bookingType || !checkInDate || !ownerName || !phone) {
+    console.error('Missing parameters:', {bookingId, dogId, bookingType, lineId, checkInDate, ownerName, phone});
+    showMsg('bpc_msg_' + bookingId, '❌ ข้อมูลไม่ครบ กรุณาลองใหม่', 'error');
+    return;
+  }
+  
   showMsg('bpc_msg_' + bookingId, '⏳ กำลังส่งการ์ด...', 'success');
   try {
+    const payload = {
+      action: 'confirmPaymentAndSendCard',
+      bookingId: String(bookingId).trim(),
+      dogId: String(dogId).trim(),
+      bookingType: String(bookingType).trim(),
+      lineId: String(lineId).trim() || '',
+      checkInDate: String(checkInDate).trim(),
+      ownerName: String(ownerName).trim(),
+      phone: String(phone).trim()
+    };
+    
+    console.log('Sending payload:', payload);
+    
     const res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        action: 'confirmPaymentAndSendCard',
-        bookingId: bookingId,
-        dogId: dogId,
-        bookingType: bookingType,
-        lineId: lineId,
-        checkInDate: checkInDate,
-        ownerName: ownerName,
-        phone: phone
-      })
+      body: JSON.stringify(payload)
     });
+    
     const result = await res.json();
+    console.log('Response:', result);
     
     if (result.success) {
       showMsg('bpc_msg_' + bookingId, result.message, 'success');
       allBookingsCache = null;
       setTimeout(() => searchBookingsForPayment(), 1500);
     } else {
-      showMsg('bpc_msg_' + bookingId, result.message, 'error');
+      showMsg('bpc_msg_' + bookingId, result.message || '❌ ส่งการ์ดไม่สำเร็จ', 'error');
     }
   } catch (e) {
+    console.error('Error:', e);
     showMsg('bpc_msg_' + bookingId, '❌ Error: ' + e.message, 'error');
   }
 }
+
 
 async function searchBookingsForPayment() {
   var q = document.getElementById('payment_search_input').value.trim();
