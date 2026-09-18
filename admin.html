@@ -974,16 +974,13 @@ async function renderPaymentMonthSummary() {
       if (b.status === 'cancelled') return;
 
       var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
-      var promoAmount = parseFloat(String(b.promoAmount||'').replace(/[^0-9.]/g,'')) || 0;
-      var extraAmount = parseFloat(String(b.extraAmount||'').replace(/[^0-9.]/g,'')) || 0;
-      var fullAmount = Math.max(0, totalPrice - promoAmount + extraAmount);
 
       if (b.status === 'fully_paid') {
         fullyCount++;
-        fullyAmt += fullAmount;
+        fullyAmt += totalPrice;
       } else {
         pendingCount++;
-        pendingAmt += fullAmount;
+        pendingAmt += totalPrice;
       }
     });
 
@@ -1092,11 +1089,7 @@ function renderPaymentResults(bookings) {
   document.getElementById('payment_search_results').innerHTML = bookings.map(function(b) {
     var totalPrice = parseFloat(String(b.totalPrice||'0').replace(/[^0-9.]/g,'')) || 0;
 
-    // Promotion & Extra: รายการปรับปรุงยังใช้ได้กับทุกบริการ (Hotel และ Park)
-    var promoAmount = parseFloat(String(b.promoAmount||'').replace(/[^0-9.]/g,'')) || 0;
-    var extraAmount = parseFloat(String(b.extraAmount||'').replace(/[^0-9.]/g,'')) || 0;
-    var hasAdjustment = promoAmount > 0 || extraAmount > 0;
-    var finalAmount = Math.max(0, totalPrice - promoAmount + extraAmount);
+
 
     var statusKey = STATUS_LABEL[b.status] ? b.status : 'pending_payment';
     var dateLabel = b.checkIn + (b.checkOut && b.checkOut !== b.checkIn ? ' → '+b.checkOut : '');
@@ -1137,16 +1130,9 @@ function renderPaymentResults(bookings) {
     }
 
     var priceHtml = '<div class="price-summary">'
-      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(isPaid && !hasAdjustment?' <span class="paid-tag">Paid</span>':'')+'</span></div>';
+      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(isPaid?' <span class="paid-tag">Paid</span>':'')+'</span></div>';
 
-    if (hasAdjustment) {
-      priceHtml += '<div class="adjustment-block">'
-        + '<div class="adjustment-title">Promotion &amp; Extra</div>';
-      if (promoAmount > 0) priceHtml += '<div class="adjustment-row promo"><span class="price-label">− ส่วนลดโปรโมชั่น</span><span class="price-amount">฿'+promoAmount.toLocaleString()+'</span></div>';
-      if (extraAmount > 0) priceHtml += '<div class="adjustment-row extra"><span class="price-label">+ ค่าใช้จ่ายเพิ่ม</span><span class="price-amount">฿'+extraAmount.toLocaleString()+'</span></div>';
-      priceHtml += '</div>'
-        + '<div class="grand-total-box"><span class="price-label">Grand Total'+(isPaid?' <span class="paid-tag" style="color:var(--black);">· Paid</span>':'')+'</span><span class="price-amount">฿'+finalAmount.toLocaleString()+'</span></div>';
-    }
+
     priceHtml += '</div>';
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
@@ -1155,88 +1141,11 @@ function renderPaymentResults(bookings) {
       + '<div class="bpc-status-row"><span class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</span></div>'
       + priceHtml
       + '<div class="bpc-actions">'+actionsHtml+'</div>'
-      + '<div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed var(--gray-line);">'
-        + '<label style="font-size:0.72rem;color:var(--gray-dark);display:block;margin-bottom:0.3rem;">ส่วนลดโปรโมชั่น (บาท) เช่น First-Time 25%</label>'
-        + '<div style="display:flex;gap:0.4rem;align-items:center;">'
-          + '<span style="font-size:0.8rem;color:var(--gray-dark);">฿</span>'
-          + '<input type="number" id="promo_input_'+b.bookingId+'" placeholder="เช่น 234" min="0" value="'+(promoAmount>0?promoAmount:'')+'" style="flex:1;font-size:0.8rem;padding:0.4rem 0.6rem;"/>'
-          + '<button class="bpc-action-btn" style="flex:0 0 auto;" onclick="savePromoAmount(\''+b.bookingId+'\')">บันทึก</button>'
-        + '</div>'
-      + '</div>'
-      + '<div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed var(--gray-line);">'
-        + '<label style="font-size:0.72rem;color:var(--gray-dark);display:block;margin-bottom:0.3rem;">ค่าใช้จ่ายเพิ่มเติม (บาท) เช่น After-hours</label>'
-        + '<div style="display:flex;gap:0.4rem;align-items:center;">'
-          + '<span style="font-size:0.8rem;color:var(--gray-dark);">฿</span>'
-          + '<input type="number" id="extra_input_'+b.bookingId+'" placeholder="เช่น 100" min="0" value="'+(extraAmount>0?extraAmount:'')+'" style="flex:1;font-size:0.8rem;padding:0.4rem 0.6rem;"/>'
-          + '<button class="bpc-action-btn" style="flex:0 0 auto;" onclick="saveExtraAmount(\''+b.bookingId+'\')">บันทึก</button>'
-        + '</div>'
-      + '</div>'
+
       + '<div id="bpc_msg_'+b.bookingId+'"></div>'
       + '</div>'
       + '</div>';
   }).join('');
-}
-
-async function savePromoAmount(bookingId) {
-  var input = document.getElementById('promo_input_'+bookingId);
-  var newValue = parseFloat(input.value.trim());
-  var msgId = 'bpc_msg_'+bookingId;
-
-  if (input.value.trim() !== '' && (isNaN(newValue) || newValue < 0)) {
-    showMsg(msgId, 'กรุณากรอกยอดส่วนลดที่ถูกต้อง', 'error');
-    return;
-  }
-  var promoValue = (isNaN(newValue) || newValue < 0) ? '' : Math.round(newValue);
-
-  showMsg(msgId, '⏳ กำลังบันทึก...', 'success');
-  try {
-    var res = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'text/plain'},
-      body: JSON.stringify({ action:'updatePromoAmount', bookingId: bookingId, promoAmount: String(promoValue) })
-    });
-    var result = await res.json();
-    if (!result.success) {
-      showMsg(msgId, 'บันทึกไม่สำเร็จ: '+(result.error||'unknown error'), 'error');
-      return;
-    }
-    allBookingsCache = null;
-    showMsg(msgId, '✓ บันทึกส่วนลดแล้ว', 'success');
-    searchBookingsForPayment();
-  } catch(e) {
-    showMsg(msgId, 'บันทึกไม่สำเร็จ: '+e.message, 'error');
-  }
-}
-
-async function saveExtraAmount(bookingId) {
-  var input = document.getElementById('extra_input_'+bookingId);
-  var newValue = parseFloat(input.value.trim());
-  var msgId = 'bpc_msg_'+bookingId;
-
-  if (input.value.trim() !== '' && (isNaN(newValue) || newValue < 0)) {
-    showMsg(msgId, 'กรุณากรอกยอดค่าใช้จ่ายเพิ่มที่ถูกต้อง', 'error');
-    return;
-  }
-  var extraValue = (isNaN(newValue) || newValue < 0) ? '' : Math.round(newValue);
-
-  showMsg(msgId, '⏳ กำลังบันทึก...', 'success');
-  try {
-    var res = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'text/plain'},
-      body: JSON.stringify({ action:'updateExtraAmount', bookingId: bookingId, extraAmount: String(extraValue) })
-    });
-    var result = await res.json();
-    if (!result.success) {
-      showMsg(msgId, 'บันทึกไม่สำเร็จ: '+(result.error||'unknown error'), 'error');
-      return;
-    }
-    allBookingsCache = null;
-    showMsg(msgId, '✓ บันทึกค่าใช้จ่ายเพิ่มแล้ว', 'success');
-    searchBookingsForPayment();
-  } catch(e) {
-    showMsg(msgId, 'บันทึกไม่สำเร็จ: '+e.message, 'error');
-  }
 }
 
 function confirmUpdateStatus(bookingId, newStatus) {
