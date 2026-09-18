@@ -1006,6 +1006,38 @@ async function renderPaymentMonthSummary() {
   }
 }
 
+// ── DOG PARK MEMBERSHIP CARD ──────────────────────
+async function sendMembershipCardAction(bookingId, dogId, bookingType, lineId, checkInDate, ownerName, phone) {
+  showMsg('bpc_msg_' + bookingId, '⏳ กำลังส่งการ์ด...', 'success');
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        action: 'confirmPaymentAndSendCard',
+        bookingId: bookingId,
+        dogId: dogId,
+        bookingType: bookingType,
+        lineId: lineId,
+        checkInDate: checkInDate,
+        ownerName: ownerName,
+        phone: phone
+      })
+    });
+    const result = await res.json();
+    
+    if (result.success) {
+      showMsg('bpc_msg_' + bookingId, result.message, 'success');
+      allBookingsCache = null;
+      setTimeout(() => searchBookingsForPayment(), 1500);
+    } else {
+      showMsg('bpc_msg_' + bookingId, result.message, 'error');
+    }
+  } catch (e) {
+    showMsg('bpc_msg_' + bookingId, '❌ Error: ' + e.message, 'error');
+  }
+}
+
 async function searchBookingsForPayment() {
   var q = document.getElementById('payment_search_input').value.trim();
   document.getElementById('payment_search_msg').innerHTML = '';
@@ -1078,6 +1110,15 @@ function renderPaymentResults(bookings) {
       var icon = isCurrent ? '✓ ' : '→ ';
       return '<button class="bpc-action-btn'+danger+currentClass+'"'+onclick+'>'+icon+STATUS_LABEL[s]+'</button>';
     }).join('');
+
+    // ── DOG PARK: Add membership card button if pending_payment ──
+    var isDogParkBooking = (b.type === 'Dog Park Day Pass' || b.type === 'Dog Park Monthly');
+    if (isDogParkBooking && statusKey === 'pending_payment' && b.dogs && b.dogs.length > 0) {
+      var firstDog = b.dogs[0];
+      actionsHtml += '<button class="bpc-action-btn" style="background:#FDDA7B;color:#422F25;border-color:#FDDA7B;font-weight:600;" '
+        + 'onclick="sendMembershipCardAction(\''+b.bookingId+'\',\''+firstDog.dogId+'\',\''+b.type+'\',\''+b.lineId+'\',\''+b.checkIn+'\',\''+b.ownerName+'\',\''+b.phone+'\')">'
+        + '🎫 ยืนยันเงิน & ส่งการ์ด</button>';
+    }
 
     var priceHtml = '<div class="price-summary">'
       + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+(isPaid && !hasAdjustment?' <span class="paid-tag">Paid</span>':'')+'</span></div>';
