@@ -62,12 +62,12 @@
   .revenue-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--gold);padding:1.2rem;border-radius:4px;margin-bottom:1rem;}
   .revenue-card .revenue-label{font-size:0.78rem;color:var(--gray-dark);margin-bottom:0.4rem;}
   .revenue-card .revenue-amount{font-size:1.4rem;font-weight:700;color:var(--black);}
-  .summary-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--gold);padding:0.9rem;border-radius:4px;text-align:center;}
+  .summary-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--gold);padding:0.7rem;border-radius:4px;text-align:center;}
   .summary-card.pending{border-top-color:#FFB366;}
   .summary-card.paid{border-top-color:#66BB6A;}
   .summary-card.cancelled{border-top-color:#BDBDBD;}
-  .summary-card .summary-label{font-size:0.72rem;color:var(--gray-dark);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.05em;}
-  .summary-card .summary-amount{font-size:1.3rem;font-weight:700;color:#422F25;}
+  .summary-card .summary-label{font-size:0.65rem;color:var(--gray-dark);margin-bottom:0.2rem;text-transform:uppercase;letter-spacing:0.05em;}
+  .summary-card .summary-amount{font-size:1.1rem;font-weight:700;color:#422F25;}
   .revenue-card select{margin-left:0.5rem;font-size:0.78rem;padding:0.2rem 0.4rem;}
   .revenue-breakdown{margin-top:0.7rem;font-size:0.8rem;color:var(--gray-dark);line-height:1.8;}
   .dog-visit-card{border:0.5px solid var(--gray-line);border-top:2px solid var(--yellow);padding:1rem;border-radius:4px;margin-bottom:0.8rem;}
@@ -1231,22 +1231,21 @@ function renderPaymentResults(bookings) {
       + '<option value="cancelled" '+(statusKey==='cancelled'?'selected':'')+'>→ Cancel</option>'
       + '</select>';
 
-    var priceHtml = '<div class="price-summary">'
-      + '<div class="price-row total-row"><span class="price-label">Total</span><span class="price-amount">฿'+totalPrice.toLocaleString()+'</span></div>'
+    var priceHtml = '<div class="price-summary" style="padding:0.6rem 0;margin:0.6rem 0 0;">'
+      + '<div class="price-row total-row"><span class="price-label" style="font-size:0.75rem;">Total</span><span class="price-amount" style="font-size:1rem;">฿'+totalPrice.toLocaleString()+'</span></div>'
       + '</div>';
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
       + '<div style="display:flex;gap:1rem;margin-bottom:0.8rem;">'
       + '<div style="flex:1;">'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
-      + '<div class="bpc-meta"><strong>'+b.ownerName+'</strong> · '+(b.phone||'-')+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
+      + '<div class="bpc-meta"><strong>👤 '+b.ownerName+'</strong> · '+(b.phone||'-')+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
       + '<div class="bpc-meta">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
       + '<div class="bpc-meta">📋 ' + typeLabel + ' · ' + dateLabel + '</div>'
       + timeLabel
       + '</div>'
-      + '<div style="flex:none;text-align:right;min-width:120px;">'
+      + '<div style="flex:none;text-align:right;min-width:100px;">'
       + '<div class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</div>'
-      + '<div style="margin-top:0.6rem;font-size:0.9rem;font-weight:600;color:var(--gold);">฿'+totalPrice.toLocaleString()+'</div>'
       + '</div>'
       + '</div>'
       + priceHtml
