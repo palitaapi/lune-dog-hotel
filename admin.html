@@ -178,7 +178,7 @@
   .deposit-note{font-size:0.78rem;color:var(--gray-dark);margin-top:0.5rem;font-weight:300;}
   .msg-box{padding:1rem;font-size:0.85rem;margin-top:1rem;text-align:center;border-radius:2px;}
   .msg-success{background:#FDF4E3;border:0.5px solid var(--gray-line);color:var(--black);}
-  .msg-error{background:#FDF4E3;border:0.5px solid var(--yellow);color:var(--black);}
+  .msg-error{background:#FDF4E3;border:0.5px solid var(--gray-line);color:var(--black);}
   .success-screen{text-align:center;padding:1rem 0;}
   .success-icon{font-size:3rem;margin-bottom:1rem;}
   .booking-id-badge{display:inline-block;background:var(--yellow);border:0.5px solid var(--gray-line);padding:0.5rem 1.4rem;font-size:0.85rem;color:#422F25;letter-spacing:0.12em;margin:1rem 0;font-family:'Space Mono',monospace;font-weight:700;}
@@ -1232,23 +1232,20 @@ function renderPaymentResults(bookings) {
       + '</select>';
 
     var priceHtml = '<div class="price-summary" style="padding:0.6rem 0;margin:0.6rem 0 0;text-align:center;">'
-      + '<div class="price-row total-row"><span class="price-label" style="font-size:0.75rem;">Total</span><span class="price-amount" style="font-size:1rem;"> ฿'+totalPrice.toLocaleString()+'</span></div>'
+      + '<div style="font-size:0.75rem;">Total</div>'
+      + '<div style="font-size:1rem;font-weight:600;">฿'+totalPrice.toLocaleString()+'</div>'
       + '</div>';
 
-    return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'">'
-      + '<div style="display:flex;gap:1rem;margin-bottom:0.8rem;">'
-      + '<div style="flex:1;">'
+    return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'" style="position:relative;">'
+      + '<div style="position:absolute;top:0;right:0;">'
+      + '<div class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</div>'
+      + '</div>'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
       + '<div class="bpc-meta"><strong>👤 '+b.ownerName+'</strong>'+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
       + '<div class="bpc-meta">📞 '+(b.phone||'-')+'</div>'
       + '<div class="bpc-meta">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
       + '<div class="bpc-meta">🏠 ' + typeLabel + ' · ' + dateLabel + '</div>'
       + timeLabel
-      + '</div>'
-      + '<div style="flex:none;text-align:right;min-width:100px;">'
-      + '<div class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</div>'
-      + '</div>'
-      + '</div>'
       + priceHtml
       + '<div class="bpc-actions">'+actionsHtml+'</div>'
       + '<div id="bpc_msg_'+b.bookingId+'"></div>'
