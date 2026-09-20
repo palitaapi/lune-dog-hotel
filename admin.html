@@ -200,19 +200,24 @@
   <!-- SCREEN: SOURCE -->
   <div id="screen-source" class="card">
     <div class="mode-tabs">
-      <div class="mode-tab active" id="top-tab-entry" onclick="switchTopTab('entry')">ลงทะเบียน</div>
+      <div class="mode-tab active" id="top-tab-entry" onclick="switchTopTab('entry')">ลูกค้าและสุนัข</div>
       <div class="mode-tab" id="top-tab-payment" onclick="switchTopTab('payment')">การจ่ายเงิน</div>
       <div class="mode-tab" id="top-tab-reports" onclick="switchTopTab('reports')">รายงานประจำวัน</div>
-      <div class="mode-tab" id="top-tab-database" onclick="switchTopTab('database')">ฐานข้อมูล</div>
     </div>
 
     <!-- ═══ TOP TAB: MANUAL ENTRY ═══ -->
     <div id="top-panel-entry">
-      <div class="section-label">ลงทะเบียน</div>
+      <div class="section-label">ลูกค้าและสุนัข</div>
       <div class="divider"></div>
 
+      <!-- SUB TABS: Entry + Database -->
+      <div class="sub-tabs">
+        <div class="sub-tab active" id="entry-subtab-new" onclick="switchEntrySubTab('new')">เพิ่มลูกค้าใหม่</div>
+        <div class="sub-tab" id="entry-subtab-search" onclick="switchEntrySubTab('search')">ค้นหาลูกค้าและสุนัข</div>
+      </div>
+
       <!-- NEW OWNER FORM -->
-      <div id="mode-new">
+      <div id="entry-mode-new">
         <div class="form-group"><label>ชื่อของคุณพ่อคุณแม่ *</label><input type="text" id="own_name"/></div>
         <div class="form-group"><label>เบอร์โทรศัพท์ * (10 หลัก)</label><input type="tel" id="own_phone" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
         <div class="form-group"><label>อีเมล</label><input type="email" id="own_email" placeholder="example@email.com" oninput="validateEmailFormat()"/><div id="email_format_msg" style="font-size:0.75rem;color:var(--red);margin-top:0.3rem;"></div></div>
@@ -242,12 +247,55 @@
         <button class="btn-primary" id="regBtn" onclick="registerOwner()">บันทึกและไปต่อ → ถัดไป</button>
         <div id="newuser_msg"></div>
       </div>
+
+      <!-- DATABASE SEARCH -->
+      <div id="entry-mode-search" style="display:none;">
+        <div class="sub-tabs">
+          <div class="sub-tab active" id="tab-entry-search-owners" onclick="switchEntrySearchTab('owners')">เจ้าของ</div>
+          <div class="sub-tab" id="tab-entry-search-dogs" onclick="switchEntrySearchTab('dogs')">น้องหมา</div>
+        </div>
+
+        <!-- SEARCH: OWNERS -->
+        <div id="entry-search-owners">
+          <div class="form-group">
+            <label>ค้นหาชื่อ เบอร์โทร หรือ LINE</label>
+            <div class="search-row">
+              <input type="text" id="entry_owner_search_input" placeholder="เช่น คุณแพร หรือ 0812345678" oninput="debouncedEntryOwnerSearch()"/>
+              <button onclick="renderEntryOwners()">ค้นหา</button>
+            </div>
+          </div>
+          <div id="entry_owner_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
+          <div id="entry_owner_results"></div>
+        </div>
+
+        <!-- SEARCH: DOGS -->
+        <div id="entry-search-dogs" style="display:none;">
+          <div class="form-group">
+            <label>ค้นหาชื่อน้องหมา สายพันธุ์ หรือชื่อเจ้าของ</label>
+            <div class="search-row">
+              <input type="text" id="entry_dog_search_input" placeholder="เช่น มะลิ หรือ Poodle" oninput="debouncedEntryDogSearch()"/>
+              <button onclick="renderEntryDogs()">ค้นหา</button>
+            </div>
+          </div>
+          <div id="entry_dog_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
+          <div id="entry_dog_results"></div>
+        </div>
+      </div>
     </div>
 
     <!-- ═══ TOP TAB: PAYMENT STATUS ═══ -->
     <div id="top-panel-payment" style="display:none;">
       <div class="section-label">ติดตามการจ่ายเงิน</div>
       <div class="divider"></div>
+      
+      <!-- Search -->
+      <div class="form-group">
+        <label>ค้นหาด้วย Booking ID หรือชื่อลูกค้า</label>
+        <div class="search-row">
+          <input type="text" id="payment_search_input" placeholder="เช่น BK-260625-001 หรือ คุณแพร" oninput="debouncedPaymentSearch()"/>
+          <button onclick="searchBookingsForPayment()">ค้นหา</button>
+        </div>
+      </div>
       
       <!-- Date Range -->
       <div class="form-row">
@@ -258,15 +306,6 @@
         <div class="form-group">
           <label>วันที่สิ้นสุด</label>
           <input type="date" id="payment_date_end" onchange="searchBookingsForPayment()"/>
-        </div>
-      </div>
-      
-      <!-- Search -->
-      <div class="form-group">
-        <label>ค้นหาด้วย Booking ID หรือชื่อลูกค้า</label>
-        <div class="search-row">
-          <input type="text" id="payment_search_input" placeholder="เช่น BK-260625-001 หรือ คุณแพร" oninput="debouncedPaymentSearch()"/>
-          <button onclick="searchBookingsForPayment()">ค้นหา</button>
         </div>
       </div>
       
@@ -317,41 +356,6 @@
       </div>
     </div>
 
-    <!-- ═══ TOP TAB: DATABASE ═══ -->
-    <div id="top-panel-database" style="display:none;">
-      <div class="section-label">ฐานข้อมูล</div>
-      <div class="divider"></div>
-
-      <div class="sub-tabs">
-        <div class="sub-tab active" id="tab-db-owners" onclick="switchDbTab('owners')">เจ้าของ</div>
-        <div class="sub-tab" id="tab-db-dogs" onclick="switchDbTab('dogs')">น้องหมา</div>
-      </div>
-
-      <!-- DB: OWNERS -->
-      <div id="db-panel-owners">
-        <div class="form-group">
-          <label>ค้นหาชื่อ เบอร์โทร หรือ LINE</label>
-          <div class="search-row">
-            <input type="text" id="db_owner_search_input" placeholder="เช่น คุณแพร หรือ 0812345678" oninput="debouncedDbOwnerSearch()"/>
-            <button onclick="renderDbOwners()">ค้นหา</button>
-          </div>
-        </div>
-        <div id="db_owner_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
-        <div id="db_owner_results"></div>
-      </div>
-
-      <!-- DB: DOGS -->
-      <div id="db-panel-dogs" style="display:none;">
-        <div class="form-group">
-          <label>ค้นหาชื่อน้องหมา สายพันธุ์ หรือชื่อเจ้าของ</label>
-          <div class="search-row">
-            <input type="text" id="db_dog_search_input" placeholder="เช่น มะลิ หรือ Poodle" oninput="debouncedDbDogSearch()"/>
-            <button onclick="renderDbDogs()">ค้นหา</button>
-          </div>
-        </div>
-        <div id="db_dog_count" class="empty-note" style="text-align:left;padding:0 0 0.6rem;"></div>
-        <div id="db_dog_results"></div>
-      </div>
     </div>
   </div>
 
@@ -596,16 +600,35 @@ function switchTopTab(tab, skipAutoLoad) {
   document.getElementById('top-tab-entry').classList.toggle('active', tab==='entry');
   document.getElementById('top-tab-payment').classList.toggle('active', tab==='payment');
   document.getElementById('top-tab-reports').classList.toggle('active', tab==='reports');
-  document.getElementById('top-tab-database').classList.toggle('active', tab==='database');
   document.getElementById('top-panel-entry').style.display = tab==='entry' ? 'block' : 'none';
   document.getElementById('top-panel-payment').style.display = tab==='payment' ? 'block' : 'none';
   document.getElementById('top-panel-reports').style.display = tab==='reports' ? 'block' : 'none';
-  document.getElementById('top-panel-database').style.display = tab==='database' ? 'block' : 'none';
   if (tab==='payment' || tab==='reports') { allBookingsCache = null; dogsFoodMapCache = null; } // โหลดข้อมูลใหม่เสมอ ไม่ใช้ cache ค้าง
-  if (tab==='database') { dbOwnersFullCache = null; dbDogsFullCache = null; allBookingsCache = null; } // ฐานข้อมูลต้องสดเสมอเช่นกัน
+  if (tab==='entry') { dbOwnersFullCache = null; dbDogsFullCache = null; } // ข้อมูลลูกค้าต้องสดเสมอ
   if (tab==='reports') renderDogVisits();
-  if (tab==='database') switchDbTab('owners');
+  if (tab==='entry') switchEntrySubTab('new'); // แสดงฟอร์มเพิ่มลูกค้าใหม่
   if (tab==='payment') { if (!skipAutoLoad) { document.getElementById('payment_summary_section').innerHTML = ''; searchBookingsForPayment(); } } // โชว์ booking ทั้งหมดทันทีและสรุปยอดเงิน
+}
+
+// ── SWITCH ENTRY SUB TAB ──
+function switchEntrySubTab(tab) {
+  var isNew = tab === 'new';
+  document.getElementById('entry-subtab-new').classList.toggle('active', isNew);
+  document.getElementById('entry-subtab-search').classList.toggle('active', !isNew);
+  document.getElementById('entry-mode-new').style.display = isNew ? 'block' : 'none';
+  document.getElementById('entry-mode-search').style.display = isNew ? 'none' : 'block';
+  if (!isNew) switchEntrySearchTab('owners');
+}
+
+// ── SWITCH ENTRY SEARCH TAB ──
+function switchEntrySearchTab(tab) {
+  var isOwners = tab === 'owners';
+  document.getElementById('tab-entry-search-owners').classList.toggle('active', isOwners);
+  document.getElementById('tab-entry-search-dogs').classList.toggle('active', !isOwners);
+  document.getElementById('entry-search-owners').style.display = isOwners ? 'block' : 'none';
+  document.getElementById('entry-search-dogs').style.display = isOwners ? 'none' : 'block';
+  if (isOwners) renderEntryOwners();
+  else renderEntryDogs();
 }
 
 // ── OWNER SEARCH (existing) ──────────────────────────
@@ -772,6 +795,8 @@ var dbDogsFullCache = null;     // Dogs sheet ทุกคอลัมน์
 var dbExpandedOwnerId = null;   // ownerId ของการ์ดที่กำลังขยายอยู่ (มีได้ทีละ 1)
 var dbOwnerSearchDebounceTimer = null;
 var dbDogSearchDebounceTimer = null;
+var entryOwnerSearchDebounceTimer = null;
+var entryDogSearchDebounceTimer = null;
 
 function switchDbTab(tab) {
   document.getElementById('tab-db-owners').classList.toggle('active', tab==='owners');
@@ -836,9 +861,66 @@ function debouncedDbOwnerSearch() {
   dbOwnerSearchDebounceTimer = setTimeout(renderDbOwners, 350);
 }
 
+function debouncedEntryOwnerSearch() {
+  clearTimeout(entryOwnerSearchDebounceTimer);
+  entryOwnerSearchDebounceTimer = setTimeout(renderEntryOwners, 350);
+}
+
 function debouncedDbDogSearch() {
   clearTimeout(dbDogSearchDebounceTimer);
   dbDogSearchDebounceTimer = setTimeout(renderDbDogs, 350);
+}
+
+function debouncedEntryDogSearch() {
+  clearTimeout(entryDogSearchDebounceTimer);
+  entryDogSearchDebounceTimer = setTimeout(renderEntryDogs, 350);
+}
+
+async function renderEntryOwners() {
+  var q = document.getElementById('entry_owner_search_input').value.trim();
+  var qNorm = q.replace(/\D/g,'');
+  var resultsEl = document.getElementById('entry_owner_results');
+  resultsEl.innerHTML = '<p class="empty-note">⏳ กำลังโหลดข้อมูล...</p>';
+  try {
+    var owners = await loadAllOwnersFull();
+    var results = !q ? owners : owners.filter(function(o) {
+      var nameMatch = o.name && o.name.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+      var phoneMatch = qNorm.length >= 3 && o.phone && o.phone.replace(/\D/g,'').indexOf(qNorm) !== -1;
+      var lineMatch = o.lineName && o.lineName.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+      return nameMatch || phoneMatch || lineMatch;
+    });
+    document.getElementById('entry_owner_count').textContent = 'ทั้งหมด ' + results.length + ' คน';
+    if (results.length === 0) {
+      resultsEl.innerHTML = '<p class="empty-note">ไม่พบเจ้าของที่ค้นหา</p>';
+      return;
+    }
+    resultsEl.innerHTML = '<p class="empty-note">พบ ' + results.length + ' เจ้าของ: ' + results.map(function(o) { return o.name; }).join(', ') + '</p>';
+  } catch(e) {
+    resultsEl.innerHTML = '<p class="empty-note">โหลดไม่สำเร็จ: '+e.message+'</p>';
+  }
+}
+
+async function renderEntryDogs() {
+  var q = document.getElementById('entry_dog_search_input').value.trim();
+  var resultsEl = document.getElementById('entry_dog_results');
+  resultsEl.innerHTML = '<p class="empty-note">⏳ กำลังโหลดข้อมูล...</p>';
+  try {
+    var dogs = await loadAllDogsFull();
+    var results = !q ? dogs : dogs.filter(function(d) {
+      var nameMatch = d.name && d.name.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+      var breedMatch = d.breed && d.breed.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+      var ownerMatch = d.ownerName && d.ownerName.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+      return nameMatch || breedMatch || ownerMatch;
+    });
+    document.getElementById('entry_dog_count').textContent = 'ทั้งหมด ' + results.length + ' ตัว';
+    if (results.length === 0) {
+      resultsEl.innerHTML = '<p class="empty-note">ไม่พบน้องหมาที่ค้นหา</p>';
+      return;
+    }
+    resultsEl.innerHTML = '<p class="empty-note">พบ ' + results.length + ' น้องหมา: ' + results.map(function(d) { return d.name; }).join(', ') + '</p>';
+  } catch(e) {
+    resultsEl.innerHTML = '<p class="empty-note">โหลดไม่สำเร็จ: '+e.message+'</p>';
+  }
 }
 
 async function renderDbOwners() {
