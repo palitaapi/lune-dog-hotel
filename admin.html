@@ -1237,15 +1237,17 @@ function renderPaymentResults(bookings) {
       + '</div>';
 
     return '<div class="booking-payment-card" id="bpc_'+b.bookingId+'" style="position:relative;">'
-      + '<div style="position:absolute;top:0;right:0;">'
+      + '<div style="position:absolute;top:0.6rem;right:0.6rem;">'
       + '<div class="status-badge status-'+statusKey+'">'+STATUS_LABEL[statusKey]+'</div>'
       + '</div>'
       + '<div class="bpc-header"><span class="bpc-id">'+b.bookingId+'</span></div>'
       + '<div class="bpc-meta"><strong>👤 '+b.ownerName+'</strong>'+(b.lineName?' · LINE: '+b.lineName:'')+'</div>'
       + '<div class="bpc-meta">📞 '+(b.phone||'-')+'</div>'
       + '<div class="bpc-meta">🐶 '+(b.dogs.map(function(d){return d.name;}).join(', ')||'-')+'</div>'
-      + '<div class="bpc-meta">🏠 ' + typeLabel + ' · ' + dateLabel + '</div>'
-      + timeLabel
+      + '<div class="bpc-meta">' + typeLabel + '</div>'
+      + (b.type === 'Overnight Care' || b.type === 'Daycare' 
+         ? '<div class="bpc-meta">⏰ ' + (b.checkIn||'-') + ' (' + (b.dropOffTime||'-') + ') → ' + (b.checkOut||'-') + ' (' + (b.pickUpTime||'-') + ')</div>'
+         : '')
       + priceHtml
       + '<div class="bpc-actions">'+actionsHtml+'</div>'
       + '<div id="bpc_msg_'+b.bookingId+'"></div>'
