@@ -345,10 +345,6 @@
         <img src="assets/payment-qr.png" alt="QR Code ชำระเงิน" style="width:180px;height:180px;object-fit:contain;margin:0 auto 0.8rem;display:block;"/>
         <p style="font-size:0.78rem;color:var(--gray-dark);line-height:1.7;">รบกวนส่งสลิปการโอนเงินทาง LINE <a href="https://line.me/R/ti/p/@798pcbhg" target="_blank" style="color:var(--gold);font-weight:600;">@798pcbhg</a> เพื่อยืนยันการจอง</p>
       </div>
-      <div id="member_card_block" style="display:none;margin-bottom:1.2rem;">
-        <p style="font-size:0.85rem;color:var(--gray-dark);margin-bottom:0.8rem;">บัตรสมาชิก Dog Park รายเดือนของคุณพร้อมแล้ว</p>
-        <a id="member_card_link" href="member-card.html" style="display:inline-block;padding:0.8rem 2rem;background:#F8D167;color:#422F25;text-decoration:none;font-size:0.9rem;font-weight:600;border-radius:999px;">ดูบัตรสมาชิก · Member Card</a>
-      </div>
       <a href="index.html" style="display:inline-block;padding:0.8rem 2rem;background:#422F25;color:#FFF7EF;text-decoration:none;font-size:0.85rem;border-radius:999px;">Back to Home · กลับหน้าหลัก</a>
     </div>
   </div>
@@ -1447,28 +1443,11 @@ async function confirmBooking() {
     var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
     document.getElementById('success_bookingid').textContent=result.bookingId||'BK-XXXX';
-    showMemberCardLink(dogs);
     showScreen('success');
   } catch(e) {
     document.getElementById('success_bookingid').textContent='BK-XXXX';
-    showMemberCardLink(dogs);
     showScreen('success');
   }
-}
-
-// ── MEMBER CARD (Dog Park รายเดือน) ───────────────────
-function showMemberCardLink(dogs) {
-  var block = document.getElementById('member_card_block');
-  if (!(serviceType === 'park' && parkPassType === 'monthly')) { block.style.display = 'none'; return; }
-  var oid = currentOwner && currentOwner.ownerId ? String(currentOwner.ownerId) : '';
-  var q = new URLSearchParams({
-    owner: (currentOwner && (currentOwner.name || currentOwner.lineName)) || '',
-    oid: oid,
-    until: parkValidUntil,
-    dogs: (dogs || []).map(function(d){ return d.name + '|' + (d.dogId || ''); }).join(';')
-  });
-  document.getElementById('member_card_link').href = 'member-card.html?' + q.toString();
-  block.style.display = 'block';
 }
 
 // ── INIT ──────────────────────────────────────────────
