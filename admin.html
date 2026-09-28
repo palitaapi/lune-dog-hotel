@@ -6,6 +6,8 @@
 <title>Lune's Dog Hotel &amp; Dog Park — Admin Booking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ranchers&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Ranchers&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Nunito','IBM Plex Sans Thai','Arial',sans-serif;}
@@ -184,6 +186,52 @@
   .booking-id-badge{display:inline-block;background:var(--yellow);border:0.5px solid var(--gray-line);padding:0.5rem 1.4rem;font-size:0.85rem;color:#422F25;letter-spacing:0.12em;margin:1rem 0;font-family:'Space Mono',monospace;font-weight:700;}
   .source-tag{display:inline-block;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.55rem;border-radius:999px;background:var(--bg2);color:var(--gold);border:0.5px solid var(--gray-line);font-family:'Space Mono','IBM Plex Sans Thai',monospace;margin-left:0.5rem;}
   @media(max-width:500px){.card{padding:1.5rem 1.1rem;}.form-row{grid-template-columns:1fr;}.btn-row{flex-direction:column-reverse;}.btn-row .btn-secondary{flex:1;}.saved-dog-cards{grid-template-columns:1fr;}}
+
+  /* Member card modal */
+  #mc-overlay{position:fixed;inset:0;background:rgba(58,40,34,.6);z-index:1000;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px;}
+  #mc-overlay.open{display:flex;}
+  .mc-sheet{background:#FFF7EF;border-radius:20px;padding:20px;width:100%;max-width:900px;display:flex;flex-direction:column;gap:16px;}
+  .mc-top{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+  .mc-top h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:1.6rem;color:#422F25;}
+  .mc-close{background:none;border:none;font-size:1.6rem;line-height:1;color:#6e5d4e;cursor:pointer;min-width:44px;min-height:44px;}
+  .mc-frame{width:100%;}
+  .mc-scaler{width:856px;height:540px;transform-origin:top left;}
+  #mc-card{width:856px;height:540px;border-radius:32px;overflow:hidden;background:#3A2822;display:flex;flex-direction:column;padding:40px 48px 44px;}
+  #mc-card *{font-family:'IBM Plex Sans Thai',sans-serif;}
+  #mc-card .lg{display:flex;align-items:center;gap:8px;}
+  #mc-card .lg .m{font-family:'Ranchers',sans-serif;font-size:40px;line-height:.82;color:#FFF7EF;}
+  #mc-card .lg .s{font-family:'Ranchers',sans-serif;font-size:18px;line-height:1.14;color:#F8D167;}
+  #mc-card .lg .d{display:flex;align-items:center;gap:3px;margin:2px 0;}
+  #mc-card .lg .d i{flex:1;height:1.5px;background:#F8D167;}
+  #mc-card .lg .d b{width:5px;height:5px;border-radius:50%;background:#FFF7EF;flex:none;}
+  #mc-card .bd{flex:1;min-height:0;display:flex;margin-top:28px;}
+  #mc-card .lf{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
+  #mc-card .dogs{display:flex;justify-content:center;gap:14px;}
+  #mc-card .dog{display:flex;flex-direction:column;align-items:center;gap:7px;width:124px;}
+  #mc-card .ph{width:104px;height:104px;border-radius:50%;overflow:hidden;background:#422F25;border:3px solid #F8D167;display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:44px;color:#F8D167;}
+  #mc-card .ph img{width:100%;height:100%;object-fit:cover;display:block;}
+  #mc-card .nm{font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:28px;line-height:1.1;color:#FFF7EF;white-space:nowrap;}
+  #mc-card .no{font-size:12px;font-weight:600;color:#bfa98f;white-space:nowrap;}
+  #mc-card .solo .dog{width:auto;gap:10px;} #mc-card .solo .ph{width:150px;height:150px;font-size:64px;} #mc-card .solo .nm{font-size:48px;} #mc-card .solo .no{font-size:14px;}
+  #mc-card .many .dog{width:100px;} #mc-card .many .ph{width:84px;height:84px;font-size:36px;} #mc-card .many .nm{font-size:24px;} #mc-card .many .no{font-size:10px;}
+  #mc-card .ow{display:flex;align-items:baseline;gap:12px;}
+  #mc-card .ow .n{font-size:18px;font-weight:500;color:#FFF7EF;} #mc-card .ow .sp{font-size:15px;color:#5a4538;} #mc-card .ow .id{font-size:15px;font-weight:600;letter-spacing:.04em;color:#bfa98f;}
+  #mc-card .dv{width:0;border-left:2px dashed #5a4538;margin:0 36px;}
+  #mc-card .rt{flex:none;width:310px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;}
+  #mc-card .pl{font-family:'Instrument Serif',serif;font-size:62px;line-height:.9;color:#F8D167;}
+  #mc-card .pl em{font-family:'Instrument Serif',serif;color:#FFF7EF;}
+  #mc-card .du{font-family:'Instrument Serif',serif;font-style:italic;font-size:30px;line-height:1;color:#F8D167;margin-top:8px;}
+  #mc-card .bx{width:100%;background:#FFF7EF;border-radius:22px;padding:20px 18px;display:flex;flex-direction:column;align-items:center;}
+  #mc-card .bx .l{font-size:12px;font-weight:600;letter-spacing:.16em;color:#8a7a6a;}
+  #mc-card .bx .v{font-family:'Instrument Serif',serif;font-size:46px;line-height:1;color:#422F25;margin-top:6px;white-space:nowrap;}
+  .mc-photos{display:flex;flex-wrap:wrap;gap:10px;}
+  .mc-photos label{flex:1;min-width:160px;font-size:0.78rem;font-weight:600;color:#6e5d4e;display:flex;flex-direction:column;gap:4px;}
+  .mc-until{display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#6e5d4e;}
+  .mc-until input{padding:8px 10px;border:0.5px solid var(--gray-line);border-radius:8px;min-height:40px;}
+  .mc-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .mc-btn{padding:0.8rem 1.8rem;border-radius:999px;border:none;font-size:0.9rem;font-weight:600;cursor:pointer;min-height:44px;}
+  .mc-btn.p{background:#422F25;color:#FFF7EF;} .mc-btn.s{background:#F8D167;color:#422F25;}
+  .bpc-card-btn{width:100%;margin-top:0.6rem;padding:0.6rem;border-radius:999px;border:none;background:#F8D167;color:#422F25;font-size:0.8rem;font-weight:700;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -481,6 +529,27 @@
     </div>
   </div>
 
+</div>
+<div id="mc-overlay" onclick="if(event.target===this)closeMemberCard()">
+  <div class="mc-sheet">
+    <div class="mc-top"><h3>บัตรสมาชิก Dog Park</h3><button class="mc-close" onclick="closeMemberCard()">×</button></div>
+    <div class="mc-frame" id="mc-frame"><div class="mc-scaler" id="mc-scaler">
+      <div id="mc-card">
+        <div class="lg"><div class="m">Lune's</div><div class="s">Dog Hotel<div class="d"><i></i><b></b><i></i></div>Dog Park</div></div>
+        <div class="bd">
+          <div class="lf"><div class="dogs" id="mc-dogs"></div><div class="ow"><span class="n" id="mc-owner"></span><span class="sp">|</span><span class="id" id="mc-oid"></span></div></div>
+          <div class="dv"></div>
+          <div class="rt"><div><div class="pl">Dog Park<br><em>Member</em></div><div class="du">1 month</div></div><div class="bx"><div class="l">VALID UNTIL</div><div class="v" id="mc-until"></div></div></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="mc-until">ใช้ได้ถึง <input type="date" id="mc-until-input" onchange="mcState.until=this.value;renderMemberCard()"></div>
+    <div class="mc-photos" id="mc-photos"></div>
+    <div class="mc-actions">
+      <button class="mc-btn p" id="mc-save" onclick="saveMemberCard()">บันทึกรูป</button>
+      <button class="mc-btn s" id="mc-share" style="display:none;" onclick="shareMemberCard()">แชร์ไป LINE</button>
+    </div>
+  </div>
 </div>
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXvddA5fU4cGyBwYC9oVLMjlaP1D9X3kYFfQUI2wa9D3NaSMPDSwQo0LD2CJvgHQhQ/exec';
@@ -1135,7 +1204,62 @@ async function renderPaymentMonthSummary() {
   }
 }
 
+
 // ── DOG PARK MEMBERSHIP CARD ──────────────────────
+var mcState = null;
+var MC_MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function mcEsc(s){return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function mcYmd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function openMemberCard(bookingId) {
+  var b = (lastPaymentResults||[]).find(function(x){return x.bookingId===bookingId;});
+  if (!b) return;
+  var until = b.checkOut && b.checkOut !== b.checkIn ? b.checkOut : '';
+  if (!until) { var d = new Date((b.checkIn||mcYmd(new Date()))+'T00:00:00'); d.setDate(d.getDate()+30); until = mcYmd(d); }
+  mcState = { owner:b.ownerName, oid:b.ownerId, until:until, id:b.bookingId,
+    dogs:(b.dogs||[]).slice(0,4).map(function(d){return {name:d.name, no:d.dogId, photo:''};}) };
+  document.getElementById('mc-until-input').value = until;
+  document.getElementById('mc-photos').innerHTML = mcState.dogs.map(function(d,i){
+    return '<label>รูป '+mcEsc(d.name)+' (ไม่บังคับ)<input type="file" accept="image/*" onchange="mcPhoto('+i+',this)"></label>';
+  }).join('');
+  document.getElementById('mc-overlay').classList.add('open');
+  if (navigator.canShare && navigator.canShare({files:[new File([''],'x.png',{type:'image/png'})]})) document.getElementById('mc-share').style.display='';
+  renderMemberCard(); mcFit();
+}
+function closeMemberCard(){ document.getElementById('mc-overlay').classList.remove('open'); }
+function mcPhoto(i, input){
+  if (!input.files[0]) return;
+  var r = new FileReader(); r.onload = function(){ mcState.dogs[i].photo = r.result; renderMemberCard(); }; r.readAsDataURL(input.files[0]);
+}
+function renderMemberCard(){
+  if (!mcState) return;
+  document.getElementById('mc-owner').textContent = 'คุณ ' + mcState.owner;
+  document.getElementById('mc-oid').textContent = mcState.oid;
+  var u = new Date(mcState.until+'T00:00:00');
+  document.getElementById('mc-until').textContent = isNaN(u) ? '-' : u.getDate()+' '+MC_MONTHS[u.getMonth()]+' '+u.getFullYear();
+  var n = mcState.dogs.length, box = document.getElementById('mc-dogs');
+  box.className = 'dogs' + (n===1?' solo':n===4?' many':'');
+  box.innerHTML = mcState.dogs.map(function(d){
+    var ph = d.photo ? '<img src="'+d.photo+'" alt="">' : mcEsc(String(d.name).charAt(0).toUpperCase());
+    return '<div class="dog"><div class="ph">'+ph+'</div><div class="nm">'+mcEsc(d.name)+'</div><div class="no">'+mcEsc(d.no)+'</div></div>';
+  }).join('');
+}
+function mcFit(){
+  var f = document.getElementById('mc-frame'); if (!f) return;
+  var s = Math.min(1, f.clientWidth/856);
+  document.getElementById('mc-scaler').style.transform = 'scale('+s+')';
+  f.style.height = (540*s)+'px';
+}
+window.addEventListener('resize', mcFit);
+function mcBlob(){ return document.fonts.ready.then(function(){ return htmlToImage.toBlob(document.getElementById('mc-card'),{pixelRatio:2,width:856,height:540}); }); }
+function mcName(){ return 'lune-member-'+(mcState.oid||mcState.id)+'.png'; }
+function saveMemberCard(){
+  var b = document.getElementById('mc-save'); b.disabled = true; b.textContent = 'กำลังสร้างรูป...';
+  mcBlob().then(function(blob){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=mcName(); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);},4000); })
+    .catch(function(){ alert('บันทึกไม่สำเร็จ'); }).finally(function(){ b.disabled=false; b.textContent='บันทึกรูป'; });
+}
+function shareMemberCard(){
+  mcBlob().then(function(blob){ return navigator.share({files:[new File([blob], mcName(), {type:'image/png'})]}); }).catch(function(){});
+}
 
 async function searchBookingsForPayment() {
   var q = document.getElementById('payment_search_input').value.trim();
@@ -1249,6 +1373,7 @@ function renderPaymentResults(bookings) {
          : '')
       + priceHtml
       + '<div class="bpc-actions">'+actionsHtml+'</div>'
+      + (isPaid && b.type === 'Dog Park Monthly' ? '<button class="bpc-card-btn" onclick="openMemberCard(\''+b.bookingId+'\')">🎫 ออกบัตรสมาชิก</button>' : '')
       + '<div id="bpc_msg_'+b.bookingId+'"></div>'
       + '</div>';
   }).join('');
