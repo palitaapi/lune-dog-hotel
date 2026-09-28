@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Ranchers&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Ranchers&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Nunito','IBM Plex Sans Thai','Arial',sans-serif;}
@@ -248,8 +247,8 @@
   <!-- SCREEN: SOURCE -->
   <div id="screen-source" class="card">
     <div class="mode-tabs">
-      <div class="mode-tab active" id="top-tab-entry" onclick="switchTopTab('entry')">Customer</div>
-      <div class="mode-tab" id="top-tab-payment" onclick="switchTopTab('payment')">Payment</div>
+      <div class="mode-tab active" id="top-tab-payment" onclick="switchTopTab('payment')">Payment</div>
+      <div class="mode-tab" id="top-tab-entry" onclick="switchTopTab('entry')">Customer</div>
       <div class="mode-tab" id="top-tab-reports" onclick="switchTopTab('reports')">Report</div>
     </div>
 
@@ -1250,7 +1249,62 @@ function mcFit(){
   f.style.height = (540*s)+'px';
 }
 window.addEventListener('resize', mcFit);
-function mcBlob(){ return document.fonts.ready.then(function(){ return htmlToImage.toBlob(document.getElementById('mc-card'),{pixelRatio:2,width:856,height:540}); }); }
+// วาดบัตรด้วย canvas โดยตรง — ได้ผลเหมือนกันทุกเครื่อง (iPhone/Android/คอม)
+function mcLoadImg(src){ return new Promise(function(res){ if(!src) return res(null); var im=new Image(); im.onload=function(){res(im);}; im.onerror=function(){res(null);}; im.src=src; }); }
+async function mcBlob(){
+  var fonts=['40px Ranchers','62px "Instrument Serif"','italic 62px "Instrument Serif"','500 18px "IBM Plex Sans Thai"','600 12px "IBM Plex Sans Thai"','28px "IBM Plex Sans Thai"'];
+  await Promise.all(fonts.map(function(f){ return document.fonts.load(f, 'AaกขDog'); }).map(function(p){return p.catch(function(){});}));
+  var imgs = await Promise.all(mcState.dogs.map(function(d){ return mcLoadImg(d.photo); }));
+  var S=2, W=856, H=540, cv=document.createElement('canvas'); cv.width=W*S; cv.height=H*S;
+  var c=cv.getContext('2d'); c.scale(S,S);
+  var SERIF='"Instrument Serif","IBM Plex Sans Thai",serif', TH='"IBM Plex Sans Thai",sans-serif';
+  function rr(x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+  function txt(s,x,y,font,color,align){ c.font=font; c.fillStyle=color; c.textAlign=align||'left'; c.textBaseline='middle'; c.fillText(s,x,y); }
+  function spaced(s,cx,y,font,color,sp){ c.font=font; c.fillStyle=color; c.textBaseline='middle'; c.textAlign='left'; var w=0,i; for(i=0;i<s.length;i++) w+=c.measureText(s[i]).width+(i<s.length-1?sp:0); var x=cx-w/2; for(i=0;i<s.length;i++){ c.fillText(s[i],x,y); x+=c.measureText(s[i]).width+sp; } }
+  // bg
+  rr(0,0,W,H,32); c.fillStyle='#3A2822'; c.fill(); c.save(); rr(0,0,W,H,32); c.clip();
+  // logo
+  var ly=64; c.font='40px Ranchers'; var lw=c.measureText("Lune's").width;
+  txt("Lune's",48,ly+2,'40px Ranchers','#FFF7EF');
+  var sx=48+lw+8; c.font='18px Ranchers'; var sw=Math.max(c.measureText('Dog Hotel').width,c.measureText('Dog Park').width);
+  txt('Dog Hotel',sx,ly-13,'18px Ranchers','#F8D167'); txt('Dog Park',sx,ly+14,'18px Ranchers','#F8D167');
+  c.fillStyle='#F8D167'; c.fillRect(sx,ly,sw/2-6,1.5); c.fillRect(sx+sw/2+6,ly,sw/2-6,1.5);
+  c.beginPath(); c.arc(sx+sw/2,ly+0.75,2.5,0,Math.PI*2); c.fillStyle='#FFF7EF'; c.fill();
+  // divider
+  var top=116, bot=496, dvx=463; c.strokeStyle='#5a4538'; c.lineWidth=2; c.setLineDash([6,6]); c.beginPath(); c.moveTo(dvx,top); c.lineTo(dvx,bot); c.stroke(); c.setLineDash([]);
+  // left: dogs
+  var n=mcState.dogs.length, cfg = n===1?{ph:150,nm:48,no:14,g:10,w:150,sp:0}: n===4?{ph:84,nm:24,no:10,g:7,w:100,sp:14}:{ph:104,nm:28,no:12,g:7,w:124,sp:14};
+  var itemH=cfg.ph+6+cfg.g+cfg.nm*1.1+cfg.g+cfg.no*1.3, groupH=itemH+22+24, lcx=(48+427)/2, y0=(top+bot)/2-groupH/2;
+  var rowW=n*cfg.w+(n-1)*cfg.sp, x0=lcx-rowW/2;
+  mcState.dogs.forEach(function(d,i){
+    var cx=x0+i*(cfg.w+cfg.sp)+cfg.w/2, r=cfg.ph/2+3, cy=y0+r;
+    c.save(); c.beginPath(); c.arc(cx,cy,cfg.ph/2,0,Math.PI*2); c.clip();
+    c.fillStyle='#422F25'; c.fillRect(cx-r,cy-r,r*2,r*2);
+    var im=imgs[i];
+    if(im){ var s=Math.max(cfg.ph/im.width,cfg.ph/im.height), iw=im.width*s, ih=im.height*s; c.drawImage(im,cx-iw/2,cy-ih/2,iw,ih); }
+    else txt(String(d.name).charAt(0).toUpperCase(),cx,cy+2,(cfg.ph*0.43)+'px '+SERIF,'#F8D167','center');
+    c.restore();
+    c.beginPath(); c.arc(cx,cy,cfg.ph/2+1.5,0,Math.PI*2); c.strokeStyle='#F8D167'; c.lineWidth=3; c.stroke();
+    var ny=y0+cfg.ph+6+cfg.g+cfg.nm*0.55;
+    txt(d.name,cx,ny,cfg.nm+'px '+SERIF,'#FFF7EF','center');
+    txt(d.no||'',cx,ny+cfg.nm*0.55+cfg.g+cfg.no*0.65,'600 '+cfg.no+'px '+TH,'#bfa98f','center');
+  });
+  // owner row
+  var oy=y0+itemH+22+12, on='คุณ '+mcState.owner, oi=mcState.oid||'';
+  c.font='500 18px '+TH; var w1=c.measureText(on).width; c.font='15px '+TH; var w2=c.measureText('|').width; c.font='600 15px '+TH; var w3=c.measureText(oi).width;
+  var ox=lcx-(w1+w2+w3+24)/2;
+  txt(on,ox,oy,'500 18px '+TH,'#FFF7EF'); txt('|',ox+w1+12,oy,'15px '+TH,'#5a4538'); txt(oi,ox+w1+w2+24,oy,'600 15px '+TH,'#bfa98f');
+  // right column
+  var rcx=499+155, boxH=110, rH=56*2+8+30+20+boxH, ry=(top+bot)/2-rH/2;
+  txt('Dog Park',rcx,ry+28,'62px "Instrument Serif",serif','#F8D167','center');
+  txt('Member',rcx,ry+84,'italic 62px "Instrument Serif",serif','#FFF7EF','center');
+  txt('1 month',rcx,ry+112+8+15,'italic 30px "Instrument Serif",serif','#F8D167','center');
+  var by=ry+112+8+30+20; rr(499,by,310,boxH,22); c.fillStyle='#FFF7EF'; c.fill();
+  spaced('VALID UNTIL',rcx,by+30,'600 12px '+TH,'#8a7a6a',2);
+  txt(document.getElementById('mc-until').textContent,rcx,by+72,'46px "Instrument Serif",serif','#422F25','center');
+  c.restore();
+  return new Promise(function(res){ cv.toBlob(res,'image/png'); });
+}
 function mcName(){ return 'lune-member-'+(mcState.oid||mcState.id)+'.png'; }
 function saveMemberCard(){
   var b = document.getElementById('mc-save'); b.disabled = true; b.textContent = 'กำลังสร้างรูป...';
@@ -2327,6 +2381,7 @@ window.addEventListener('load', function() {
   document.getElementById('bk_pickup').disabled = true;
   updateType();
   showScreen('source');
+  switchTopTab('payment');
 });
 </script>
 </body>
