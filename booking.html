@@ -159,6 +159,12 @@
   .acc-hist-total{font-weight:700;color:#8a6f2c;text-align:right;}
   .acc-hist .acc-pill{justify-self:end;align-self:start;}
   .acc-sum{font-size:0.85rem;color:var(--gray-dark);}
+  .acc-icon-btn{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--gray-line);background:#fff;color:#422F25;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;font-weight:500;line-height:1;padding:0;flex:none;}
+  .acc-icon-btn:hover{border-color:#422F25;}
+  .acc-icon-light{background:var(--yellow);border-color:var(--yellow);color:#422F25;}
+  .acc-icon-light:hover{background:var(--honey);border-color:var(--honey);}
+  .acc-icon-btn.spin svg{animation:accspin .8s linear infinite;}
+  @keyframes accspin{to{transform:rotate(360deg);}}
   #screen-account .acc-up-foot span:first-child{font-size:0.72rem;}
   #screen-account .acc-hist .acc-date{font-size:0.85rem;font-weight:600;margin:3px 0 1px;}
   .acc-card-btn{position:absolute;right:1rem;top:50%;transform:translateY(-50%);padding:7px 14px;background:#422F25;color:#FFF7EF;border:none;border-radius:999px;font-size:0.8rem;font-weight:700;cursor:pointer;}
@@ -261,11 +267,11 @@
       <button class="acc-new" onclick="startNewBooking()">+ จองใหม่</button>
     </div>
     <div class="acc-dark">
-      <div class="acc-head"><h3>น้องหมาของฉัน</h3><span class="acc-count" id="acc_dogcount"></span></div>
+      <div class="acc-head"><h3>น้องหมาของฉัน</h3><span style="display:flex;align-items:center;gap:10px;"><span class="acc-count" id="acc_dogcount"></span><button class="acc-icon-btn acc-icon-light" onclick="openAddDog()" title="เพิ่มน้องหมา" aria-label="เพิ่มน้องหมา">+</button></span></div>
       <div class="acc-dogs" id="acc_dogs"></div>
     </div>
     <div class="card" style="display:flex;flex-direction:column;gap:0.9rem;">
-      <div class="acc-head"><h3>การจอง</h3><span class="acc-count" id="acc_upcount"></span></div>
+      <div class="acc-head"><h3>การจอง</h3><span style="display:flex;align-items:center;gap:10px;"><span class="acc-count" id="acc_upcount"></span><button class="acc-icon-btn" id="acc_refresh" onclick="refreshAccountBookings()" title="รีเฟรช" aria-label="รีเฟรช"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button></span></div>
       <div id="acc_upcoming" style="display:flex;flex-direction:column;gap:0.75rem;"><div class="acc-empty">กำลังโหลด...</div></div>
       <div class="acc-line"><span>ต้องการเปลี่ยนแปลงการจอง กรุณาติดต่อทางไลน์ <strong style="color:#422F25;">@798pcbhg</strong></span><a href="https://line.me/R/ti/p/@798pcbhg" target="_blank">แชท LINE</a></div>
     </div>
@@ -1453,6 +1459,21 @@ function calcCurrentAge(ageStr, timestampStr) {
 }
 
 var editDogReturn = 'step2';
+function openAddDog(){
+  editingDogId = '__new__';
+  editDogReturn = 'account';
+  renderEditDogForm({name:'',breed:'',gender:'',neutered:'',weight:'',age:'',timestamp:'',foodType:'',mealsPerDay:'',tickControl:'',note:'',photoUrl:''});
+  document.getElementById('editdog_title').textContent = 'เพิ่มน้องหมา';
+  document.getElementById('editdog_msg').innerHTML = '';
+  showScreen('editdog');
+}
+async function refreshAccountBookings(){
+  var b=document.getElementById('acc_refresh'); b.classList.add('spin'); b.disabled=true;
+  accBookings=null;
+  await loadAccountBookings();
+  renderAccountBookings();
+  b.classList.remove('spin'); b.disabled=false;
+}
 function openEditDog(dogId, from) {
   editDogReturn = from === 'account' ? 'account' : 'step2';
   var dog = savedDogs.find(function(d){ return d.dogId === dogId; });
@@ -1569,6 +1590,26 @@ async function saveDogEdit() {
   btn.disabled = true;
   showMsg('editdog_msg','⏳ กำลังบันทึก...','success');
   try {
+    if (editingDogId === '__new__') {
+      var addRes = await fetch(APPS_SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify({
+        action:'addDog', ownerId:currentOwner.ownerId, dogName:data.name, breed:data.breed, gender:data.gender, neutered:data.neutered,
+        weight:data.weight, age:data.age, foodType:data.foodType, mealsPerDay:data.mealsPerDay, tickControl:data.tickControl, note:data.note,
+        timestamp:new Date().toLocaleString('th-TH')
+      })});
+      var addResult = await addRes.json();
+      if (!addResult.dogId) throw new Error(addResult.error||'เพิ่มน้องหมาไม่สำเร็จ');
+      var newDog = {dogId:addResult.dogId, ownerId:currentOwner.ownerId, timestamp:new Date().toLocaleString('th-TH'), name:data.name, breed:data.breed, gender:data.gender, neutered:data.neutered, weight:String(data.weight), age:data.age, foodType:data.foodType, mealsPerDay:data.mealsPerDay, tickControl:data.tickControl, note:data.note, photoUrl:''};
+      if (pendingDogPhoto) {
+        var npr = await fetch(APPS_SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify({action:'uploadDogPhoto', dogId:newDog.dogId, mimeType:'image/jpeg', data:pendingDogPhoto.split(',')[1]})});
+        var nprr = await npr.json();
+        if (nprr.success) newDog.photoUrl = nprr.photoUrl;
+        pendingDogPhoto = null;
+      }
+      savedDogs.push(newDog);
+      btn.disabled = false;
+      renderAccountDogs(); showScreen('account');
+      return;
+    }
     if (pendingDogPhoto) {
       var pr = await fetch(APPS_SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify({action:'uploadDogPhoto', dogId:editingDogId, mimeType:'image/jpeg', data:pendingDogPhoto.split(',')[1]})});
       var presult = await pr.json();
