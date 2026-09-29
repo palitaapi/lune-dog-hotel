@@ -138,7 +138,7 @@
   .acc-dog .acc-ghost{margin-top:2px;padding:4px 11px;font-size:0.75rem;}
   .acc-empty{padding:1.2rem;text-align:center;font-size:0.9rem;color:var(--gray-dark);background:var(--bg);border-radius:8px;}
   .acc-dark .acc-empty{background:rgba(255,247,239,.08);color:#d9c7b0;}
-  .acc-up{border:1px solid var(--gray-line);border-radius:8px;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;background:var(--bg);}
+  .acc-up{position:relative;border:1px solid var(--gray-line);border-radius:8px;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;background:var(--bg);}
   .acc-up-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
   .acc-svc{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:0.68rem;letter-spacing:0.14em;color:#8a6f2c;text-transform:uppercase;}
   .acc-date{font-size:1.05rem;font-weight:700;margin:3px 0;}
@@ -161,7 +161,7 @@
   .acc-sum{font-size:0.85rem;color:var(--gray-dark);}
   #screen-account .acc-up-foot span:first-child{font-size:0.72rem;}
   #screen-account .acc-hist .acc-date{font-size:0.85rem;font-weight:600;margin:3px 0 1px;}
-  .acc-card-btn{padding:7px 14px;background:#422F25;color:#FFF7EF;border:none;border-radius:999px;font-size:0.8rem;font-weight:700;cursor:pointer;}
+  .acc-card-btn{position:absolute;right:1rem;top:50%;transform:translateY(-50%);padding:7px 14px;background:#422F25;color:#FFF7EF;border:none;border-radius:999px;font-size:0.8rem;font-weight:700;cursor:pointer;}
   .acc-card-btn:hover{background:#3A2822;}
   #mc-overlay{position:fixed;inset:0;background:rgba(58,40,34,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px;}
   #mc-overlay.open{display:flex;}
@@ -890,10 +890,10 @@ function accGvizDate(v){ if(!v) return ''; var m=String(v).match(/^Date\((\d+),(
 function accParseYMD(s){ var m=String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})/); return m? new Date(+m[1],+m[2]-1,+m[3]) : null; }
 function accFmtRange(a,b){
   var d1=accParseYMD(a), d2=accParseYMD(b)||d1; if(!d1) return '-';
-  var y2=d2.getFullYear()+543;
+  var y2=String(d2.getFullYear()+543).slice(-2);
   if (d2.getTime()===d1.getTime()) return d1.getDate()+' '+TH_MON[d1.getMonth()]+' '+y2;
   if (d1.getMonth()===d2.getMonth() && d1.getFullYear()===d2.getFullYear()) return d1.getDate()+' - '+d2.getDate()+' '+TH_MON[d2.getMonth()]+' '+y2;
-  var left=d1.getDate()+' '+TH_MON[d1.getMonth()]+(d1.getFullYear()!==d2.getFullYear()?' '+(d1.getFullYear()+543):'');
+  var left=d1.getDate()+' '+TH_MON[d1.getMonth()]+(d1.getFullYear()!==d2.getFullYear()?' '+String(d1.getFullYear()+543).slice(-2):'');
   return left+' - '+d2.getDate()+' '+TH_MON[d2.getMonth()]+' '+y2;
 }
 function accSizeShort(d){ var w=parseFloat(d.weight); if(isNaN(w)) return ''; return {small:'S',medium:'M',large:'L'}[getSizeFromWeight(w)]; }
@@ -958,7 +958,7 @@ function renderAccountBookings(){
     var d=accDescribe(b), paid=b.status==='fully_paid';
     return '<div class="acc-up"><div class="acc-up-top"><div style="min-width:0;"><div class="acc-svc-row"><span>'+d.icon+'</span><span>'+d.svc+'</span></div><div class="acc-pass">'+d.pass+'</div><div class="acc-date">'+d.date+'</div><div class="acc-sub">'+accEsc(b.dogs.join(', '))+'</div></div>'
       + '<span class="acc-pill '+(paid?'pill-paid':'pill-pending')+'">'+(paid?'ชำระแล้ว':'รอชำระ')+'</span></div>'
-      + '<div class="acc-up-foot" style="align-items:center;"><span>'+accEsc(b.bookingId)+'</span><span style="display:flex;align-items:center;gap:10px;">ยอด '+accMoney(b.totalPrice)+(paid&&b.service==='park'?'<button class="acc-card-btn" onclick="openMemberCard(\''+accEsc(b.bookingId)+'\')">ดูบัตร</button>':'')+'</span></div></div>';
+      + '<div class="acc-up-foot" style="align-items:center;"><span>'+accEsc(b.bookingId)+'</span><span>ยอด '+accMoney(b.totalPrice)+'</span></div>'+(paid&&b.service==='park'?'<button class="acc-card-btn" onclick="openMemberCard(\''+accEsc(b.bookingId)+'\')">ดูบัตร</button>':'')+'</div>';
   }).join('') : '<div class="acc-empty">ยังไม่มีการจองที่กำลังจะมาถึง</div>';
   var shown = past.filter(function(b){ return accTab==='all' || b.service===accTab; });
   document.getElementById('acc_history').innerHTML = shown.length ? shown.map(function(b){
