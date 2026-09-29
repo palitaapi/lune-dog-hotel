@@ -159,6 +159,45 @@
   .acc-hist-total{font-weight:700;color:#8a6f2c;text-align:right;}
   .acc-hist .acc-pill{justify-self:end;align-self:start;}
   .acc-sum{font-size:0.85rem;color:var(--gray-dark);}
+  #screen-account .acc-up-foot span:first-child{font-size:0.72rem;}
+  #screen-account .acc-hist .acc-date{font-size:0.85rem;font-weight:600;margin:3px 0 1px;}
+  .acc-card-btn{padding:7px 14px;background:#422F25;color:#FFF7EF;border:none;border-radius:999px;font-size:0.8rem;font-weight:700;cursor:pointer;}
+  .acc-card-btn:hover{background:#3A2822;}
+  #mc-overlay{position:fixed;inset:0;background:rgba(58,40,34,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px;}
+  #mc-overlay.open{display:flex;}
+  .mc-sheet{width:100%;max-width:560px;display:flex;flex-direction:column;gap:12px;align-items:stretch;}
+  .mc-frame{width:100%;overflow:hidden;border-radius:18px;}
+  .mc-scaler{width:856px;height:540px;transform-origin:top left;}
+  .mc-close{align-self:center;background:#FFF7EF;color:#422F25;border:none;border-radius:999px;padding:10px 26px;font-size:0.9rem;font-weight:700;cursor:pointer;}
+  #mc-card *{font-size:inherit;font-family:'IBM Plex Sans Thai',sans-serif;}
+  #mc-card{width:856px;height:540px;border-radius:32px;overflow:hidden;background:#3A2822;display:flex;flex-direction:column;padding:40px 48px 44px;position:relative;font-size:16px;}
+  #mc-card .rd{position:absolute;right:24px;bottom:14px;width:170px;height:auto;display:block;pointer-events:none;}
+  #mc-card .lg{display:flex;align-items:center;gap:8px;}
+  #mc-card .lg .dt{width:21px;height:21px;border-radius:50%;background:#FFF7EF;flex:none;margin-right:4px;}
+  #mc-card .lg .m{font-family:'Ranchers',sans-serif;font-size:40px;line-height:.82;color:#FFF7EF;}
+  #mc-card .lg .s{font-family:'Ranchers',sans-serif;font-size:18px;line-height:1.14;color:#F8D167;}
+  #mc-card .lg .d{display:flex;align-items:center;gap:3px;margin:2px 0;}
+  #mc-card .lg .d i{flex:1;height:1.5px;background:#F8D167;}
+  #mc-card .lg .d b{width:5px;height:5px;border-radius:50%;background:#FFF7EF;flex:none;}
+  #mc-card .bd{flex:1;min-height:0;display:flex;margin-top:28px;}
+  #mc-card .lf{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
+  #mc-card .dogs{display:flex;justify-content:center;gap:14px;}
+  #mc-card .dog{display:flex;flex-direction:column;align-items:center;gap:7px;width:124px;}
+  #mc-card .ph{width:104px;height:104px;border-radius:50%;overflow:hidden;background:#422F25;border:3px solid #F8D167;display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:44px;color:#F8D167;}
+  #mc-card .nm{font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:28px;line-height:1.1;color:#FFF7EF;white-space:nowrap;}
+  #mc-card .no{font-size:12px;font-weight:600;color:#bfa98f;white-space:nowrap;}
+  #mc-card .solo .dog{width:auto;gap:10px;} #mc-card .solo .ph{width:150px;height:150px;font-size:64px;} #mc-card .solo .nm{font-size:48px;} #mc-card .solo .no{font-size:14px;}
+  #mc-card .many .dog{width:100px;} #mc-card .many .ph{width:84px;height:84px;font-size:36px;} #mc-card .many .nm{font-size:24px;} #mc-card .many .no{font-size:10px;}
+  #mc-card .ow{display:flex;align-items:baseline;gap:12px;}
+  #mc-card .ow .n{font-size:18px;font-weight:500;color:#FFF7EF;} #mc-card .ow .sp{font-size:15px;color:#5a4538;} #mc-card .ow .id{font-size:15px;font-weight:600;letter-spacing:.04em;color:#bfa98f;}
+  #mc-card .dv{width:0;border-left:2px dashed #5a4538;margin:0 36px;}
+  #mc-card .rt{flex:none;width:310px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding-bottom:70px;}
+  #mc-card .pl{font-family:'Instrument Serif',serif;font-size:62px;line-height:.9;color:#F8D167;}
+  #mc-card .pl em{font-family:'Instrument Serif',serif;color:#FFF7EF;}
+  #mc-card .du{font-family:'Instrument Serif',serif;font-style:italic;font-size:30px;line-height:1;color:#F8D167;margin-top:8px;}
+  #mc-card .bx{width:100%;background:#FFF7EF;border-radius:22px;padding:20px 18px;display:flex;flex-direction:column;align-items:center;}
+  #mc-card .bx .l{font-size:18px;font-weight:600;letter-spacing:.02em;color:#8a7a6a;}
+  #mc-card .bx .v{font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:40px;line-height:1.1;color:#422F25;margin-top:6px;white-space:nowrap;}
   #screen-account .acc-line span,#screen-account .acc-line strong{font-size:0.75rem;}
   #screen-account .acc-count{font-size:0.7rem;}
   .acc-svc-row{display:flex;align-items:center;gap:6px;font-weight:700;font-size:0.95rem;}
@@ -453,6 +492,22 @@
     </div>
   </div>
 
+</div>
+<div id="mc-overlay" onclick="if(event.target===this)closeMemberCard()">
+  <div class="mc-sheet">
+    <div class="mc-frame" id="mc-frame"><div class="mc-scaler" id="mc-scaler">
+      <div id="mc-card">
+        <img class="rd" src="assets/running-dog.png" alt="">
+        <div class="lg"><span class="dt"></span><div class="m">Lune's</div><div class="s">Dog Hotel<div class="d"><i></i><b></b><i></i></div>Dog Park</div></div>
+        <div class="bd">
+          <div class="lf"><div class="dogs" id="mc-dogs"></div><div class="ow"><span class="n" id="mc-owner"></span><span class="sp">|</span><span class="id" id="mc-oid"></span></div></div>
+          <div class="dv"></div>
+          <div class="rt"><div><div class="pl">Dog Park<br><em id="mc-kind">Member</em></div><div class="du" id="mc-du">- 1 month -</div></div><div class="bx"><div class="l" id="mc-ulabel">ใช้งานได้ถึง</div><div class="v" id="mc-until"></div></div></div>
+        </div>
+      </div>
+    </div></div>
+    <button class="mc-close" onclick="closeMemberCard()">ปิด</button>
+  </div>
 </div>
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXvddA5fU4cGyBwYC9oVLMjlaP1D9X3kYFfQUI2wa9D3NaSMPDSwQo0LD2CJvgHQhQ/exec';
@@ -850,7 +905,7 @@ async function accFetchSheet(name, service){
   var me = String(currentOwner.ownerId||'').trim();
   return (json.table ? json.table.rows||[] : []).map(function(row){
     var c=row.c||[]; var g=function(i){ return c[i]&&c[i].v!=null ? String(c[i].v).trim() : ''; };
-    return { service:service, bookingId:g(1), ownerId:g(2), dogName:g(7), type:g(14), checkIn:accGvizDate(c[15]&&c[15].v), checkOut:accGvizDate(c[17]&&c[17].v), nights:g(19), totalPrice:g(20), status:g(22)||'pending_payment' };
+    return { service:service, bookingId:g(1), ownerId:g(2), dogId:g(6), dogName:g(7), type:g(14), checkIn:accGvizDate(c[15]&&c[15].v), checkOut:accGvizDate(c[17]&&c[17].v), nights:g(19), totalPrice:g(20), status:g(22)||'pending_payment' };
   }).filter(function(r){ return r.bookingId && r.ownerId===me; });
 }
 async function loadAccountBookings(){
@@ -861,10 +916,15 @@ async function loadAccountBookings(){
   } catch(e) { accBookings = []; return; }
   var map={};
   rows.forEach(function(r){
-    if(!map[r.bookingId]) map[r.bookingId]=Object.assign({},r,{dogs:[]});
-    if(r.dogName && map[r.bookingId].dogs.indexOf(r.dogName)<0) map[r.bookingId].dogs.push(r.dogName);
+    if(!map[r.bookingId]) map[r.bookingId]=Object.assign({},r,{dogs:[],dogIds:[]});
+    if(r.dogName && map[r.bookingId].dogs.indexOf(r.dogName)<0){ map[r.bookingId].dogs.push(r.dogName); map[r.bookingId].dogIds.push(r.dogId); }
   });
   accBookings = Object.keys(map).map(function(k){ return map[k]; });
+  accBookings.forEach(function(b){
+    if (b.service==='park' && /month/i.test(b.type)) {
+      var d=accParseYMD(b.checkIn); if(d){ d.setDate(d.getDate()+30); b.checkOut=formatDateYMD(d); }
+    } else if (b.service==='park') b.checkOut = b.checkIn;
+  });
   accBookings.sort(function(a,b){ return (b.checkIn||'').localeCompare(a.checkIn||''); });
 }
 function accDescribe(b){
@@ -898,20 +958,41 @@ function renderAccountBookings(){
     var d=accDescribe(b), paid=b.status==='fully_paid';
     return '<div class="acc-up"><div class="acc-up-top"><div style="min-width:0;"><div class="acc-svc-row"><span>'+d.icon+'</span><span>'+d.svc+'</span></div><div class="acc-pass">'+d.pass+'</div><div class="acc-date">'+d.date+'</div><div class="acc-sub">'+accEsc(b.dogs.join(', '))+'</div></div>'
       + '<span class="acc-pill '+(paid?'pill-paid':'pill-pending')+'">'+(paid?'ชำระแล้ว':'รอชำระ')+'</span></div>'
-      + '<div class="acc-up-foot"><span>'+accEsc(b.bookingId)+'</span><span>ยอด '+accMoney(b.totalPrice)+'</span></div></div>';
+      + '<div class="acc-up-foot" style="align-items:center;"><span>'+accEsc(b.bookingId)+'</span><span style="display:flex;align-items:center;gap:10px;">ยอด '+accMoney(b.totalPrice)+(paid&&b.service==='park'?'<button class="acc-card-btn" onclick="openMemberCard(\''+accEsc(b.bookingId)+'\')">ดูบัตร</button>':'')+'</span></div></div>';
   }).join('') : '<div class="acc-empty">ยังไม่มีการจองที่กำลังจะมาถึง</div>';
   var shown = past.filter(function(b){ return accTab==='all' || b.service===accTab; });
   document.getElementById('acc_history').innerHTML = shown.length ? shown.map(function(b){
     var d=accDescribe(b), c=b.status==='cancelled';
-    return '<div class="acc-hist"><span style="font-weight:600;">'+d.date+'</span><span class="acc-hist-total">'+accMoney(b.totalPrice)+'</span>'
-      + '<span class="acc-sub" style="display:flex;flex-direction:column;gap:2px;"><span class="acc-svc">'+accEsc(d.label)+'</span>'+accEsc(b.dogs.join(', '))+'</span>'
-      + '<span class="acc-pill '+(c?'pill-cancel':'pill-done')+'">'+(c?'ยกเลิก':'เสร็จสิ้น')+'</span></div>';
+    return '<div class="acc-hist"><div style="min-width:0;"><div class="acc-svc-row"><span>'+d.icon+'</span><span>'+d.svc+'</span></div><div class="acc-pass">'+d.pass+'</div><div class="acc-date">'+d.date+'</div><div class="acc-sub">'+accEsc(b.dogs.join(', '))+'</div></div>'
+      + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;"><span class="acc-hist-total">'+accMoney(b.totalPrice)+'</span><span class="acc-pill '+(c?'pill-cancel':'pill-done')+'">'+(c?'ยกเลิก':'เสร็จสิ้น')+'</span></div></div>';
   }).join('') : '<div class="acc-empty">ยังไม่มีประวัติการจอง</div>';
   var done = past.filter(function(b){ return b.status!=='cancelled'; });
   var nights = done.reduce(function(s,b){ return s+accDescribe(b).nightsN; },0);
   var park = done.filter(function(b){ return b.service==='park'; }).length;
   document.getElementById('acc_summary').textContent = done.length ? 'รวม Dog Hotel '+nights+' คืน · Dog Park '+park+' ครั้ง' : '';
 }
+function openMemberCard(id){
+  var b=(accBookings||[]).find(function(x){ return x.bookingId===id; }); if(!b) return;
+  var monthly=/month/i.test(b.type);
+  var dogs=b.dogs.map(function(n,i){ return {name:n, id:b.dogIds[i]||''}; });
+  var box=document.getElementById('mc-dogs');
+  box.className='dogs'+(dogs.length===1?' solo':dogs.length>=4?' many':'');
+  box.innerHTML=dogs.map(function(d){ return '<div class="dog"><div class="ph">'+accEsc(d.name.charAt(0))+'</div><div class="nm">'+accEsc(d.name)+'</div><div class="no">'+accEsc(d.id)+'</div></div>'; }).join('');
+  document.getElementById('mc-owner').textContent=currentOwner.name||'';
+  document.getElementById('mc-oid').textContent=currentOwner.ownerId||'';
+  document.getElementById('mc-kind').textContent=monthly?'Member':'Day Pass';
+  document.getElementById('mc-du').textContent=monthly?'- 1 month -':'- 1 day -';
+  document.getElementById('mc-ulabel').textContent=monthly?'ใช้งานได้ถึง':'ใช้งานวันที่';
+  document.getElementById('mc-until').textContent=accFmtRange(monthly?b.checkOut:b.checkIn);
+  document.getElementById('mc-overlay').classList.add('open');
+  fitMemberCard();
+}
+function fitMemberCard(){
+  var fr=document.getElementById('mc-frame'), sc=document.getElementById('mc-scaler');
+  var k=fr.clientWidth/856; sc.style.transform='scale('+k+')'; fr.style.height=(540*k)+'px';
+}
+function closeMemberCard(){ document.getElementById('mc-overlay').classList.remove('open'); }
+window.addEventListener('resize', function(){ if(document.getElementById('mc-overlay').classList.contains('open')) fitMemberCard(); });
 function setAccTab(t){
   accTab=t;
   document.querySelectorAll('.acc-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===t); });
