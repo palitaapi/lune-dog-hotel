@@ -170,7 +170,7 @@
   .mc-scaler{width:856px;height:540px;transform-origin:top left;}
   .mc-close{align-self:center;background:#FFF7EF;color:#422F25;border:none;border-radius:999px;padding:10px 26px;font-size:0.9rem;font-weight:700;cursor:pointer;}
   #mc-card *{font-size:inherit;font-family:'IBM Plex Sans Thai',sans-serif;}
-  #mc-card{width:856px;height:540px;border-radius:32px;overflow:hidden;background:#3A2822;border:3px solid rgba(255,247,239,.55);display:flex;flex-direction:column;padding:40px 48px 44px;position:relative;font-size:16px;}
+  #mc-card{width:856px;height:540px;border-radius:32px;overflow:hidden;background:#3A2822;border:5px solid rgba(255,247,239,.55);display:flex;flex-direction:column;padding:40px 48px 44px;position:relative;font-size:16px;}
   #mc-card .rd{position:absolute;right:24px;bottom:14px;width:170px;height:auto;display:block;pointer-events:none;}
   #mc-card .lg{display:flex;align-items:center;gap:8px;}
   #mc-card .lg .dt{width:21px;height:21px;border-radius:50%;background:#FFF7EF;flex:none;margin-right:4px;}
@@ -180,23 +180,24 @@
   #mc-card .lg .d i{flex:1;height:1.5px;background:#F8D167;}
   #mc-card .lg .d b{width:5px;height:5px;border-radius:50%;background:#FFF7EF;flex:none;}
   #mc-card .bd{flex:1;min-height:0;display:flex;margin-top:28px;}
-  #mc-card .lf{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
+  #mc-card .lf{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
   #mc-card .dogs{display:flex;justify-content:center;gap:14px;}
-  #mc-card .dog{display:flex;flex-direction:column;align-items:center;gap:7px;width:124px;}
-  #mc-card .ph{width:104px;height:104px;border-radius:50%;overflow:hidden;background:#422F25;border:3px solid #F8D167;display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:44px;color:#F8D167;}
-  #mc-card .nm{font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:36px;line-height:1.1;color:#FFF7EF;white-space:nowrap;}
-  #mc-card .no{font-size:15px;font-weight:600;color:#bfa98f;white-space:nowrap;}
-  #mc-card .solo .dog{width:auto;gap:10px;} #mc-card .solo .ph{width:150px;height:150px;font-size:64px;} #mc-card .solo .nm{font-size:58px;} #mc-card .solo .no{font-size:18px;}
-  #mc-card .many .dog{width:100px;} #mc-card .many .ph{width:84px;height:84px;font-size:36px;} #mc-card .many .nm{font-size:28px;} #mc-card .many .no{font-size:13px;}
-  #mc-card .ow{display:flex;align-items:baseline;gap:12px;}
-  #mc-card .ow .n{font-size:24px;font-weight:500;color:#FFF7EF;} #mc-card .ow .sp{font-size:20px;color:#5a4538;} #mc-card .ow .id{font-size:20px;font-weight:600;letter-spacing:.04em;color:#bfa98f;}
+  #mc-card .dog{display:flex;flex-direction:column;align-items:center;gap:8px;width:136px;}
+  #mc-card .ph{width:118px;height:118px;border-radius:50%;overflow:hidden;background:#422F25;border:3px solid #F8D167;display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:44px;color:#F8D167;}
+  #mc-card .nm{font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:42px;line-height:1.1;color:#FFF7EF;white-space:nowrap;}
+  #mc-card .no{font-size:17px;font-weight:600;color:#bfa98f;white-space:nowrap;}
+  #mc-card .solo .dog{width:auto;gap:10px;} #mc-card .solo .ph{width:170px;height:170px;font-size:72px;} #mc-card .solo .nm{font-size:66px;} #mc-card .solo .no{font-size:21px;}
+  #mc-card .many .dog{width:104px;} #mc-card .many .ph{width:90px;height:90px;font-size:38px;} #mc-card .many .nm{font-size:32px;} #mc-card .many .no{font-size:14px;}
+  #mc-card .trio{flex-wrap:wrap;max-width:300px;gap:8px 20px;} #mc-card .trio .dog{width:130px;gap:4px;} #mc-card .trio .ph{width:78px;height:78px;font-size:32px;} #mc-card .trio .nm{font-size:28px;} #mc-card .trio .no{font-size:13px;}
+  #mc-card .ow{display:flex;align-items:baseline;gap:14px;padding-top:18px;border-top:2px solid #5a4538;}
+  #mc-card .ow .n{font-size:28px;font-weight:500;color:#FFF7EF;} #mc-card .ow .sp{font-size:24px;color:#5a4538;} #mc-card .ow .id{font-size:24px;font-weight:600;letter-spacing:.04em;color:#bfa98f;}
   #mc-card .dv{width:0;border-left:2px dashed #5a4538;margin:0 36px;}
   #mc-card .rt{flex:none;width:310px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding-bottom:70px;}
   #mc-card .pl{font-family:'Instrument Serif',serif;font-size:62px;line-height:.9;color:#F8D167;}
   #mc-card .pl em{font-family:'Instrument Serif',serif;color:#FFF7EF;}
   #mc-card .du{font-family:'Instrument Serif',serif;font-style:italic;font-size:30px;line-height:1;color:#F8D167;margin-top:8px;}
   #mc-card .bx{width:100%;background:#FFF7EF;border-radius:22px;padding:20px 18px;display:flex;flex-direction:column;align-items:center;}
-  #mc-card .bx .l{font-size:18px;font-weight:600;letter-spacing:.02em;color:#8a7a6a;}
+  #mc-card .bx .l{font-size:24px;font-weight:600;letter-spacing:.02em;color:#8a7a6a;}
   #mc-card .bx .v{font-family:'IBM Plex Sans Thai',sans-serif;font-weight:400;font-size:36px;line-height:1.15;color:#422F25;margin-top:6px;white-space:nowrap;}
   #screen-account .acc-line span,#screen-account .acc-line strong{font-size:0.75rem;}
   #screen-account .acc-count{font-size:0.7rem;}
@@ -980,7 +981,7 @@ function openMemberCard(id){
   var monthly=/month/i.test(b.type);
   var dogs=b.dogs.map(function(n,i){ return {name:n, id:b.dogIds[i]||''}; });
   var box=document.getElementById('mc-dogs');
-  box.className='dogs'+(dogs.length===1?' solo':dogs.length>=4?' many':'');
+  box.className='dogs'+(dogs.length===1?' solo':(dogs.length===3||dogs.length===4)?' trio':dogs.length>=5?' many':'');
   box.innerHTML=dogs.map(function(d){ var sd=savedDogs.find(function(x){ return x.dogId===d.id; }); var p=sd&&sd.photoUrl; return '<div class="dog"><div class="ph">'+(p?'<img src="'+accEsc(p)+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">':accEsc(d.name.charAt(0)))+'</div><div class="nm">'+accEsc(d.name)+'</div><div class="no">'+accEsc(d.id)+'</div></div>'; }).join('');
   document.getElementById('mc-owner').textContent=currentOwner.name||'';
   document.getElementById('mc-oid').textContent=currentOwner.ownerId||'';
