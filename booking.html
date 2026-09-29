@@ -171,6 +171,16 @@
   .pick-name span:first-child{font-size:0.9rem;}
   .pick-price{font-size:0.8rem;font-weight:700;color:#8a6f2c;}
   .pick-id{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--gray-dark);}
+  .form-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  .form-group input[type="date"]{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%;display:block;height:2.9rem;}
+  .form-group input[type="date"]::-webkit-date-and-time-value{text-align:left;color:transparent;}
+  #bk_checkin_time,#bk_checkout_time,#bk_dropoff,#bk_pickup{text-align:center;text-align-last:center;-webkit-appearance:none;appearance:none;min-width:0;height:2.9rem;}
+  .date-wrap{position:relative;min-width:0;}
+  .date-wrap input[type="date"]{color:transparent;}
+  .date-wrap input[type="date"]::-webkit-datetime-edit{color:transparent;}
+  .date-wrap .date-label{position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);pointer-events:none;font-size:0.88rem;color:var(--text);}
+  .date-wrap .date-label.empty{color:#b3a595;}
+  .date-wrap input:disabled + .date-label{opacity:.5;}
   .acc-icon-btn{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--gray-line);background:#fff;color:#422F25;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;font-weight:500;line-height:1;padding:0;flex:none;}
   .acc-icon-btn:hover{border-color:#422F25;}
   .acc-icon-light{background:var(--yellow);border-color:var(--yellow);color:#422F25;}
@@ -226,7 +236,7 @@
   #screen-account .acc-dogname,#screen-account .acc-dogname span:not(.acc-size){font-size:0.9rem;}
   #screen-account .acc-hist > span:first-child{font-size:0.88rem;}
   #screen-account .acc-hist-total{font-size:0.88rem;}
-  @media(max-width:500px){.card{padding:1.5rem 1.1rem;}.form-row{grid-template-columns:1fr;}.btn-row{flex-direction:column-reverse;}.btn-row .btn-secondary{flex:1;}.saved-dog-cards{grid-template-columns:1fr;}}
+  @media(max-width:500px){.card{padding:1.5rem 1.1rem;}.form-row{grid-template-columns:minmax(0,1fr);}.btn-row{flex-direction:column-reverse;}.btn-row .btn-secondary{flex:1;}.saved-dog-cards{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -403,8 +413,8 @@
       <!-- OVERNIGHT -->
       <div id="overnight_fields">
         <div class="form-row">
-          <div class="form-group"><label>วันที่ส่ง</label><input type="date" id="bk_checkin" onchange="onCheckinDateChange()"/></div>
-          <div class="form-group"><label>วันที่รับ</label><input type="date" id="bk_checkout" onchange="updateDates()"/></div>
+          <div class="form-group"><label>วันที่ส่ง</label><div class="date-wrap"><input type="date" id="bk_checkin" onchange="onCheckinDateChange()"/><span class="date-label" data-for="bk_checkin"></span></div></div>
+          <div class="form-group"><label>วันที่รับ</label><div class="date-wrap"><input type="date" id="bk_checkout" onchange="updateDates()"/><span class="date-label" data-for="bk_checkout"></span></div></div>
         </div>
         <div class="form-row">
           <div class="form-group"><label>เวลาส่ง</label><select id="bk_checkin_time" onchange="onCheckinTimeChange()"></select></div>
@@ -413,7 +423,7 @@
       </div>
       <!-- DAYCARE -->
       <div id="daycare_fields" style="display:none;">
-        <div class="form-group"><label>วันที่ฝาก</label><input type="date" id="bk_daycare_date" onchange="updateDates()"/></div>
+        <div class="form-group"><label>วันที่ฝาก</label><div class="date-wrap"><input type="date" id="bk_daycare_date" onchange="updateDates()"/><span class="date-label" data-for="bk_daycare_date"></span></div></div>
         <div class="form-row">
           <div class="form-group"><label>เวลาส่ง</label><select id="bk_dropoff" onchange="onDropoffTimeChange()"></select></div>
           <div class="form-group"><label>เวลารับ</label><select id="bk_pickup" onchange="updateDates()"></select></div>
@@ -894,6 +904,19 @@ function closeDropdown(type) {
   var list = document.getElementById(type + '_dropdown_list');
   if (list) list.style.display = 'none';
 }
+
+// ── DATE LABELS (ซ่อน "BE" ของ date picker ให้แสดงเป็น 28 ต.ค. 69) ──
+function refreshDateLabels(){
+  document.querySelectorAll('.date-label').forEach(function(el){
+    var inp=document.getElementById(el.getAttribute('data-for')); if(!inp) return;
+    var t = inp.value ? accFmtRange(inp.value) : 'เลือกวันที่';
+    if (el.textContent !== t) el.textContent = t;
+    el.classList.toggle('empty', !inp.value);
+  });
+}
+setInterval(refreshDateLabels, 250);
+document.addEventListener('input', refreshDateLabels, true);
+document.addEventListener('change', refreshDateLabels, true);
 
 // ── MY ACCOUNT ────────────────────────────────────────
 var accBookings = null, accTab = 'all';
@@ -1691,7 +1714,7 @@ function goStep3() {
 
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var dogsHtml=dogsByPriceDesc.map(function(d){
-    var headerName = d.name+' ('+({small:'S',medium:'M',large:'L'})[d.size]+')';
+    var headerName = '🐶 '+d.name+' ('+({small:'S',medium:'M',large:'L'})[d.size]+')';
     var priceText = bookingType==='overnight'
       ? '฿'+PRICES.overnight[d.size].toLocaleString()+' × '+nights+' = ฿'+d.finalPrice.toLocaleString()
       : '฿'+d.finalPrice.toLocaleString();
@@ -1722,7 +1745,7 @@ function renderParkSummary(dogs) {
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var passLabel = parkPassType === 'monthly' ? '🌳 Dog Park - Monthly Pass' : '🌳 Dog Park - Day Pass';
   var dogsHtml = dogs.map(function(d){
-    var headerName = d.name+' ('+({small:'S',medium:'M',large:'L'})[d.size]+')';
+    var headerName = '🐶 '+d.name+' ('+({small:'S',medium:'M',large:'L'})[d.size]+')';
     d.finalPrice = pricePerDog;
     return '<div class="summary-row-dog">'
       + '<div class="row-header">'+headerName+'</div>'
