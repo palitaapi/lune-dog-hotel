@@ -195,7 +195,9 @@
   .mc-close{background:none;border:none;font-size:1.6rem;line-height:1;color:#6e5d4e;cursor:pointer;min-width:44px;min-height:44px;}
   .mc-frame{width:100%;}
   .mc-scaler{width:856px;height:540px;transform-origin:top left;}
-  #mc-card{width:856px;height:540px;border-radius:32px;overflow:hidden;background:#3A2822;display:flex;flex-direction:column;padding:40px 48px 44px;}
+  #mc-card{width:856px;height:540px;border-radius:32px;overflow:hidden;background:#3A2822;display:flex;flex-direction:column;padding:40px 48px 44px;position:relative;}
+  #mc-card .rd{position:absolute;right:24px;bottom:14px;width:170px;height:auto;display:block;pointer-events:none;}
+  #mc-card .lg .dt{width:21px;height:21px;border-radius:50%;background:#FFF7EF;flex:none;margin-right:4px;}
   #mc-card *{font-family:'IBM Plex Sans Thai',sans-serif;}
   #mc-card .lg{display:flex;align-items:center;gap:8px;}
   #mc-card .lg .m{font-family:'Ranchers',sans-serif;font-size:40px;line-height:.82;color:#FFF7EF;}
@@ -216,12 +218,12 @@
   #mc-card .ow{display:flex;align-items:baseline;gap:12px;}
   #mc-card .ow .n{font-size:18px;font-weight:500;color:#FFF7EF;} #mc-card .ow .sp{font-size:15px;color:#5a4538;} #mc-card .ow .id{font-size:15px;font-weight:600;letter-spacing:.04em;color:#bfa98f;}
   #mc-card .dv{width:0;border-left:2px dashed #5a4538;margin:0 36px;}
-  #mc-card .rt{flex:none;width:310px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;}
+  #mc-card .rt{flex:none;width:310px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding-bottom:70px;}
   #mc-card .pl{font-family:'Instrument Serif',serif;font-size:62px;line-height:.9;color:#F8D167;}
   #mc-card .pl em{font-family:'Instrument Serif',serif;color:#FFF7EF;}
   #mc-card .du{font-family:'Instrument Serif',serif;font-style:italic;font-size:30px;line-height:1;color:#F8D167;margin-top:8px;}
   #mc-card .bx{width:100%;background:#FFF7EF;border-radius:22px;padding:20px 18px;display:flex;flex-direction:column;align-items:center;}
-  #mc-card .bx .l{font-size:12px;font-weight:600;letter-spacing:.16em;color:#8a7a6a;}
+  #mc-card .bx .l{font-size:18px;font-weight:600;letter-spacing:.02em;color:#8a7a6a;}
   #mc-card .bx .v{font-family:'Instrument Serif',serif;font-size:46px;line-height:1;color:#422F25;margin-top:6px;white-space:nowrap;}
   .mc-photos{display:flex;flex-wrap:wrap;gap:10px;}
   .mc-photos label{flex:1;min-width:160px;font-size:0.78rem;font-weight:600;color:#6e5d4e;display:flex;flex-direction:column;gap:4px;}
@@ -534,11 +536,12 @@
     <div class="mc-top"><h3>บัตรสมาชิก Dog Park</h3><button class="mc-close" onclick="closeMemberCard()">×</button></div>
     <div class="mc-frame" id="mc-frame"><div class="mc-scaler" id="mc-scaler">
       <div id="mc-card">
-        <div class="lg"><div class="m">Lune's</div><div class="s">Dog Hotel<div class="d"><i></i><b></b><i></i></div>Dog Park</div></div>
+        <img class="rd" src="assets/running-dog.png" alt="">
+        <div class="lg"><span class="dt"></span><div class="m">Lune's</div><div class="s">Dog Hotel<div class="d"><i></i><b></b><i></i></div>Dog Park</div></div>
         <div class="bd">
           <div class="lf"><div class="dogs" id="mc-dogs"></div><div class="ow"><span class="n" id="mc-owner"></span><span class="sp">|</span><span class="id" id="mc-oid"></span></div></div>
           <div class="dv"></div>
-          <div class="rt"><div><div class="pl">Dog Park<br><em>Member</em></div><div class="du">1 month</div></div><div class="bx"><div class="l">VALID UNTIL</div><div class="v" id="mc-until"></div></div></div>
+          <div class="rt"><div><div class="pl">Dog Park<br><em>Member</em></div><div class="du">- 1 month -</div></div><div class="bx"><div class="l">ใช้งานได้ถึง</div><div class="v" id="mc-until"></div></div></div>
         </div>
       </div>
     </div></div>
@@ -1252,7 +1255,8 @@ window.addEventListener('resize', mcFit);
 // วาดบัตรด้วย canvas โดยตรง — ได้ผลเหมือนกันทุกเครื่อง (iPhone/Android/คอม)
 function mcLoadImg(src){ return new Promise(function(res){ if(!src) return res(null); var im=new Image(); im.onload=function(){res(im);}; im.onerror=function(){res(null);}; im.src=src; }); }
 async function mcBlob(){
-  var fonts=['40px Ranchers','62px "Instrument Serif"','italic 62px "Instrument Serif"','500 18px "IBM Plex Sans Thai"','600 12px "IBM Plex Sans Thai"','28px "IBM Plex Sans Thai"'];
+  var fonts=['40px Ranchers','62px "Instrument Serif"','italic 62px "Instrument Serif"','500 18px "IBM Plex Sans Thai"','600 18px "IBM Plex Sans Thai"','28px "IBM Plex Sans Thai"'];
+  var runDog = await mcLoadImg('assets/running-dog.png');
   await Promise.all(fonts.map(function(f){ return document.fonts.load(f, 'AaกขDog'); }).map(function(p){return p.catch(function(){});}));
   var imgs = await Promise.all(mcState.dogs.map(function(d){ return mcLoadImg(d.photo); }));
   var S=2, W=856, H=540, cv=document.createElement('canvas'); cv.width=W*S; cv.height=H*S;
@@ -1265,8 +1269,10 @@ async function mcBlob(){
   rr(0,0,W,H,32); c.fillStyle='#3A2822'; c.fill(); c.save(); rr(0,0,W,H,32); c.clip();
   // logo
   var ly=64; c.font='40px Ranchers'; var lw=c.measureText("Lune's").width;
-  txt("Lune's",48,ly+2,'40px Ranchers','#FFF7EF');
-  var sx=48+lw+8; c.font='18px Ranchers'; var sw=Math.max(c.measureText('Dog Hotel').width,c.measureText('Dog Park').width);
+  c.beginPath(); c.arc(48+10.5,ly,10.5,0,Math.PI*2); c.fillStyle='#FFF7EF'; c.fill();
+  var lx=48+21+4+8;
+  txt("Lune's",lx,ly+2,'40px Ranchers','#FFF7EF');
+  var sx=lx+lw+8; c.font='18px Ranchers'; var sw=Math.max(c.measureText('Dog Hotel').width,c.measureText('Dog Park').width);
   txt('Dog Hotel',sx,ly-13,'18px Ranchers','#F8D167'); txt('Dog Park',sx,ly+14,'18px Ranchers','#F8D167');
   c.fillStyle='#F8D167'; c.fillRect(sx,ly,sw/2-6,1.5); c.fillRect(sx+sw/2+6,ly,sw/2-6,1.5);
   c.beginPath(); c.arc(sx+sw/2,ly+0.75,2.5,0,Math.PI*2); c.fillStyle='#FFF7EF'; c.fill();
@@ -1295,13 +1301,14 @@ async function mcBlob(){
   var ox=lcx-(w1+w2+w3+24)/2;
   txt(on,ox,oy,'500 18px '+TH,'#FFF7EF'); txt('|',ox+w1+12,oy,'15px '+TH,'#5a4538'); txt(oi,ox+w1+w2+24,oy,'600 15px '+TH,'#bfa98f');
   // right column
-  var rcx=499+155, boxH=110, rH=56*2+8+30+20+boxH, ry=(top+bot)/2-rH/2;
+  if(runDog){ var rw=170, rh=rw*runDog.height/runDog.width; c.drawImage(runDog,W-24-rw,H-14-rh,rw,rh); }
+  var rcx=499+155, boxH=119, rH=56*2+8+30+20+boxH, ry=(top+bot)/2-rH/2-35;
   txt('Dog Park',rcx,ry+28,'62px "Instrument Serif",serif','#F8D167','center');
   txt('Member',rcx,ry+84,'italic 62px "Instrument Serif",serif','#FFF7EF','center');
-  txt('1 month',rcx,ry+112+8+15,'italic 30px "Instrument Serif",serif','#F8D167','center');
+  txt('- 1 month -',rcx,ry+112+8+15,'italic 30px "Instrument Serif",serif','#F8D167','center');
   var by=ry+112+8+30+20; rr(499,by,310,boxH,22); c.fillStyle='#FFF7EF'; c.fill();
-  spaced('VALID UNTIL',rcx,by+30,'600 12px '+TH,'#8a7a6a',2);
-  txt(document.getElementById('mc-until').textContent,rcx,by+72,'46px "Instrument Serif",serif','#422F25','center');
+  txt('ใช้งานได้ถึง',rcx,by+34,'600 18px '+TH,'#8a7a6a','center');
+  txt(document.getElementById('mc-until').textContent,rcx,by+81,'46px "Instrument Serif",serif','#422F25','center');
   c.restore();
   return new Promise(function(res){ cv.toBlob(res,'image/png'); });
 }
