@@ -383,7 +383,7 @@
         </div>
       </div>
       <div id="park_validity_note" style="font-size:0.78rem;color:var(--gray-dark);margin-bottom:1rem;display:none;"></div>
-      <button class="btn-primary" onclick="goParkStep2()">ถัดไป</button>
+      <div class="btn-row"><button class="btn-secondary" onclick="showScreen('service')">← ย้อนกลับ</button><button class="btn-primary" onclick="goParkStep2()">ถัดไป</button></div>
     </div>
   </div>
 
@@ -422,7 +422,7 @@
       </div>
       <div id="date_summary" style="display:none;background:var(--bg2);padding:0.9rem 1rem;font-size:0.85rem;margin-bottom:1rem;border:0.5px solid var(--gray-line);"></div>
       <div id="date_msg"></div>
-      <button class="btn-primary" onclick="goStep2()">ถัดไป</button>
+      <div class="btn-row"><button class="btn-secondary" onclick="showScreen('service')">← ย้อนกลับ</button><button class="btn-primary" onclick="goStep2()">ถัดไป</button></div>
     </div>
   </div>
 
@@ -754,7 +754,7 @@ function renderSavedDogs() {
       + '<div class="pick-avatar">'+(d.photoUrl?'<img src="'+escapeHtml(d.photoUrl)+'" alt="">':escapeHtml((d.name||'?').charAt(0)))+'<span class="pick-check">✓</span></div>'
       + '<div class="pick-name"><span>'+escapeHtml(d.name)+'</span><span class="acc-size">'+sz+'</span></div>'
       + '<div class="pick-id">'+escapeHtml(d.dogId)+'</div>'
-      + '<div class="pick-price">฿'+totalPrice.toLocaleString()+(serviceType==='park' ? (parkPassType==='monthly'?'/เดือน':'/ครั้ง') : (bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน'))+'</div>'
+      + '<div class="pick-price">'+(serviceType==='park' ? '฿'+totalPrice.toLocaleString()+(parkPassType==='monthly'?'/เดือน':'/ครั้ง') : (bookingType==='overnight' ? '฿'+PRICES.overnight[size].toLocaleString()+' × '+nights+' คืน' : '฿'+totalPrice.toLocaleString()+'/วัน'))+'</div>'
       + '</div>';
   }).join('');
   document.getElementById('saved_dog_cards').innerHTML = html;
@@ -1691,10 +1691,13 @@ function goStep3() {
 
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var dogsHtml=dogsByPriceDesc.map(function(d){
-    var headerName = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)';
+    var headerName = d.name+' ('+({small:'S',medium:'M',large:'L'})[d.size]+')';
+    var priceText = bookingType==='overnight'
+      ? '฿'+PRICES.overnight[d.size].toLocaleString()+' × '+nights+' = ฿'+d.finalPrice.toLocaleString()
+      : '฿'+d.finalPrice.toLocaleString();
     return '<div class="summary-row-dog">'
       + '<div class="row-header">'+headerName+'</div>'
-      + '<div class="row-total">Total = ฿'+d.finalPrice.toLocaleString()+'</div>'
+      + '<div class="row-total">'+priceText+'</div>'
       + '</div>';
   }).join('');
 
@@ -1719,11 +1722,11 @@ function renderParkSummary(dogs) {
   var sizeLabel={small:'Small Paws',medium:'Medium Paws',large:'Large Paws'};
   var passLabel = parkPassType === 'monthly' ? '🌳 Dog Park - Monthly Pass' : '🌳 Dog Park - Day Pass';
   var dogsHtml = dogs.map(function(d){
-    var headerName = d.name+' ('+sizeLabel[d.size]+' · '+d.weight+' กก.)';
+    var headerName = d.name+' ('+({small:'S',medium:'M',large:'L'})[d.size]+')';
     d.finalPrice = pricePerDog;
     return '<div class="summary-row-dog">'
       + '<div class="row-header">'+headerName+'</div>'
-      + '<div class="row-total">Total = ฿'+pricePerDog+'</div>'
+      + '<div class="row-total">฿'+pricePerDog.toLocaleString()+'</div>'
       + '</div>';
   }).join('');
 
