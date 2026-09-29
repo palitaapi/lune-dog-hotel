@@ -159,6 +159,18 @@
   .acc-hist-total{font-weight:700;color:#8a6f2c;text-align:right;}
   .acc-hist .acc-pill{justify-self:end;align-self:start;}
   .acc-sum{font-size:0.85rem;color:var(--gray-dark);}
+  .pick-dogs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:1.1rem 0.75rem;margin-bottom:1.2rem;}
+  .pick-dog{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;cursor:pointer;}
+  .pick-avatar{position:relative;width:84px;height:84px;border-radius:50%;background:var(--bg2);border:2px solid var(--gray-line);display:flex;align-items:center;justify-content:center;font-size:1.9rem;font-weight:700;color:#8a6f2c;transition:border-color .15s,box-shadow .15s;}
+  .pick-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+  .pick-dog:hover .pick-avatar{border-color:var(--yellow);}
+  .pick-dog.selected .pick-avatar{border-color:#422F25;box-shadow:0 0 0 3px var(--yellow);}
+  .pick-check{position:absolute;top:-2px;right:-2px;width:24px;height:24px;border-radius:50%;background:#422F25;color:#FFF7EF;font-size:0.75rem;display:none;align-items:center;justify-content:center;border:2px solid #fff;}
+  .pick-dog.selected .pick-check{display:flex;}
+  .pick-name{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;font-weight:700;}
+  .pick-name span:first-child{font-size:0.9rem;}
+  .pick-price{font-size:0.8rem;font-weight:700;color:#8a6f2c;}
+  .pick-id{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--gray-dark);}
   .acc-icon-btn{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--gray-line);background:#fff;color:#422F25;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;font-weight:500;line-height:1;padding:0;flex:none;}
   .acc-icon-btn:hover{border-color:#422F25;}
   .acc-icon-light{background:var(--yellow);border-color:var(--yellow);color:#422F25;}
@@ -237,7 +249,7 @@
     <div class="service-option selected" id="svc_hotel" onclick="selectService('hotel')">
       <div class="service-icon">🏡</div>
       <div class="service-info">
-        <div class="service-name">Dog Hotel - โรงแรมน้องหมา</div>
+        <div class="service-name">Dog Hotel - โรงแรมสุนัข</div>
         <div class="service-desc">ค้างคืน · รายวัน</div>
       </div>
       <div class="service-check">✓</div>
@@ -490,7 +502,7 @@
         <div style="font-size:0.85rem;font-weight:600;color:var(--black);">ส่งสลิปผ่านไลน์</div>
         <a href="https://line.me/R/ti/p/@798pcbhg" target="_blank" style="display:inline-flex;align-items:center;justify-content:center;padding:0.65rem 1.6rem;background:var(--green);color:#fff;text-decoration:none;font-size:0.85rem;font-weight:700;border-radius:999px;">แชท LINE @798pcbhg</a>
       </div>
-      <a href="index.html" style="display:inline-block;padding:0.8rem 2rem;background:#422F25;color:#FFF7EF;text-decoration:none;font-size:0.85rem;border-radius:999px;">Back to Home · กลับหน้าหลัก</a>
+      <a href="#" onclick="event.preventDefault();showAccount();" style="display:inline-block;padding:0.8rem 2rem;background:#422F25;color:#FFF7EF;text-decoration:none;font-size:0.85rem;border-radius:999px;">กลับไปหน้า My Account</a>
     </div>
   </div>
 
@@ -737,18 +749,16 @@ function renderSavedDogs() {
     var neuteredBadge = d.neutered === 'ทำหมันแล้ว'
       ? '<span class="dog-badge badge-neutered">ทำหมันแล้ว</span>'
       : (d.neutered === 'ยังไม่ได้ทำหมัน' ? '<span class="dog-badge badge-intact">ยังไม่ทำหมัน</span>' : '');
-    return '<div class="saved-dog-card" id="sdc_'+d.dogId+'" onclick="toggleSavedDog(\''+d.dogId+'\')">'
-      + '<div class="check">✓</div>'
-      + '<div class="dog-card-name">'+d.name+(genderIcon ? ' <span style="color:var(--gray-dark);font-weight:300;">'+genderIcon+'</span>' : '')+'</div>'
-      + '<div class="dog-card-meta">'+(d.breed||'ไม่ระบุสายพันธุ์')+'</div>'
-      + '<div class="dog-card-meta">'+(d.age?'อายุ '+calcCurrentAge(d.age, d.timestamp):'ไม่ระบุอายุ')+'</div>'
-      + '<div class="dog-card-meta">'+w+' กก. · '+sizeShort+'</div>'
-      + ((serviceType==='hotel' && (!d.foodType || !d.mealsPerDay)) ? '<div class="dog-card-meta" style="color:#a83232;font-weight:600;">⚠️ ยังไม่มีข้อมูลอาหาร/จำนวนมื้อ กรุณาแก้ไขข้อมูล</div>' : '')
-      + '<div class="dog-card-price">฿'+totalPrice.toLocaleString()+(serviceType==='park' ? (parkPassType==='monthly'?'/เดือน':'/ครั้ง') : (bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน'))+'</div>'
-      + '<button type="button" style="margin-top:0.5rem;font-size:0.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;" onclick="event.stopPropagation();openEditDog(\''+d.dogId+'\')">✎ แก้ไขข้อมูลอื่นๆ</button>'
+    var sz={small:'S',medium:'M',large:'L'}[size];
+    return '<div class="pick-dog" id="sdc_'+d.dogId+'" onclick="toggleSavedDog(\''+d.dogId+'\')">'
+      + '<div class="pick-avatar">'+(d.photoUrl?'<img src="'+escapeHtml(d.photoUrl)+'" alt="">':escapeHtml((d.name||'?').charAt(0)))+'<span class="pick-check">✓</span></div>'
+      + '<div class="pick-name"><span>'+escapeHtml(d.name)+'</span><span class="acc-size">'+sz+'</span></div>'
+      + '<div class="pick-id">'+escapeHtml(d.dogId)+'</div>'
+      + '<div class="pick-price">฿'+totalPrice.toLocaleString()+(serviceType==='park' ? (parkPassType==='monthly'?'/เดือน':'/ครั้ง') : (bookingType==='overnight' ? ' × '+nights+' คืน' : '/วัน'))+'</div>'
       + '</div>';
   }).join('');
   document.getElementById('saved_dog_cards').innerHTML = html;
+  document.getElementById('saved_dog_cards').className = 'pick-dogs';
   selectedSavedDogs = [];
   showingNewDogForm = false;
   document.getElementById('new_dog_section').style.display = 'none';
