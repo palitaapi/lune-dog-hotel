@@ -117,7 +117,7 @@
   #screen-account{flex-direction:column;gap:1rem;}
   .acc-dark{background:#422F25;color:#FFF7EF;border-radius:6px;padding:1.6rem 1.75rem 1.75rem;display:flex;flex-direction:column;gap:1.1rem;}
   .acc-kicker{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--yellow);}
-  .acc-hello{font-size:1.6rem;font-weight:700;line-height:1.2;}
+  .acc-hello{font-size:1.25rem;font-weight:700;line-height:1.2;}
   .acc-id{font-family:'Space Mono',monospace;font-size:0.95rem;font-weight:700;color:var(--yellow);letter-spacing:0.04em;}
   .acc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
   .acc-ghost{flex:none;background:transparent;border:1px solid rgba(255,247,239,.35);border-radius:999px;padding:6px 14px;font-size:0.8rem;color:#FFF7EF;cursor:pointer;text-decoration:none;}
@@ -125,8 +125,8 @@
   .acc-new{width:100%;padding:0.95rem;background:var(--yellow);color:#422F25;border:none;border-radius:999px;font-size:1rem;font-weight:700;cursor:pointer;}
   .acc-new:hover{background:var(--honey);}
   .acc-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
-  .acc-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:1.5rem;}
-  .acc-count{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:0.8rem;color:#8a6f2c;}
+  .acc-head h3{font-family:'Nunito','IBM Plex Sans Thai',sans-serif;font-weight:700;font-size:1.15rem;}
+  .acc-count{font-family:'Space Mono','IBM Plex Sans Thai',monospace;font-size:0.7rem;color:#8a6f2c;}
   .acc-dark .acc-count{color:var(--yellow);}
   .acc-dogs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:1.1rem 0.75rem;}
   .acc-dog{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
@@ -150,7 +150,7 @@
   .pill-cancel{background:#f1ece6;color:#8a7a6a;}
   .acc-up-foot{display:flex;justify-content:space-between;gap:12px;padding-top:0.7rem;border-top:0.5px solid var(--gray-line);font-size:0.85rem;color:var(--gray-dark);}
   .acc-up-foot span:first-child{font-family:'Space Mono',monospace;}
-  .acc-line{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:0.85rem;color:var(--gray-dark);}
+  .acc-line{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:var(--gray-dark);}
   .acc-line a{padding:8px 14px;background:var(--green);color:#fff;border-radius:999px;text-decoration:none;font-weight:700;font-size:0.85rem;}
   .acc-tabs{display:flex;gap:6px;}
   .acc-tab{flex:1;padding:9px 6px;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;border:0.5px solid var(--gray-line);background:#fff;color:var(--gray-dark);}
@@ -159,6 +159,12 @@
   .acc-hist-total{font-weight:700;color:#8a6f2c;text-align:right;}
   .acc-hist .acc-pill{justify-self:end;align-self:start;}
   .acc-sum{font-size:0.85rem;color:var(--gray-dark);}
+  #screen-account .acc-line span,#screen-account .acc-line strong{font-size:0.75rem;}
+  #screen-account .acc-count{font-size:0.7rem;}
+  .acc-svc-row{display:flex;align-items:center;gap:6px;font-weight:700;font-size:0.95rem;}
+  #screen-account .acc-svc-row span{font-size:0.95rem;}
+  .acc-pass{font-size:0.8rem;color:#8a6f2c;font-weight:600;margin-top:2px;}
+  #screen-account .acc-up .acc-date{font-size:0.88rem;font-weight:600;margin:4px 0 2px;}
   #screen-account .acc-dogname,#screen-account .acc-dogname span:not(.acc-size){font-size:0.9rem;}
   #screen-account .acc-hist > span:first-child{font-size:0.88rem;}
   #screen-account .acc-hist-total{font-size:0.88rem;}
@@ -210,7 +216,7 @@
           <div class="acc-hello" id="acc_hello">สวัสดี</div>
           <div class="acc-id" id="acc_ownerid"></div>
         </div>
-        <a class="acc-ghost" href="https://line.me/R/ti/p/@798pcbhg" target="_blank">แก้ไขข้อมูล</a>
+        <button class="acc-ghost" onclick="openEditOwner()">แก้ไขข้อมูล</button>
       </div>
       <button class="acc-new" onclick="startNewBooking()">+ จองใหม่</button>
     </div>
@@ -219,7 +225,7 @@
       <div class="acc-dogs" id="acc_dogs"></div>
     </div>
     <div class="card" style="display:flex;flex-direction:column;gap:0.9rem;">
-      <div class="acc-head"><h3>การจองที่กำลังจะมาถึง</h3><span class="acc-count" id="acc_upcount"></span></div>
+      <div class="acc-head"><h3>การจอง</h3><span class="acc-count" id="acc_upcount"></span></div>
       <div id="acc_upcoming" style="display:flex;flex-direction:column;gap:0.75rem;"><div class="acc-empty">กำลังโหลด...</div></div>
       <div class="acc-line"><span>ต้องการเปลี่ยนแปลงการจอง กรุณาติดต่อทางไลน์ <strong style="color:#422F25;">@798pcbhg</strong></span><a href="https://line.me/R/ti/p/@798pcbhg" target="_blank">แชท LINE</a></div>
     </div>
@@ -232,6 +238,21 @@
       </div>
       <div id="acc_history"></div>
       <div class="acc-sum" id="acc_summary"></div>
+    </div>
+  </div>
+
+  <!-- EDIT OWNER -->
+  <div id="screen-editowner" class="card" style="display:none;">
+    <div class="section-label">My Account · แก้ไขข้อมูล</div>
+    <h2>ข้อมูลส่วนตัว</h2>
+    <div class="divider"></div>
+    <div class="form-group"><label>ชื่อ-นามสกุล</label><input id="eo_name" type="text"/></div>
+    <div class="form-group"><label>เบอร์โทร</label><input id="eo_phone" type="tel" inputmode="numeric"/></div>
+    <div class="form-group"><label>อีเมล</label><input id="eo_email" type="email"/></div>
+    <div id="editowner_msg"></div>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="showScreen('account')">← ยกเลิก</button>
+      <button class="btn-primary" id="eo_save_btn" onclick="saveOwnerEdit()">บันทึก ✓</button>
     </div>
   </div>
 
@@ -484,7 +505,7 @@ let showingNewDogForm = false;
 
 // ── UTILS ─────────────────────────────────────────────
 function showScreen(name) {
-  ['account','service','loading','login','newuser','step1','park-step1','step2','step3','success','editdog'].forEach(function(s) {
+  ['account','editowner','service','loading','login','newuser','step1','park-step1','step2','step3','success','editdog'].forEach(function(s) {
     var el = document.getElementById('screen-'+s);
     if (el) el.style.display = 'none';
   });
@@ -590,7 +611,7 @@ async function checkOwner(profile) {
     var json = JSON.parse(raw.replace(/^[^(]+\(/,'').replace(/\);?\s*$/,''));
     (json.table?json.table.rows||[]:[]).forEach(function(row) {
       if (String(row.c&&row.c[8]?row.c[8].v||'':'').trim()===profile.userId) {
-        currentOwner = Object.assign({},currentOwner,{ownerId:row.c[1]?row.c[1].v:'',name:row.c[2]?row.c[2].v:'',phone:row.c[3]?row.c[3].v:''});
+        currentOwner = Object.assign({},currentOwner,{ownerId:row.c[1]?row.c[1].v:'',name:row.c[2]?row.c[2].v:'',phone:row.c[3]?row.c[3].v:'',email:row.c[4]?row.c[4].v:''});
       }
     });
   } catch(e) {}
@@ -850,9 +871,12 @@ function accDescribe(b){
   var d1=accParseYMD(b.checkIn), d2=accParseYMD(b.checkOut)||d1;
   var span = d1&&d2 ? Math.round((d2-d1)/86400000) : 0;
   var isOvernight = b.service==='hotel' && !/daycare/i.test(b.type);
-  var unit = isOvernight ? (parseInt(b.nights,10)||span||1)+' คืน' : (span>0? (span+1) : 1)+' วัน';
-  var label = b.service==='hotel' ? 'Dog Hotel · '+(b.type||'Overnight Care') : 'Dog Park · '+(b.type||'Day Pass');
-  return { label:label, date:accFmtRange(b.checkIn,b.checkOut)+' · '+unit, nightsN: isOvernight?(parseInt(b.nights,10)||span||1):0 };
+  var monthly = b.service==='park' && /month/i.test(b.type);
+  var unit = isOvernight ? (parseInt(b.nights,10)||span||1)+' คืน' : monthly ? '30 วัน' : (span>0? (span+1) : 1)+' วัน';
+  var svc = b.service==='hotel' ? 'Dog Hotel' : 'Dog Park';
+  var pass = b.service==='hotel' ? (/daycare/i.test(b.type)?'Daycare':'Overnight Care') : (monthly?'Monthly Pass':'Day Pass');
+  var label = svc+' · '+pass;
+  return { label:label, svc:svc, pass:pass, icon: b.service==='hotel'?'🏡':'🌳', date:accFmtRange(b.checkIn,b.checkOut)+' · '+unit, nightsN: isOvernight?(parseInt(b.nights,10)||span||1):0 };
 }
 function renderAccountDogs(){
   document.getElementById('acc_dogcount').textContent = savedDogs.length+' ตัว';
@@ -872,7 +896,7 @@ function renderAccountBookings(){
   document.getElementById('acc_upcount').textContent = up.length+' รายการ';
   document.getElementById('acc_upcoming').innerHTML = up.length ? up.map(function(b){
     var d=accDescribe(b), paid=b.status==='fully_paid';
-    return '<div class="acc-up"><div class="acc-up-top"><div style="min-width:0;"><div class="acc-svc">'+accEsc(d.label)+'</div><div class="acc-date">'+d.date+'</div><div class="acc-sub">'+accEsc(b.dogs.join(', '))+'</div></div>'
+    return '<div class="acc-up"><div class="acc-up-top"><div style="min-width:0;"><div class="acc-svc-row"><span>'+d.icon+'</span><span>'+d.svc+'</span></div><div class="acc-pass">'+d.pass+'</div><div class="acc-date">'+d.date+'</div><div class="acc-sub">'+accEsc(b.dogs.join(', '))+'</div></div>'
       + '<span class="acc-pill '+(paid?'pill-paid':'pill-pending')+'">'+(paid?'ชำระแล้ว':'รอชำระ')+'</span></div>'
       + '<div class="acc-up-foot"><span>'+accEsc(b.bookingId)+'</span><span>ยอด '+accMoney(b.totalPrice)+'</span></div></div>';
   }).join('') : '<div class="acc-empty">ยังไม่มีการจองที่กำลังจะมาถึง</div>';
@@ -901,6 +925,33 @@ async function showAccount(){
   showScreen('account');
   if (!accBookings) await loadAccountBookings();
   renderAccountBookings();
+}
+
+function openEditOwner(){
+  document.getElementById('eo_name').value = currentOwner.name||'';
+  document.getElementById('eo_phone').value = currentOwner.phone||'';
+  document.getElementById('eo_email').value = currentOwner.email||'';
+  document.getElementById('editowner_msg').innerHTML = '';
+  showScreen('editowner');
+}
+async function saveOwnerEdit(){
+  var name=document.getElementById('eo_name').value.trim();
+  var phone=document.getElementById('eo_phone').value.replace(/[^0-9]/g,'');
+  var email=document.getElementById('eo_email').value.trim();
+  if(!name){ showMsg('editowner_msg','กรุณากรอกชื่อ','error'); return; }
+  if(phone.length<9){ showMsg('editowner_msg','กรุณากรอกเบอร์โทรให้ถูกต้อง','error'); return; }
+  var btn=document.getElementById('eo_save_btn'); btn.disabled=true;
+  showMsg('editowner_msg','⏳ กำลังบันทึก...','success');
+  try {
+    var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'updateOwner',ownerId:currentOwner.ownerId,name:name,phone:phone,email:email})});
+    var result=await res.json();
+    btn.disabled=false;
+    if(result.success){
+      currentOwner=Object.assign({},currentOwner,{name:name,phone:phone,email:email});
+      allOwnersCache=null;
+      showAccount();
+    } else showMsg('editowner_msg','บันทึกไม่สำเร็จ: '+(result.error||'ไม่ทราบสาเหตุ'),'error');
+  } catch(e){ btn.disabled=false; showMsg('editowner_msg','บันทึกไม่สำเร็จ: '+e.message,'error'); }
 }
 
 // ── OWNER LOOKUP (สำหรับเช็คเบอร์ซ้ำ) ─────────────────
