@@ -510,6 +510,10 @@
       <div class="booking-id-badge" id="success_bookingid" style="margin:0 0 1.2rem;">BK-0000</div>
       <div style="background:var(--bg);border:1px solid var(--gray-line);border-radius:12px;padding:1.2rem;margin-bottom:1.5rem;display:flex;flex-direction:column;align-items:center;gap:0.8rem;">
         <img src="assets/payment-qr.png" alt="QR Code ชำระเงิน" style="width:180px;height:180px;object-fit:contain;display:block;"/>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="font-size:0.78rem;color:var(--gray-dark);">ยอดที่ต้องโอน</div>
+          <div id="success_amount" style="font-family:'Instrument Serif',serif;font-size:2.2rem;line-height:1.1;color:var(--black);">฿0</div>
+        </div>
         <div style="font-size:0.85rem;font-weight:600;color:var(--black);">ส่งสลิปผ่านไลน์</div>
         <a href="https://line.me/R/ti/p/@798pcbhg" target="_blank" style="display:inline-flex;align-items:center;justify-content:center;padding:0.65rem 1.6rem;background:var(--green);color:#fff;text-decoration:none;font-size:0.85rem;font-weight:700;border-radius:999px;">แชท LINE @798pcbhg</a>
       </div>
@@ -1890,10 +1894,12 @@ async function confirmBooking() {
     var res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
     var result=await res.json();
     document.getElementById('success_bookingid').textContent=result.bookingId||'BK-XXXX';
+    document.getElementById('success_amount').textContent='฿'+Number(totalPrice||0).toLocaleString();
     accBookings = null;
     showScreen('success');
   } catch(e) {
     document.getElementById('success_bookingid').textContent='BK-XXXX';
+    document.getElementById('success_amount').textContent='฿'+Number(totalPrice||0).toLocaleString();
     showScreen('success');
   }
 }
