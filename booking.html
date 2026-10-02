@@ -198,7 +198,7 @@
   .mc-scaler{width:856px;height:540px;transform-origin:top left;}
   .mc-close{align-self:center;background:#FFF7EF;color:#422F25;border:none;border-radius:999px;padding:10px 26px;font-size:0.9rem;font-weight:700;cursor:pointer;}
   #mc-card *{font-size:inherit;font-family:'IBM Plex Sans Thai',sans-serif;}
-  #mc-card{width:856px;height:540px;border-radius:32px;overflow:hidden;background:#3A2822;border:5px solid rgba(255,247,239,.55);display:flex;flex-direction:column;padding:40px 48px 44px;position:relative;font-size:16px;}
+  #mc-card{width:856px;height:540px;border-radius:32px;overflow:hidden;background:var(--mc-bg,#3A2822);border:5px solid rgba(255,247,239,.55);display:flex;flex-direction:column;padding:40px 48px 44px;position:relative;font-size:16px;}
   #mc-card .rd{position:absolute;right:24px;bottom:14px;width:170px;height:auto;display:block;pointer-events:none;}
   #mc-card .lg{display:flex;align-items:center;gap:8px;}
   #mc-card .lg .dt{width:21px;height:21px;border-radius:50%;background:#FFF7EF;flex:none;margin-right:4px;}
@@ -211,22 +211,22 @@
   #mc-card .lf{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
   #mc-card .dogs{display:flex;justify-content:center;gap:14px;}
   #mc-card .dog{display:flex;flex-direction:column;align-items:center;gap:8px;width:136px;}
-  #mc-card .ph{width:118px;height:118px;border-radius:50%;overflow:hidden;background:#422F25;border:3px solid #F8D167;display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:44px;color:#F8D167;}
+  #mc-card .ph{width:118px;height:118px;border-radius:50%;overflow:hidden;background:var(--mc-ph,#422F25);border:3px solid #F8D167;display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:44px;color:#F8D167;}
   #mc-card .nm{font-family:'Instrument Serif','IBM Plex Sans Thai',serif;font-size:42px;line-height:1.1;color:#FFF7EF;white-space:nowrap;}
-  #mc-card .no{font-size:17px;font-weight:600;color:#bfa98f;white-space:nowrap;}
+  #mc-card .no{font-size:17px;font-weight:600;color:var(--mc-mu,#bfa98f);white-space:nowrap;}
   #mc-card .solo .dog{width:auto;gap:10px;} #mc-card .solo .ph{width:170px;height:170px;font-size:72px;} #mc-card .solo .nm{font-size:66px;} #mc-card .solo .no{font-size:21px;}
   #mc-card .many .dog{width:104px;} #mc-card .many .ph{width:90px;height:90px;font-size:38px;} #mc-card .many .nm{font-size:32px;} #mc-card .many .no{font-size:14px;}
   #mc-card .trio{flex-wrap:wrap;max-width:300px;gap:8px 20px;} #mc-card .trio .dog{width:130px;gap:4px;} #mc-card .trio .ph{width:78px;height:78px;font-size:32px;} #mc-card .trio .nm{font-size:28px;} #mc-card .trio .no{font-size:13px;}
-  #mc-card .ow{display:flex;align-items:baseline;gap:14px;padding-top:18px;border-top:2px solid #5a4538;}
-  #mc-card .ow .n{font-size:28px;font-weight:500;color:#FFF7EF;} #mc-card .ow .sp{font-size:24px;color:#5a4538;} #mc-card .ow .id{font-size:24px;font-weight:600;letter-spacing:.04em;color:#bfa98f;}
-  #mc-card .dv{width:0;border-left:2px dashed #5a4538;margin:0 36px;}
+  #mc-card .ow{display:flex;align-items:baseline;gap:14px;padding-top:18px;border-top:2px solid var(--mc-ln,#5a4538);}
+  #mc-card .ow .n{font-size:28px;font-weight:500;color:#FFF7EF;} #mc-card .ow .sp{font-size:24px;color:var(--mc-ln,#5a4538);} #mc-card .ow .id{font-size:24px;font-weight:600;letter-spacing:.04em;color:var(--mc-mu,#bfa98f);}
+  #mc-card .dv{width:0;border-left:2px dashed var(--mc-ln,#5a4538);margin:0 36px;}
   #mc-card .rt{flex:none;width:310px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding-bottom:70px;}
   #mc-card .pl{font-family:'Instrument Serif',serif;font-size:62px;line-height:.9;color:#F8D167;}
   #mc-card .pl em{font-family:'Instrument Serif',serif;color:#FFF7EF;}
   #mc-card .du{font-family:'Instrument Serif',serif;font-style:italic;font-size:30px;line-height:1;color:#F8D167;margin-top:8px;}
   #mc-card .bx{width:100%;background:#FFF7EF;border-radius:22px;padding:20px 18px;display:flex;flex-direction:column;align-items:center;}
   #mc-card .bx .l{font-size:24px;font-weight:600;letter-spacing:.02em;color:#8a7a6a;}
-  #mc-card .bx .v{font-family:'IBM Plex Sans Thai',sans-serif;font-weight:400;font-size:36px;line-height:1.15;color:#422F25;margin-top:6px;white-space:nowrap;}
+  #mc-card .bx .v{font-family:'IBM Plex Sans Thai',sans-serif;font-weight:400;font-size:36px;line-height:1.15;color:var(--mc-bg,#422F25);margin-top:6px;white-space:nowrap;}
   #screen-account .acc-line span,#screen-account .acc-line strong{font-size:0.75rem;}
   #screen-account .acc-count{font-size:0.7rem;}
   .acc-svc-row{display:flex;align-items:center;gap:6px;font-weight:700;font-size:0.95rem;}
@@ -526,9 +526,9 @@
         <div class="bd">
           <div class="lf"><div class="dogs" id="mc-dogs"></div><div class="ow"><span class="n" id="mc-owner"></span><span class="sp">|</span><span class="id" id="mc-oid"></span></div></div>
           <div class="dv"></div>
-          <div class="rt"><div><div class="pl">Dog Park<br><em id="mc-kind">Member</em></div><div class="du" id="mc-du">- 1 month -</div></div><div class="bx"><div class="l" id="mc-ulabel">ใช้งานได้ถึง</div><div class="v" id="mc-until"></div></div></div>
+          <div class="rt"><div><div class="pl"><span id="mc-t1">Dog Park</span><br><em id="mc-kind">Member</em></div><div class="du" id="mc-du">- 1 month -</div></div><div class="bx"><div class="l" id="mc-ulabel">ใช้งานได้ถึง</div><div class="v" id="mc-until"></div></div></div>
         </div>
-          <div style="position:absolute;left:0;right:0;bottom:14px;text-align:center;font-family:'IBM Plex Sans Thai',sans-serif;font-size:16px;letter-spacing:0.02em;color:rgba(245,236,224,0.75);pointer-events:none;">* กรุณาแสดงบัตรทุกครั้งก่อนเข้าสนาม *</div>
+          <div id="mc-note" style="position:absolute;left:0;right:0;bottom:14px;text-align:center;font-family:'IBM Plex Sans Thai',sans-serif;font-size:16px;letter-spacing:0.02em;color:rgba(245,236,224,0.75);pointer-events:none;"></div>
       </div>
     </div></div>
     <button class="mc-close" onclick="closeMemberCard()">ปิด</button>
@@ -1003,7 +1003,7 @@ function renderAccountBookings(){
     var d=accDescribe(b), paid=b.status==='fully_paid';
     return '<div class="acc-up"><div class="acc-up-top"><div style="min-width:0;"><div class="acc-svc-row"><span>'+d.icon+'</span><span>'+d.svc+'</span></div><div class="acc-pass">'+d.pass+'</div><div class="acc-date">'+d.date+'</div><div class="acc-sub">'+accEsc(b.dogs.join(', '))+'</div></div>'
       + '<span class="acc-pill '+(paid?'pill-paid':'pill-pending')+'">'+(paid?'ชำระแล้ว':'รอชำระ')+'</span></div>'
-      + '<div class="acc-up-foot" style="align-items:center;"><span>'+accEsc(b.bookingId)+'</span><span>ยอด '+accMoney(b.totalPrice)+'</span></div>'+(paid&&b.service==='park'?'<button class="acc-card-btn" onclick="openMemberCard(\''+accEsc(b.bookingId)+'\')">ดูบัตร</button>':'')+'</div>';
+      + '<div class="acc-up-foot" style="align-items:center;"><span>'+accEsc(b.bookingId)+'</span><span>ยอด '+accMoney(b.totalPrice)+'</span></div>'+(paid?'<button class="acc-card-btn" onclick="openMemberCard(\''+accEsc(b.bookingId)+'\')">ดูบัตร</button>':'')+'</div>';
   }).join('') : '<div class="acc-empty">ยังไม่มีการจองที่กำลังจะมาถึง</div>';
   var shown = past.filter(function(b){ return accTab==='all' || b.service===accTab; });
   document.getElementById('acc_history').innerHTML = shown.length ? shown.map(function(b){
@@ -1016,6 +1016,22 @@ function renderAccountBookings(){
   var park = done.filter(function(b){ return b.service==='park'; }).length;
   document.getElementById('acc_summary').textContent = done.length ? 'รวม Dog Hotel '+nights+' คืน · Dog Park '+park+' ครั้ง' : '';
 }
+var MC_THEMES = {
+  monthly:  {bg:'#3A2822', ph:'#422F25', ln:'#5a4538', mu:'#bfa98f', t1:'Dog Park',  t2:'Member',    note:'* กรุณาแสดงบัตรทุกครั้งก่อนเข้าสนาม *'},
+  daypass:  {bg:'#2F4632', ph:'#3A5540', ln:'#4E6B53', mu:'#B7C7AE', t1:'Dog Park',  t2:'Day Pass',  note:'* กรุณาแสดงบัตรทุกครั้งก่อนเข้าสนาม *'},
+  daycare:  {bg:'#8A4B2E', ph:'#9A5A3B', ln:'#AD7255', mu:'#EBC9B0', t1:'Dog Hotel', t2:'Daycare',   note:'* กรุณาแสดงบัตรทุกครั้งเมื่อมารับ-ส่งน้องหมา *'},
+  overnight:{bg:'#222B45', ph:'#2D3756', ln:'#45507A', mu:'#AEB6D3', t1:'Dog Hotel', t2:'Overnight', note:'* กรุณาแสดงบัตรทุกครั้งเมื่อมารับ-ส่งน้องหมา *'}
+};
+function mcKindOf(type){ type=String(type||''); return /Monthly/i.test(type)?'monthly':/Day Pass/i.test(type)?'daypass':/Daycare/i.test(type)?'daycare':'overnight'; }
+function mcDaysBetween(a,b){ var d1=new Date(a+'T00:00:00'), d2=new Date((b||a)+'T00:00:00'); return Math.max(0, Math.round((d2-d1)/86400000)); }
+function mcDuration(kind,a,b){ if(kind==='monthly') return '- 1 month -'; if(kind==='daypass') return '- 1 day -'; var n=mcDaysBetween(a,b); if(kind==='overnight'){ n=Math.max(1,n); return '- '+n+(n>1?' nights':' night')+' -'; } n=n+1; return '- '+n+(n>1?' days':' day')+' -'; }
+function mcApplyTheme(kind){
+  var T=MC_THEMES[kind]||MC_THEMES.monthly, card=document.getElementById('mc-card');
+  card.style.setProperty('--mc-bg',T.bg); card.style.setProperty('--mc-ph',T.ph); card.style.setProperty('--mc-ln',T.ln); card.style.setProperty('--mc-mu',T.mu);
+  document.getElementById('mc-t1').textContent=T.t1; document.getElementById('mc-kind').textContent=T.t2;
+  document.getElementById('mc-note').textContent=T.note;
+  return T;
+}
 function openMemberCard(id){
   var b=(accBookings||[]).find(function(x){ return x.bookingId===id; }); if(!b) return;
   var monthly=/month/i.test(b.type);
@@ -1025,10 +1041,12 @@ function openMemberCard(id){
   box.innerHTML=dogs.map(function(d){ var sd=savedDogs.find(function(x){ return x.dogId===d.id; }); var p=sd&&sd.photoUrl; return '<div class="dog"><div class="ph">'+(p?'<img src="'+accEsc(p)+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">':accEsc(d.name.charAt(0)))+'</div><div class="nm">'+accEsc(d.name)+'</div><div class="no">'+accEsc(d.id)+'</div></div>'; }).join('');
   document.getElementById('mc-owner').textContent=currentOwner.name||'';
   document.getElementById('mc-oid').textContent=currentOwner.ownerId||'';
-  document.getElementById('mc-kind').textContent=monthly?'Member':'Day Pass';
-  document.getElementById('mc-du').textContent=monthly?'- 1 month -':'- 1 day -';
-  document.getElementById('mc-ulabel').textContent=monthly?'ใช้งานได้ถึง':'ใช้งานวันที่';
-  document.getElementById('mc-until').textContent=accFmtRange(monthly?b.checkOut:b.checkIn);
+  var kind=mcKindOf(b.type); mcApplyTheme(kind);
+  var st=b.checkIn, en=b.checkOut||b.checkIn, single=(kind==='daypass'||(kind==='daycare'&&st===en));
+  document.getElementById('mc-du').textContent=mcDuration(kind,st,en);
+  document.getElementById('mc-ulabel').textContent=kind==='monthly'?'ใช้งานได้ถึง':kind==='overnight'?'เช็คอิน – เช็คเอาท์':single?'ใช้งานวันที่':'วันที่ใช้บริการ';
+  var vv=kind==='monthly'?accFmtRange(b.checkOut):single?accFmtRange(st):accFmtRange(st,en);
+  var vEl=document.getElementById('mc-until'); vEl.textContent=vv; vEl.style.fontSize=vv.length>16?'26px':vv.length>12?'30px':'';
   document.getElementById('mc-overlay').classList.add('open');
   fitMemberCard();
 }
